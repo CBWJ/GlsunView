@@ -1,0 +1,75 @@
+﻿@model List<FileInfo>
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <script src="~/scripts/jquery-1.9.1.min.js"></script>
+    <script src="~/scripts/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="~/Content/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/Content/css/AdminLTE.min.css" />
+    <style>
+        .icons{
+            position:absolute;
+            top:0;
+            bottom:0;
+            left:0;
+            right:0;
+            padding-left:0;
+        }
+        .icons li {
+            float: left;
+            width: 20%;
+            height: auto;
+            padding: 2px;
+            margin: 0 -1px -1px 0;
+            font-size: 12px;
+            line-height: 1.4;
+            text-align: center;
+            list-style: none;
+            /*cursor: pointer;*/
+        }
+        .icons li img{
+            width: 100%;
+        }
+        .thumbnail{
+            margin-bottom: 0px;
+        }
+        .thumbnail:hover{
+            background-color: rgba(86, 61, 124, .1);
+            border-color: #ddd;
+        }
+    </style>
+    <title>IconList</title>
+</head>
+<body>
+    <ul class="icons">
+        @foreach(var f in Model)
+        {
+            <li>
+                <a href="#" class="thumbnail">
+                    <img src="~/image/topo/@f.Name" alt="@f.Name">
+                </a>
+            </li>
+        }
+    </ul>
+    <script>
+        var selectedIcon = "";
+        $(function () {
+            $(".icons img").click(function () {
+                selectedIcon = $(this).attr("alt");
+            }).dblclick(function () {
+                parent.iconSelect();
+            });
+        });
+
+        function getSelectedIcon() {
+            return selectedIcon;
+        }
+    </script>
+</body>
+</html>

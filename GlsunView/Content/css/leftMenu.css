@@ -1,0 +1,58 @@
+.leftMenu{
+    border:1px solid #ccc;
+    border-top: 0;
+    border-bottom: 0;
+    width:200px;
+    height:100%;
+    font-size:1em;
+    overflow: hidden;
+}
+.leftMenu ul li{
+    border-top: 1px solid #ccc;
+    background-color: #eaeaea;
+    display:block;
+}
+.leftMenu ul li.selected{
+    background-color: #bcbcbc;
+}
+.leftMenu ul li img{
+    height: 20px;
+    position: relative;
+    top: 3px;
+    margin-right: 5px;
+}
+.leftMenu ul li ul li{
+    font-size: 0.9em;
+    background-color: #fff;
+}
+.leftMenu ul li a{
+    cursor: pointer;
+    color: black;
+    text-decoration: none;
+    display: block;
+    line-height: 29px;
+    -webkit-transition:background-color .4s ease-in;
+	-moz-transition:background-color .4s ease-in;
+	transition:background-color .4s ease-in;
+}
+.leftMenu ul li a:hover{
+    cursor: pointer;
+    background-color: #bcbcbc;
+}
+.leftMenu ul li ul li a{
+    padding-left: 10px;
+    line-height: 1.6em;
+}
+.leftMenu ul li ul li ul li a{
+    padding-left: 20px;
+}
+.leftMenu>ul>li:last-child{
+    border-bottom: 1px solid #ccc;
+}
+.fa-angle-right{
+    float:right;
+    line-height: 1.6em;
+}
+.expanded-Arrow{
+    transform:rotate(90deg);
+}

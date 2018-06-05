@@ -1,0 +1,23 @@
+.status{
+    overflow-y: scroll;
+    word-wrap:break-word;
+    height: 100%;
+    background-color: #eee;
+    margin-top:2px;
+    font-size: 0.8;
+}
+.status p{
+    margin: 2px 0 2px 0;
+}
+.status .msg-normal{
+    color: black;
+}
+.status .msg-important{
+    color: #17f32a;
+}
+.status .msg-warnning{
+    color: yellowgreen;
+}
+.status .msg-error{
+    color: red;
+}

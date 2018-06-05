@@ -1,0 +1,675 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_ListLayout.cshtml";
+    var userModuleAuth = (IEnumerable<GlsunView.Domain.v_UserModuleAuthority>)ViewBag.UserModuleAuth;
+}
+@section AddToHead{
+    <link href="@Url.Content("~/Content/css/veticalToolbar.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/css/topomenu.css")" rel="stylesheet" type="text/css" />
+}
+<div class="main_body_top">
+    <div class="row">
+        <div class="col-xs-6">
+            <div class="btn-group" role="group" style="float:left;">
+                <button type="button" class="btn btn-default btn-sm" id="centerButton">居中显示</button>
+                <button type="button" class="btn btn-default btn-sm" id="fullScreenButton">全屏显示</button>
+                <button type="button" class="btn btn-default btn-sm" id="zoomOutButton">放 大</button>
+                @*<button type="button" class="btn btn-default" id="zoomNormalButton">正 常</button>*@
+                <button type="button" class="btn btn-default btn-sm" id="zoomInButton">缩 小</button>
+                <button type="button" class="btn btn-default btn-sm" id="btnTest">Test</button>
+            </div>
+            <div class="checkbox" style="display:inline-block;margin-left:5px;">
+                <label>
+                    <input type="checkbox" id="zoomCheckbox">鼠标缩放
+                </label>
+            </div>
+        </div>
+        <div class="col-xs-6">
+            <div class="btn-group" role="group" id="edit-menu">
+                @Html.AuthorityButtonList(userModuleAuth)
+            </div>
+        </div>
+    </div>
+</div>
+<div id="content" class="main_body_content">
+    <canvas width="1200" height="600" id="canvas"
+            style="background-color: #008181; border: 1px solid rgb(68, 68, 68); cursor: default;"></canvas>
+    <ul class="vetical-toolbar">
+        <li class="normal selected"><img src="~/image/toolbar/cursor.png" alt="cursor"></li>
+        <li class="normal"><img src="~/image/toolbar/hand.png" alt="hand"></li>
+        <li class="normal"><img src="~/image/toolbar/line.png" alt="link"></li>
+        <li class="normal"><img src="~/image/toolbar/network.png" alt="network"></li>
+    </ul>
+    <ul id="nodemenu" class="contextmenu dropdown-menu" style="display:none;">
+        <li><a>编辑</a></li>
+        <li><a>重命名</a></li>
+        <li><a>删除</a></li>
+    </ul>
+    <ul id="linkmenu" class="contextmenu dropdown-menu" style="display:none;">
+        <li><a>删除连线</a></li>
+    </ul>
+    <input id="txtNodeEdit" style="display:none;position:absolute;width:100px;" onkeydown="if(event.keyCode==13)this.blur();" />
+    <input id="SubnetId" name="SubnetId" type="hidden" value="@ViewBag.SubnetId"/>
+</div>
+
+@section AddToEnd{
+    <script src="~/scripts/lib/jtopo-min.js"></script>
+    <script>
+    //服务端数据
+    var nodesJSON = '@Html.Raw(ViewBag.Nodes)';
+    var linesJSON = '@Html.Raw(ViewBag.Lines)';
+    var nodes = JSON.parse(nodesJSON);
+    var lines = JSON.parse(linesJSON);
+    var sceneloc = JSON.parse('@Html.Raw(ViewBag.SceneLocation)');
+    //全局点击
+    var currentNode = null, currentLink = null;
+    //记录节点坐标
+    var coordChange1 = false, coordChange2 = false, sceneDraged = false, changeSize = true;
+    var $canvas = $("#canvas"), $content = $("#content");
+    //画板最大高度
+    var maxHeight = 0, fixH = 10;
+    window.onresize = function (e) {
+        var w = $content.width();
+        var h = $content.height() - fixH;
+        if (h > maxHeight) {
+            maxHeight = h;
+        }
+        if (h <= 0) {
+            h = maxHeight;
+        }
+        console.log("w:" + w + ",h:" + h);
+        $canvas.attr("width", w).attr("height", h);
+    };
+    $(function () {
+        var index = 0;
+        $canvas.attr("width", $content.width())
+                    .attr("height", $content.height() - fixH);
+        if (($content.height() - fixH) > maxHeight) {
+            maxHeight = $content.height() - fixH;
+        }
+        var canvas = document.getElementById('canvas');
+        var stage = new JTopo.Stage(canvas);
+
+        //stage.frames = -24;
+        //显示工具栏
+        //showJTopoToobar(stage);
+       //垂直工具栏
+        $(".vetical-toolbar li").click(function () {
+            var $self = $(this);
+            if ($self.hasClass("selected")) return;
+            $(".vetical-toolbar .selected").removeClass("selected");
+            $self.toggleClass("selected");
+
+            var op = $self.children("img").attr("alt");
+            if (op == "link") {
+                var selNode = getSelectedNodes();
+                if (selNode && selNode.length == 2) {
+                    if (!isExistLink(selNode[0], selNode[1])) {
+                        ajaxAddLink(selNode[0], selNode[1]);
+                    }
+                }
+            }
+            if (op == "hand") {
+                scene.mode = "drag";
+            }
+            else {
+                scene.mode = 'select';
+            }
+        });
+        var scene = new JTopo.Scene(stage);
+        scene.mode = 'select';
+        scene.translateX = sceneloc.CoordinateX;
+        scene.translateY = sceneloc.CoordinateY;
+        //节点点击处理
+        function nodeClickHandler(event) {
+            if (event.button == 0) {
+                console.log("左键弹起");
+                if (coordChange1 && coordChange2) {
+                    console.log("保存新坐标");
+                    console.log("x:" + currentNode.x + ",y:" + currentNode.y);
+                    $.post("@Url.Action("ChangeCoordinate", "Device")",
+                        {
+                            id: currentNode.xData,
+                            x: Math.round(currentNode.x),
+                            y: Math.round(currentNode.y)
+                        },
+                        function (data) {
+                            if (data) {
+                                if (data.Code == "") {
+                                } else if (data.Code == "Exception") {
+                                    infoDialog.message("提示", "服务器异常！\n" + data.Message);
+                                } else {
+                                    infoDialog.message("提示", "请求异常！");
+                                }
+                            }
+                        }, "json");
+                }
+                coordChange1 = false;
+                coordChange2 = false;
+            } else if (event.button == 1) {
+                console.log("中键弹起");
+            } else if (event.button == 2) {
+                console.log("右键弹起");
+                $("#nodemenu").css({
+                    left: event.pageX,
+                    top: event.pageY - 40
+                }).show();
+            }
+        }
+        //连线点击处理
+        function linkClickHandler(event) {
+            if (event.button == 0) {
+                console.log("左键弹起");
+
+            } else if (event.button == 1) {
+                console.log("中键弹起");
+            } else if (event.button == 2) {
+                console.log("右键弹起");
+                $("#linkmenu").css({
+                    left: event.pageX,
+                    top: event.pageY - 40
+                }).show();
+            }
+        }
+        //新建节点
+        function newNode(x, y, img, name, xdata) {
+            var node = new JTopo.Node(name);
+            var w = 32, h = 32;
+            node.xData = xdata;
+            node.backgroudColor = "#f00";
+            node.borderWidth = 1;
+            node.borderColor = "192,192,192";
+            node.font = '13px 微软雅黑'; // 字体
+            node.imgSrc = '../../image/topo/' + img;
+            if (!img || img == "") {
+                node.imgSrc = "";
+            }
+            //node.setImage('../image/topo/' + img, false);
+            node.setLocation(x, y);
+            node.setSize(w, h);
+            node.paint = function (g) {
+                g.fillStyle = this.backgroudColor;
+                g.fillRect(-w / 2, -h / 2, w, h);
+                var imgT = new Image();
+                imgT.src = this.imgSrc;
+                g.drawImage(imgT, -w / 2, -h / 2, w, h);
+                this.image = imgT;
+                this.paintText(g);
+                this.paintBorder(g);
+                //a.drawImage(this.image, -this.width / 2, -this.height / 2)
+            };
+            node.addEventListener('mousedown', function (event) {
+                console.log("node mousedown");
+                coordChange1 = true;
+            });
+            node.addEventListener('mouseup', function (event) {
+                $(".contextmenu").hide();
+                currentNode = this;
+                nodeClickHandler(event);
+            });
+            node.addEventListener('mousemove', function () {
+                console.log("node mousemove");
+            });
+            node.addEventListener('mousedrag', function () {
+                console.log("node mousedrag");
+                console.log("x:" + node.x + ",y:" + node.y);
+                coordChange2 = true;
+            });
+            scene.add(node);
+            return node;
+        }
+        // 简单连线
+        function newLink(nodeA, nodeZ, xData, text, dashedPattern) {
+            var link = new JTopo.Link(nodeA, nodeZ, text);
+            link.xData = xData;
+            link.lineWidth = 1; // 线宽
+            link.dashedPattern = dashedPattern; // 虚线
+            link.bundleOffset = 60; // 折线拐角处的长度
+            link.bundleGap = 20; // 线条之间的间隔
+            link.textOffsetY = 3; // 文本偏移量（向下3个像素）
+            link.strokeColor = '204,204,204';
+            link.addEventListener('mouseup', function (event) {
+                $(".contextmenu").hide();
+                currentLink = this;
+                linkClickHandler(event);
+            });
+            scene.add(link);
+            return link;
+        }
+        /*场景鼠标操作*/
+        var beginNode = null;
+        var lineNodeA = new JTopo.Node("lineA");
+        lineNodeA.setSize(1, 1);
+        var lineNodeZ = new JTopo.Node("lineZ");
+        lineNodeZ.setSize(1, 1);
+        var lineLink = new JTopo.Link(lineNodeA, lineNodeZ);
+        lineLink.lineWidth = 1;
+        lineLink.strokeColor = "218,218,218";
+
+        scene.mouseup(function (e) {
+            if (e.target == null) {
+                currentNode = null;
+                currentLink = null;
+                if (sceneDraged) {
+                    saveSceneLocation();
+                }
+                var nodeMenu = $("#nodemenu");
+                var display = nodeMenu.css("display");
+                if (display == "block") {
+                    nodeMenu.hide();
+                    return;
+                }
+            }
+            if (e.button == 2) {
+                beginNode = null;
+                scene.remove(lineLink);
+                return;
+            }
+            if (e.button == 0) {
+                var img = $(".vetical-toolbar .selected").children("img");
+                var type = img.attr("alt");
+                console.log("场景左键弹起");
+                if (type == "cursor") {
+
+                }
+                else if (type == "link") {
+                    //点到节点
+                    if (e.target && e.target instanceof JTopo.Node) {
+                        if (beginNode == null) {    //开始节点
+                            beginNode = e.target;
+                            scene.add(lineLink);
+                            lineNodeA.setLocation(e.x, e.y);
+                            lineNodeZ.setLocation(e.x, e.y);
+                        }
+                        else if (beginNode != e.target) { //其他节点
+                            var endNode = e.target;
+                            if (isExistLink(beginNode, endNode)) {
+                                beginNode = null;
+                                scene.remove(lineLink);
+                                return;
+                            }
+                            ajaxAddLink(beginNode, endNode);
+                        }
+                        else {
+                            beginNode = null;
+                            scene.remove(lineLink);
+                        }
+                    }
+                    else {
+                        beginNode = null;
+                        scene.remove(lineLink);
+                    }
+                }
+                else if (type == "network") {
+                    if (e.target != null)
+                        return;
+                    $.post("@Url.Action("Create", "Device")",
+                        {
+                            SID : $("#SubnetId").val(),
+                            DName: getNewNodeName(),
+                            DAddress: "",
+                            DPort: 4001,
+                            DIcon: "device104.png",
+                            CoordinateX: e.x,
+                            CoordinateY: e.y
+                        },
+                        function (data) {
+                            childCallbackEx(data);
+                        }, "json");
+                }
+            }
+        });
+        scene.mousemove(function (e) {
+            lineNodeZ.setLocation(e.x, e.y);
+        });
+        scene.dbclick(function (event) {
+            var target = event.target;
+            if (target == null) return;
+            if (target.elementType == "node") {
+                console.log("双击节点");
+                var url = getHostPath() + "/Device/Index/" + target.xData;
+                parent.glsun.tab.add(target.text, url);
+            }
+            else if (target.elementType == "link") {
+                console.log("双击连线");
+            }
+        })
+        scene.mousedrag(function () {
+            if (!coordChange2) {
+                console.log("scene drag");
+                console.log("x:" + scene.translateX + ",y:" + scene.translateY);
+                sceneDraged = true;
+            }
+        });
+        //场景中的两个节点是否存在连线
+        function isExistLink(a, b) {
+            var links = scene.childs.filter(function (e) {
+                return e.elementType == "link";
+            });
+            links = links.filter(function (e) {
+                return (e.nodeA.xData == a.xData && e.nodeZ.xData == b.xData) ||
+                        (e.nodeA.xData == b.xData && e.nodeZ.xData == a.xData);
+            });
+            if (links.length > 0)
+                return true;
+            return false;
+        }
+        //获取选择节点
+        function getSelectedNodes() {
+            var nodes = scene.childs.filter(function (e) {
+                return e.elementType == "node";
+            });
+            nodes = nodes.filter(function (e) {
+                return e.selected;
+            });
+            return nodes;
+        }
+        //通过数据ID获取节点
+        function getNodeByDataId(id) {
+            var nodes = scene.childs.filter(function (e) {
+                return e.elementType == "node";
+            });
+            nodes = nodes.filter(function (e) {
+                return e.xData == id;
+            });
+            if (nodes.length == 1)
+                return nodes[0];
+            return null;
+        }
+        //生成新子网名称
+        function getNewNodeName() {
+            var prefix = "新设备";
+            var nodes = scene.childs.filter(function (e) {
+                return e.elementType == "node";
+            });
+            nodes = nodes.filter(function (e) {
+                return e.text.indexOf(prefix) >= 0;
+            });
+            if (nodes.length == 0)
+                return prefix + 1;
+            else {
+                nodes = nodes.sort(function (a, b) {
+                    var an = +a.text.substring(a.text.indexOf(prefix) + 3);
+                    var bn = +a.text.substring(a.text.indexOf(prefix) + 3);
+                    return an > bn;
+                })
+                var last = nodes[nodes.length - 1];
+                var num = +last.text.substring(last.text.indexOf(prefix) + 3);
+                num += 1;
+                return prefix + num;
+            }
+        }
+        //节点增删
+        //连线增删
+        function ajaxAddLink(beginNode, endNode) {
+            $.ajax("@Url.Action("Add", "DeviceLine")", {
+                type: "POST",
+                data: {
+                    NodeIDA: beginNode.xData,
+                    NodeIDZ: endNode.xData
+                },
+                dataType: "json",
+                success: function (data, textStatus, jqXHR) {
+                    if (data.Code == "") {
+                        newLink(beginNode, endNode, data.Data.ID);
+                        beginNode = null;
+                        scene.remove(lineLink);
+                    }
+                }
+            });
+        }
+        //保存场景坐标
+        function saveSceneLocation() {
+            $.post("@Url.Action("SaveSceneLocation", "Topology")",
+                        {
+                            ID: sceneloc.ID,
+                            CoordinateX: Math.round(scene.translateX),
+                            CoordinateY:  Math.round(scene.translateY)
+                        },
+                        function (data) {
+
+                        }, "json");
+            sceneDraged = false;
+        }
+        /* 右键菜单处理 */
+        $(".contextmenu a").click(function (e) {
+            var text = $(this).text();
+            if (text == "编辑") {
+                console.log("编辑该节点");
+                $("#btnEdit").click();
+            }
+            else if (text == "删除") {
+                $("#btnDelete").click();
+            }
+            else if (text == "重命名") {
+                nodeEidt.css({
+                    left: getX(e) - 40,
+                    top: getY(e) - 80
+                }).show().val(currentNode.text).focus().select();
+                nodeEidt[0].oldVal = currentNode.text;
+                currentNode.text = "";
+                nodeEidt[0].editNode = currentNode;
+            }
+            else if (text == "删除连线") {
+                confirmDialog.init(null, function () {
+                    $.ajax("@Url.Action("Delete", "DeviceLine")", {
+                        type: "POST",
+                        data: {
+                            id: currentLink.xData
+                        },
+                        dataType: "json",
+                        success: function (data, textStatus, jqXHR) {
+                            if (data.Code == "") {
+                                scene.remove(currentLink);
+                                currentLink = null;
+                            }
+                        }
+                    });
+                    });
+                confirmDialog.confirm("确认操作", "真的要删除了吗？该操作无法撤销！");
+            }
+            $(".contextmenu").hide();
+        });
+        /*节点文本可编辑*/
+        var nodeEidt = $("#txtNodeEdit");
+
+        nodeEidt.blur(function () {
+            var t = $(this);
+            var text = t.val();
+            var node = t[0].editNode;
+            if (text == "" || text == t[0].oldVal) {
+                node.text = t[0].oldVal;
+                t.hide();
+                return;
+            }
+
+            $.post("@Url.Action("Rename", "Device")",
+                        {
+                            id: node.xData,
+                            name: text
+                        },
+                        function (data) {
+                            childCallbackEx(data);
+                        }, "json");
+            t.hide();
+        });
+
+        //界面按钮操作
+        $("#edit-menu").children("button").unbind("click");
+        registerButtonClick("btnAdd", "新增设备", "@Url.Action("Create", "Device")");
+        registerButtonClick("btnEdit", "编辑设备", "@Url.Action("Edit", "Device")");
+        registerButtonClick("btnView", "查看设备", "@Url.Action("Details", "Device")");
+        //删除
+        $("#btnDelete").click(function () {
+            if (!currentNode) {
+                infoDialog.message("提示", "请选中一个设备操作！");
+                return;
+            }
+            confirmDialog.init(null, function () {
+                $.post("@Url.Action("Delete", "Device")/" + currentNode.xData, function (data, status) {
+                    if (data && data.Code == "") {
+                        scene.remove(currentNode);
+                        currentNode = null;
+                        notificationNodeChanged();
+                    }
+                });
+            });
+            confirmDialog.confirm("确认操作", "真的要删除了吗？该操作无法撤销！");
+        });
+
+        var runPrefixMethod = function (element, method) {
+            var usablePrefixMethod;
+            ["webkit", "moz", "ms", "o", ""].forEach(function (prefix) {
+                if (usablePrefixMethod) return;
+                if (prefix === "") {
+                    // 无前缀，方法首字母小写
+                    method = method.slice(0, 1).toLowerCase() + method.slice(1);
+                }
+                var typePrefixMethod = typeof element[prefix + method];
+                if (typePrefixMethod + "" !== "undefined") {
+                    if (typePrefixMethod === "function") {
+                        usablePrefixMethod = element[prefix + method]();
+                    } else {
+                        usablePrefixMethod = element[prefix + method];
+                    }
+                }
+            }
+        );
+            return usablePrefixMethod;
+        };
+        $('#centerButton').click(function () {
+            stage.centerAndZoom(); //缩放并居中显示
+            saveSceneLocation();
+        });
+        $('#fullScreenButton').click(function () {
+            runPrefixMethod(stage.canvas, "RequestFullScreen")
+        });
+        $('#zoomOutButton').click(function () {
+            stage.zoomOut();
+        });
+        $('#zoomInButton').click(function () {
+            stage.zoomIn();
+        });
+        $('#zoomCheckbox').click(function () {
+            if ($('#zoomCheckbox').is(':checked')) {
+                stage.wheelZoom = 1.2; // 设置鼠标缩放比例
+            } else {
+                stage.wheelZoom = null; // 取消鼠标缩放比例
+            }
+        });
+        //全局方法
+        window.newNode = newNode;
+        window.getNodeByDataId = getNodeByDataId;
+        window.saveSceneLocation = saveSceneLocation;
+        //加载已存在节点
+        if (nodes) {
+            for (var i = 0; i < nodes.length; ++i) {
+                var node = nodes[i];
+                newNode(node.X, node.Y, node.Icon, node.Name, node.ID);
+            }
+        }
+        if (lines) {
+            //加载线
+            for (i = 0; i < lines.length; ++i) {
+                var line = lines[i];
+                var nodeA = getNodeByDataId(line.NodeIDA),
+                    nodeZ = getNodeByDataId(line.NodeIDZ);
+                if (nodeA && nodeZ) {
+                    newLink(nodeA, nodeZ, line.ID);
+                }
+            }
+        }
+
+        $("#btnTest").click(function () {
+            //if (currentNode != null) {
+            //    currentNode.backgroudColor = "#ffff00";
+            //}
+            //newNode(Math.random() * 500, Math.random() * 500, "", "Hello", 2);
+            console.log(scene.toJson());
+        });
+    });
+    function getX(e) {
+        e = e || window.event;
+        return e.pageX || e.clientX + document.body.scroolLeft;
+    }
+
+    function getY(e) {
+        e = e || window.event;
+        return e.pageY || e.clientY + document.boyd.scrollTop;
+    }
+    //按钮点击弹窗
+    function registerButtonClick(btnId, title, action) {
+        var submit = null;
+        if (btnId == "btnView") {
+            submit = function () {
+                $("#mainModal").modal("hide");
+            }
+        } else {
+            submit = function () {
+                //调用Frame的方法
+                formFrame.window.submitForm();
+            }
+        }
+        $("#" + btnId).click(function () {
+            if (btnId != "btnAdd" && !currentNode) {
+                infoDialog.message("提示", "请选中一个设备操作！");
+                return;
+            }
+            mainDialog.init(title, function () {
+                var id = "";
+                if (currentNode) {
+                    id = currentNode.xData;
+                }
+                if (btnId == "btnAdd") {
+                    id = $("#SubnetId").val();
+                }
+                var frame = document.getElementById("formFrame");
+                frame.src = getHostPath() + '/' + action + '?id=' + id;
+            }, submit);
+            mainDialog.modal();
+        });
+    }
+    //主机地址
+    function getHostPath() {
+        //获取当前网址，如： http://localhost:8080/Tmall/index.jsp
+        var curWwwPath = window.document.location.href;
+
+        //获取主机地址之后的目录
+        var pathName = window.document.location.pathname;
+        var pos = curWwwPath.indexOf(pathName);
+
+        //获取主机地址，如： http://localhost:8080
+        var localhostPath = curWwwPath.substring(0, pos);
+        return localhostPath;
+    }
+    //子页面数据特殊处理
+    function childCallbackEx(data) {
+        if (data && data.Code == "") {
+            var notice = false;
+            var node = data.Data;
+            var oldNode = getNodeByDataId(node.ID);
+            if (oldNode) {
+                //oldNode.setImage('../image/topo/' + node.SIcon, false);
+                if (oldNode.text != node.Name) {
+                    notice = true;
+                    oldNode.text = node.Name;
+                }
+                var newImgSrc = '../../image/topo/' + node.Icon;
+                if (oldNode.imgSrc != newImgSrc)
+                    oldNode.imgSrc = newImgSrc;
+                oldNode.setLocation(node.X, node.Y);
+            } else {
+                newNode(node.X, node.Y, node.Icon, node.Name, node.ID);
+                notice = true;
+            }
+            if (notice) {
+                notificationNodeChanged();
+            }
+        }
+    }
+    function notificationNodeChanged() {
+        parent.window.menuChanged();
+    }
+    </script>
+}

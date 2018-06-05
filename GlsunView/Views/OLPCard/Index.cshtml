@@ -1,0 +1,460 @@
+﻿@model GlsunView.Models.OLPInfo
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_CardInfo.cshtml";
+}
+
+@section AddToHead{
+    <style>
+        html,body{
+            height: 100%;
+            font-family: Arial, Microsoft YaHei, SimSun , Tahoma, Helvetica, "\5b8b\4f53", sans-serif;
+        }
+        .device-info{
+            width: 100%;
+        }
+        .device-info td, .table-config td{
+            padding: 2px 10px;
+        }
+        .device-info tr>td.name{
+            width: 200px;
+        } 
+        .device-info tr>td.value{
+            text-align: center;
+        } 
+        .table-config tr>td.name{
+            width: 250px;
+        }
+        .table-config tr>td.value{
+            width: 150px;
+        }
+        .panel {
+            margin-bottom: 0px;
+        }
+        .panel-body {
+            padding: 0px;
+        }
+        .log-frame{
+            height:100%;
+            width:100%;
+            border:0;
+        }
+        #tab_3,#tab_4{
+            position:absolute;
+            left:0;
+            top:35px;
+            right:0;
+            bottom:5px;
+        }
+    </style>    
+}
+
+<div class="tab">
+    <ul class="tab-title clearfix">
+        <li class="active"><a href="#tab_1">基本信息</a></li>
+        <li><a href="#tab_2">配置管理</a></li>
+        <li><a href="#tab_3">告警信息</a></li>
+        <li><a href="#tab_4">日志</a></li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane active" id="tab_1">
+            <table class="table-striped device-info">
+                <tbody>
+                    <tr id="Work_Mode">
+                        <td class="name">工作模式</td>
+                        <td class="value">
+                            @switch (Model.Work_Mode)
+                            {
+                                case 0:
+                                    @:手动
+                                    break;
+                                case 1:
+                                    @:自动
+                                    break;
+                                default:break;
+                            }
+                        </td>
+                    </tr>
+                    <tr id="Current_Channel">
+                        <td class="name">当前通道</td>
+                        <td class="value">
+                            @switch (Model.Current_Channel)
+                            {
+                                case 1:
+                                    @:主路
+                                    break;
+                                case 2:
+                                    @:备路
+                                    break;
+                                default: break;
+                            }
+                        </td>
+                    </tr>
+                    <tr id="R1_Input_Power">
+                        <td class="name">R1光功率</td>
+                        <td class="value">@Model.R1_Input_Power dBm</td>
+                    </tr>
+                    <tr id="R2_Input_Power">
+                        <td class="name">R2光功率</td>
+                        <td class="value">@Model.R2_Input_Power dBm</td>
+                    </tr>
+                    <tr id="TX_Input_Power">
+                        <td class="name">TX光功率</td>
+                        <td class="value">@Model.TX_Input_Power dBm</td>
+                    </tr>
+                    <tr id="R1_State">
+                        <td class="name">R1状态</td>
+                        <td class="value">
+                            @switch (Model.R1_State)
+                            {
+                                case 0:
+                                    @:告警
+                                    break;
+                                case 1:
+                                    @:正常
+                                    break;
+                                case 2:
+                                    @:警告
+                                    break;
+                                default: break;
+                            }
+                        </td>
+                    </tr>
+                    <tr id="R2_State">
+                        <td class="name">R2状态</td>
+                        <td class="value">
+                            @switch (Model.R2_State)
+                            {
+                                case 0:
+                                    @:告警
+                                    break;
+                                case 1:
+                                    @:正常
+                                    break;
+                                case 2:
+                                    @:警告
+                                    break;
+                                default: break;
+                            }
+                        </td>
+                    </tr>
+                    <tr id="TX_State">
+                        <td class="name">TX状态</td>
+                        <td class="value">
+                            @switch (Model.TX_State)
+                            {
+                                case 0:
+                                    @:告警
+                                    break;
+                                case 1:
+                                    @:正常
+                                    break;
+                                case 2:
+                                    @:警告
+                                    break;
+                                default: break;
+                            }
+                        </td>
+                    </tr>
+                    <tr id="Software_Version">
+                        <td class="name">软件版本号</td>
+                        <td class="value">@Model.Software_Version</td>
+                    </tr>
+                    <tr id="hardware_Version">
+                        <td class="name">硬件版本号</td>
+                        <td class="value">@Model.hardware_Version</td>
+                    </tr>
+                    <tr id="Serial_Number">
+                        <td class="name">生产序列号</td>
+                        <td class="value">@Model.Serial_Number</td>
+                    </tr>
+                    <tr id="Manufacture_Date">
+                        <td class="name">生产日期</td>
+                        <td class="value">@Model.Manufacture_Date</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="tab-pane" id="tab_2">
+            <div class="panel panel-info">
+                <div class="panel-heading">OLP基本配置</div>
+                <div class="panel-body">
+                    <table class="table-config">
+                         <tbody>
+                                <tr>
+                                    <td class="name">R1波长[nm]</td>
+                                    <td class="value">
+                                        <select name="R1_Wave" class="form-control input-sm">
+                                            <option value="0" @(Model.R1_Wave == 0 ? "selected" : "")>1310</option>
+                                            <option value="1" @(Model.R1_Wave == 1 ? "selected" : "")>1550</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-sm btn-default">SET</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="name">R2波长[nm]</td>
+                                    <td class="value">
+                                        <select name="R2_Wave" class="form-control input-sm">
+                                            <option value="0" @(Model.R2_Wave == 0 ? "selected" : "")>1310</option>
+                                            <option value="1" @(Model.R2_Wave == 1 ? "selected" : "")>1550</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-sm btn-default">SET</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="name">Tx波长[nm]</td>
+                                    <td class="value">
+                                        <select name="Tx_Wave" class="form-control input-sm">
+                                            <option value="0" @(Model.Tx_Wave == 0 ? "selected" : "")>1310</option>
+                                            <option value="1" @(Model.Tx_Wave == 1 ? "selected" : "")>1550</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-sm btn-default">SET</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="name">R1切换门限(-50~+23)</td>
+                                    <td class="value">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control input-sm" name="R1_Switching_Power"
+                                                   value="@Model.R1_Switching_Power">
+                                            <div class="input-group-addon">dBm</div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-default btn-sm">SET</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="name">R2切换门限(-50~+23)</td>
+                                    <td class="value">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control input-sm" name="R2_Switching_Power"
+                                                   value="@Model.R2_Switching_Power">
+                                            <div class="input-group-addon">dBm</div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-default btn-sm">SET</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="name">R1告警门限(-50~+23)</td>
+                                    <td class="value">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control input-sm" name="R1_Alarm_Power"
+                                                   value="@Model.R1_Alarm_Power">
+                                            <div class="input-group-addon">dBm</div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-default btn-sm">SET</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="name">R2告警门限(-50~+23)</td>
+                                    <td class="value">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control input-sm" name="R2_Alarm_Power"
+                                                   value="@Model.R2_Alarm_Power">
+                                            <div class="input-group-addon">dBm</div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-default btn-sm">SET</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="name">TX告警门限(-50~+23)</td>
+                                    <td class="value">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control input-sm" name="TX_Alarm_Power"
+                                                   value="@Model.TX_Alarm_Power">
+                                            <div class="input-group-addon">dBm</div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-default btn-sm">SET</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="name">工作模式</td>
+                                    <td class="value">
+                                        <select name="Work_Mode" class="form-control input-sm">
+                                            <option value="0" @(Model.Work_Mode == 0 ? "selected" : "")>手动</option>
+                                            <option value="1" @(Model.Work_Mode == 1 ? "selected" : "")>自动</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-sm btn-default">SET</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="panel panel-info">
+                <div class="panel-heading">模式相关配置(自动模式)</div>
+                <div class="panel-body">
+                    <table class="table-config">
+                        <tbody>
+                                <tr>
+                                    <td class="name">回切模式</td>
+                                    <td class="value">
+                                        <select name="Back_Mode" class="form-control input-sm">
+                                            <option value="0" @(Model.Back_Mode == 0 ? "selected" : "")>自动不回切</option>
+                                            <option value="1" @(Model.Back_Mode == 1 ? "selected" : "")>自动回切</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-sm btn-default">SET</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="name">自动回切延时(0~999分)</td>
+                                    <td class="value">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control input-sm" name="Auto_Back_Delay"
+                                                   value="@Model.Auto_Back_Delay">
+                                            <div class="input-group-addon">分</div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-default btn-sm">SET</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="name">切换延时 (0~999秒)</td>
+                                    <td class="value">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control input-sm" name="Switch_Delay"
+                                                   value="@Model.Switch_Delay">
+                                            <div class="input-group-addon">秒</div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-default btn-sm">SET</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                     </table>
+                </div>
+            </div>
+            <div class="panel panel-info">
+                <div class="panel-heading">模式相关配置(手动模式)</div>
+                <div class="panel-body">
+                    <table class="table-config">
+                        <tbody>
+                                <tr>
+                                    <td class="name">手动通道配置</td>
+                                    <td class="value">
+                                        <select name="Manual_Switch_Channel" class="form-control input-sm">
+                                            <option value="1" @(Model.Manual_Switch_Channel == 1 ? "selected" : "")>主路</option>
+                                            <option value="2" @(Model.Manual_Switch_Channel == 2 ? "selected" : "")>备路</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-sm btn-default">SET</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="name">手动返回自动延时</td>
+                                    <td class="value">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control input-sm" name="Manual_Back_to_Auto_Delay"
+                                                   value="@Model.Manual_Back_to_Auto_Delay">
+                                            <div class="input-group-addon">分</div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-default btn-sm">SET</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="name">工作模式关机保存</td>
+                                    <td class="value">
+                                        <select name="Power_Off_Keep_Work_Mode" class="form-control input-sm">
+                                            <option value="0" @(Model.Power_Off_Keep_Work_Mode == 0 ? "selected" : "")>掉电不保存</option>
+                                            <option value="1" @(Model.Power_Off_Keep_Work_Mode == 1 ? "selected" : "")>掉电保存</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-sm btn-default">SET</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane" id="tab_3">
+            <iframe src="@Url.Action("CardAlarm","CurrentAlram",new { did = ViewBag.Did, slot = ((string)ViewBag.EndPoint).Split(':')[2]})"
+                    class="log-frame"></iframe>
+        </div>
+        <div class="tab-pane" id="tab_4">
+            <iframe src="@Url.Action("CardLog","DeviceLog",new { did = ViewBag.Did, slot = ((string)ViewBag.EndPoint).Split(':')[2]})"
+                    class="log-frame"></iframe>
+        </div>
+    </div>
+</div>
+
+@section AddToEnd{
+    <script>
+        $(function () {
+            $("#tab_2 button").click(function () {
+                setParam.call(this, "@Url.Action("SetParam", "OLPCard")", "@ViewBag.EndPoint", @ViewBag.Did);
+            });
+        });
+        @*var endPoint = "@ViewBag.EndPoint";
+        function setParam() {
+            var td = $(this).parent("td").prev();
+            var c = traverseChild(td[0]);
+            //console.log(c.name + "\t" + c.value);
+            $.post("@Url.Action("SetParam", "OLPCard")",
+                {
+                    endpoint: endPoint,
+                    name: c.name,
+                    value: c.value
+                },
+                function (data, status, jqXHR) {
+                    if (data) {
+                        var divAlert = $("#alert");
+                        if (data.Code == "") {
+                            divAlert.removeClass("alert-danger").addClass("alert-success");
+                        }
+                        else {
+                            divAlert.removeClass("alert-success").addClass("alert-danger");
+                        }
+                        divAlert.text(data.Data);
+                        divAlert.show();
+                        setInterval(function () {
+                            divAlert.fadeOut();
+                        }, 3000);
+                    }
+                }, "json");
+        }
+        //遍历子节点，不通用
+        function traverseChild(elem) {
+            //只遍历元素节点
+            if (elem.nodeType == 1) {
+                //没有子元素跳出
+                if (elem.children.length == 0) return null;
+                for (var i = 0; i < elem.children.length; ++i) {
+                    var child = elem.children[i];
+                    if (child.nodeName == "SELECT" || child.nodeName == "INPUT") {
+                        return child;
+                    }
+                    if (child.children.length != 0) {
+                        return traverseChild(child);
+                    }
+                }
+            }
+            else return null;
+        }*@
+    </script>
+}

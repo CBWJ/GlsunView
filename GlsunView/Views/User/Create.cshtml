@@ -1,0 +1,145 @@
+﻿@using GlsunView.Domain
+@model GlsunView.Domain.User
+
+@{
+    Layout = "~/Views/Shared/_EditLayout.cshtml";
+    string action = (string)@ViewBag.Action;
+}
+
+
+            @using (Html.BeginForm(action, "User", FormMethod.Post, new { id = "dataForm", @class = "form-horizontal" }))
+            {
+                @Html.HiddenFor(m => m.ID)
+                <div class="form-group">
+                    <label class="col-xs-2 control-label">登录名</label>
+                    <div class="col-xs-4">
+                        @Html.TextBoxFor(m => m.ULoginName, new { @class = "form-control" })
+                    </div>
+                    <label class="col-xs-2 control-label">登录密码</label>
+                    <div class="col-xs-4">
+                        @Html.TextBoxFor(m => m.UPassword, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-2 control-label">用户名</label>
+                    <div class="col-xs-4">
+                        @Html.TextBoxFor(m => m.UName, new { @class = "form-control" })
+                    </div>
+                    <label class="col-xs-2 control-label">用户类别</label>
+                    <div class="col-xs-4">
+                        <select class="form-control" name="UUserType" @*disabled="disabled"*@>
+                            <option value="0" @(Model.UUserType == 0 ? "selected" : "")>系统</option>
+                            <option value="1" @(Model.UUserType == 1 ? "selected" : "")>普通</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-2 control-label">到期时间</label>
+                    <div class="col-xs-4">
+                        @Html.TextBoxFor(m => m.UExpireTime, new { @class = "form-control" })
+                    </div>
+                    <label class="col-xs-2 control-label">是否锁定</label>
+                    <div class="col-xs-4">
+                        <select class="form-control" name="UIsLock">
+                            <option value="False" @(!Model.UIsLock.HasValue || (Model.UIsLock.HasValue && Model.UIsLock.Value == false) ? "selected" : "")>否</option>
+                            <option value="True" @(Model.UIsLock.HasValue && Model.UIsLock.Value == true ? "selected" : "")>是</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-2 control-label">角色分配</label>
+                    <div class="col-xs-10">
+                        <select id="roleList" class="form-control select2 select2-hidden-accessible" multiple="" data-placeholder="选择一个角色" style="width: 100%;" tabindex="-1" aria-hidden="true">
+                            @foreach (var r in (IEnumerable<Role>)ViewBag.RoleList)
+                            {
+                                <option value="@r.ID">@r.RName</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <ul id="selectedRoleList" style="display:none"></ul>
+            }
+            <script>
+                $(function () {
+                    $("#UExpireTime").on("click", function () {
+                        WdatePicker({ el: this, dateFmt: 'yyyy-MM-dd HH:mm:ss' })
+                    });
+
+                    //注册表单提交方式为ajaxForm
+                    $("#dataForm").ajaxForm({
+                        success: onSuccess
+                    });
+                    //开启验证
+                    $("#dataForm").validate({
+                        rules: {
+                            ULoginName: {
+                                required: true,
+                                maxlength: 20
+                            },
+                            UPassword: {
+                                required: true,
+                                maxlength: 20,
+                                password: true
+                            },
+                            UName: {
+                                required: true,
+                                maxlength: 20
+                            }
+                        }
+                    });
+                    $("#roleList").select2();
+                    //$("#roleList").val([1,4]).trigger("change")
+                });
+                //提交表单
+                function submitForm() {
+                    if (!$("#dataForm").valid()) {
+                        return;
+                    };
+                    //提取选中角色ID
+                    var selLI = $(".select2-selection__rendered").children(".select2-selection__choice");
+                    var roleList = $("#roleList").children("option");
+                    var selectedRoleList = $("#selectedRoleList");
+                    for (var i = 0; i < selLI.length; ++i) {
+                        var title = selLI[i].title;
+                        for (var j = 0; j < roleList.length; ++j) {
+                            var option = roleList[j];
+                            if (option.innerText == title) {
+                                selectedRoleList.append('<li><input type="text" name="SelectedRoleId" value="' + option.value + '"/></li>')
+                            }
+                        }
+                    }
+                    $('#dataForm').submit();
+                }
+                //  提交后
+                function onSuccess(data, statusText, xhr) {
+                    if (data) {
+                        parent.window.childCallback(data);
+                    }
+                }
+            </script>
+            @{
+                if (action == "Details")
+                {
+                    <script>
+                        (function ($) {
+                            if (!$) return;
+                            $(".form-group div input").attr("disabled", "disabled");
+                            $(".form-group div select").attr("disabled", "disabled");
+                        }(jQuery));
+                    </script>
+                }
+                if(action != "Add")
+                {
+                    <script>
+                        $(function () {
+                            //选中已有角色
+                            var roleData = @Html.Raw(ViewBag.UserRole);
+                            var arrSelected = new Array();
+                            for(var i = 0; i < roleData.length; ++i){
+                                arrSelected.push(roleData[i].RID);
+                            }
+                            $("#roleList").val(arrSelected).trigger("change")
+                        });
+                    </script>
+                }
+            }

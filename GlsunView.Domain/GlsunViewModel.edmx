@@ -1,0 +1,1780 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="GlsunViewModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="AlarmInformation">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="DID" Type="int" />
+          <Property Name="DName" Type="nvarchar" MaxLength="50" />
+          <Property Name="DAddress" Type="varchar" MaxLength="20" />
+          <Property Name="AISlot" Type="smallint" />
+          <Property Name="AIType" Type="varchar" MaxLength="20" />
+          <Property Name="AILevel" Type="varchar" MaxLength="20" />
+          <Property Name="AIContent" Type="nvarchar" MaxLength="255" />
+          <Property Name="AITime" Type="datetime" />
+          <Property Name="AIConfirm" Type="bit" />
+          <Property Name="AIConfirmTime" Type="datetime" />
+          <Property Name="UID" Type="int" />
+          <Property Name="ULoginName" Type="nvarchar" MaxLength="20" />
+          <Property Name="UName" Type="nvarchar" MaxLength="20" />
+        </EntityType>
+        <EntityType Name="Authority">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="AName" Type="nvarchar" MaxLength="20" />
+          <Property Name="ACode" Type="varchar" MaxLength="20" />
+          <Property Name="AType" Type="varchar" MaxLength="20" />
+          <Property Name="AIcon" Type="varchar" MaxLength="50" />
+          <Property Name="AIconType" Type="varchar" MaxLength="10" />
+          <Property Name="AClassName" Type="varchar" MaxLength="255" />
+          <Property Name="AShowNumber" Type="smallint" />
+          <Property Name="AIsCommon" Type="bit" />
+          <Property Name="IsEnabled" Type="bit" />
+          <Property Name="CreatorID" Type="int" />
+          <Property Name="CreationTime" Type="datetime" />
+          <Property Name="EditorID" Type="int" />
+          <Property Name="EditingTime" Type="datetime" />
+        </EntityType>
+        <EntityType Name="Device">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SID" Type="int" />
+          <Property Name="DName" Type="nvarchar" MaxLength="50" />
+          <Property Name="DAddress" Type="varchar" MaxLength="20" />
+          <Property Name="DPort" Type="int" />
+          <Property Name="DIcon" Type="varchar" MaxLength="20" />
+          <Property Name="DType" Type="varchar" MaxLength="30" />
+          <Property Name="DProtocal" Type="varchar" MaxLength="30" />
+          <Property Name="CoordinateX" Type="int" />
+          <Property Name="CoordinateY" Type="int" />
+          <Property Name="Remark" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatorID" Type="int" />
+          <Property Name="CreationTime" Type="datetime" />
+          <Property Name="EditorID" Type="int" />
+          <Property Name="EditingTime" Type="datetime" />
+        </EntityType>
+        <EntityType Name="DeviceLine">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="DLName" Type="nvarchar" MaxLength="30" />
+          <Property Name="DIDA" Type="int" />
+          <Property Name="DIDB" Type="int" />
+          <Property Name="CreatorID" Type="int" />
+          <Property Name="CreationTime" Type="datetime" />
+          <Property Name="EditorID" Type="int" />
+          <Property Name="EditingTime" Type="datetime" />
+        </EntityType>
+        <EntityType Name="DeviceOperationLog">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UID" Type="int" />
+          <Property Name="ULoginName" Type="nvarchar" MaxLength="20" />
+          <Property Name="UName" Type="nvarchar" MaxLength="20" />
+          <Property Name="DOLOperationType" Type="nvarchar" MaxLength="10" />
+          <Property Name="DOLOperationDetials" Type="nvarchar" MaxLength="255" />
+          <Property Name="DOLOperationResult" Type="nvarchar" MaxLength="10" />
+          <Property Name="DOLOperationTime" Type="datetime" />
+          <Property Name="Remark" Type="nvarchar" MaxLength="50" />
+          <Property Name="SID" Type="int" />
+          <Property Name="SName" Type="nvarchar" MaxLength="50" />
+          <Property Name="SAddress" Type="nvarchar" MaxLength="20" />
+          <Property Name="DID" Type="int" />
+          <Property Name="DName" Type="nvarchar" MaxLength="50" />
+          <Property Name="DAddress" Type="nvarchar" MaxLength="20" />
+          <Property Name="DOLDeviceSlot" Type="smallint" />
+          <Property Name="DOLCardSN" Type="nvarchar" MaxLength="50" />
+          <Property Name="DOLCardType" Type="nvarchar" MaxLength="10" />
+        </EntityType>
+        <EntityType Name="Module">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MName" Type="nvarchar" MaxLength="20" />
+          <Property Name="MUrl" Type="varchar" MaxLength="255" />
+          <Property Name="MType" Type="varchar" MaxLength="10" />
+          <Property Name="MIcon" Type="varchar" MaxLength="50" />
+          <Property Name="MIconType" Type="varchar" MaxLength="10" />
+          <Property Name="MLevel" Type="smallint" />
+          <Property Name="MParentID" Type="int" />
+          <Property Name="MSortingNumber" Type="smallint" />
+          <Property Name="IsEnabled" Type="bit" />
+          <Property Name="CreatorID" Type="int" />
+          <Property Name="CreationTime" Type="datetime" />
+          <Property Name="EditorID" Type="int" />
+          <Property Name="EditingTime" Type="datetime" />
+        </EntityType>
+        <EntityType Name="ModuleAuthority">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MID" Type="int" />
+          <Property Name="AID" Type="int" />
+          <Property Name="CreatorID" Type="int" />
+          <Property Name="CreationTime" Type="datetime" />
+          <Property Name="EditorID" Type="int" />
+          <Property Name="EditingTime" Type="datetime" />
+        </EntityType>
+        <EntityType Name="Role">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RName" Type="nvarchar" MaxLength="20" />
+          <Property Name="RCode" Type="varchar" MaxLength="20" />
+          <Property Name="CreatorID" Type="int" />
+          <Property Name="CreationTime" Type="datetime" />
+          <Property Name="EditorID" Type="int" />
+          <Property Name="EditingTime" Type="datetime" />
+        </EntityType>
+        <EntityType Name="RoleAuthority">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RID" Type="int" />
+          <Property Name="MAID" Type="int" />
+          <Property Name="IsEnabled" Type="bit" />
+          <Property Name="CreatorID" Type="int" />
+          <Property Name="CreationTime" Type="datetime" />
+          <Property Name="EditorID" Type="int" />
+          <Property Name="EditingTime" Type="datetime" />
+        </EntityType>
+        <EntityType Name="SceneLocation">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CoordinateX" Type="int" />
+          <Property Name="CoordinateY" Type="int" />
+          <Property Name="SceneType" Type="varchar" MaxLength="20" />
+          <Property Name="UserID" Type="int" />
+        </EntityType>
+        <EntityType Name="Subnet">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SName" Type="nvarchar" MaxLength="50" />
+          <Property Name="SAddress" Type="varchar" MaxLength="20" />
+          <Property Name="SIcon" Type="varchar" MaxLength="20" />
+          <Property Name="CoordinateX" Type="int" />
+          <Property Name="CoordinateY" Type="int" />
+          <Property Name="Remark" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatorID" Type="int" />
+          <Property Name="CreationTime" Type="datetime" />
+          <Property Name="EditorID" Type="int" />
+          <Property Name="EditingTime" Type="datetime" />
+        </EntityType>
+        <EntityType Name="SubnetLine">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SLName" Type="nvarchar" MaxLength="30" />
+          <Property Name="SIDA" Type="int" />
+          <Property Name="SIDB" Type="int" />
+          <Property Name="CreatorID" Type="int" />
+          <Property Name="CreationTime" Type="datetime" />
+          <Property Name="EditorID" Type="int" />
+          <Property Name="EditingTime" Type="datetime" />
+        </EntityType>
+        <EntityType Name="TopologyOperationLog">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UID" Type="int" />
+          <Property Name="ULoginName" Type="nvarchar" MaxLength="20" />
+          <Property Name="UName" Type="nvarchar" MaxLength="20" />
+          <Property Name="TOLOperationType" Type="nvarchar" MaxLength="10" />
+          <Property Name="TOLOperationDetials" Type="nvarchar" MaxLength="255" />
+          <Property Name="TOLOperationResult" Type="nvarchar" MaxLength="10" />
+          <Property Name="TOLOperationTime" Type="datetime" />
+          <Property Name="Remark" Type="nvarchar" MaxLength="50" />
+          <Property Name="TOLObjectID" Type="int" />
+          <Property Name="TOLObjectName" Type="nvarchar" MaxLength="50" />
+          <Property Name="TOLObjectType" Type="nvarchar" MaxLength="10" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ULoginName" Type="nvarchar" MaxLength="20" />
+          <Property Name="UPassword" Type="varchar" MaxLength="20" />
+          <Property Name="UName" Type="nvarchar" MaxLength="20" />
+          <Property Name="UUserType" Type="smallint" />
+          <Property Name="UIsLock" Type="bit" />
+          <Property Name="UExpireTime" Type="datetime" />
+          <Property Name="CreatorID" Type="int" />
+          <Property Name="CreationTime" Type="datetime" />
+          <Property Name="EditorID" Type="int" />
+          <Property Name="EditingTime" Type="datetime" />
+        </EntityType>
+        <EntityType Name="UserLog">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ULOperatorID" Type="int" />
+          <Property Name="ULOperator" Type="nvarchar" MaxLength="20" />
+          <Property Name="ULOperationType" Type="nvarchar" MaxLength="10" />
+          <Property Name="ULOperationDetials" Type="nvarchar" MaxLength="255" />
+          <Property Name="ULOperationResult" Type="nvarchar" MaxLength="10" />
+          <Property Name="ULOperationTime" Type="datetime" />
+          <Property Name="UID" Type="int" />
+          <Property Name="ULoginName" Type="nvarchar" MaxLength="20" />
+          <Property Name="UName" Type="nvarchar" MaxLength="20" />
+          <Property Name="ULRemark" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="UserRole">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UID" Type="int" />
+          <Property Name="RID" Type="int" />
+          <Property Name="CreatorID" Type="int" />
+          <Property Name="CreationTime" Type="datetime" />
+          <Property Name="EditorID" Type="int" />
+          <Property Name="EditingTime" Type="datetime" />
+        </EntityType>
+        <!--生成过程中发现错误:
+警告 6002: 表/视图“GlsunView.dbo.v_Authority”未定义主键。已推断出该键，并将定义创建为只读的表/视图。-->
+        <EntityType Name="v_Authority">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="AName" Type="nvarchar" MaxLength="20" />
+          <Property Name="ACode" Type="varchar" MaxLength="20" />
+          <Property Name="AType" Type="varchar" MaxLength="20" />
+          <Property Name="AIcon" Type="varchar" MaxLength="20" />
+          <Property Name="AIconType" Type="varchar" MaxLength="10" />
+          <Property Name="AClassName" Type="varchar" MaxLength="255" />
+          <Property Name="AShowNumber" Type="smallint" />
+          <Property Name="AIsCommon" Type="bit" />
+          <Property Name="IsEnabled" Type="bit" />
+          <Property Name="CreatorID" Type="int" />
+          <Property Name="CreationTime" Type="datetime" />
+          <Property Name="EditorID" Type="int" />
+          <Property Name="EditingTime" Type="datetime" />
+          <Property Name="Creator" Type="nvarchar" MaxLength="20" />
+          <Property Name="Editor" Type="nvarchar" MaxLength="20" />
+        </EntityType>
+        <!--生成过程中发现错误:
+警告 6002: 表/视图“GlsunView.dbo.v_ModuleAuthority”未定义主键。已推断出该键，并将定义创建为只读的表/视图。-->
+        <EntityType Name="v_ModuleAuthority">
+          <Key>
+            <PropertyRef Name="MID" />
+          </Key>
+          <Property Name="ROW_ID" Type="bigint" />
+          <Property Name="MID" Type="int" Nullable="false" />
+          <Property Name="MName" Type="nvarchar" MaxLength="20" />
+          <Property Name="MAID" Type="int" />
+          <Property Name="AName" Type="nvarchar" MaxLength="20" />
+        </EntityType>
+        <!--生成过程中发现错误:
+警告 6002: 表/视图“GlsunView.dbo.v_ModuleTree”未定义主键。已推断出该键，并将定义创建为只读的表/视图。-->
+        <EntityType Name="v_ModuleTree">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="MName" Type="nvarchar" MaxLength="20" />
+          <Property Name="MUrl" Type="varchar" MaxLength="255" />
+          <Property Name="MType" Type="varchar" MaxLength="10" />
+          <Property Name="MIcon" Type="varchar" MaxLength="50" />
+          <Property Name="MIconType" Type="varchar" MaxLength="10" />
+          <Property Name="MLevel" Type="smallint" />
+          <Property Name="MParentID" Type="int" />
+          <Property Name="MSortingNumber" Type="smallint" />
+          <Property Name="IsEnabled" Type="bit" />
+          <Property Name="CreatorID" Type="int" />
+          <Property Name="CreationTime" Type="datetime" />
+          <Property Name="EditorID" Type="int" />
+          <Property Name="EditingTime" Type="datetime" />
+          <Property Name="Creator" Type="nvarchar" MaxLength="20" />
+          <Property Name="Editor" Type="nvarchar" MaxLength="20" />
+        </EntityType>
+        <!--生成过程中发现错误:
+警告 6002: 表/视图“GlsunView.dbo.v_ModuleUser”未定义主键。已推断出该键，并将定义创建为只读的表/视图。-->
+        <EntityType Name="v_ModuleUser">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="MName" Type="nvarchar" MaxLength="20" />
+          <Property Name="MUrl" Type="varchar" MaxLength="255" />
+          <Property Name="MType" Type="varchar" MaxLength="10" />
+          <Property Name="MIcon" Type="varchar" MaxLength="50" />
+          <Property Name="MIconType" Type="varchar" MaxLength="10" />
+          <Property Name="MLevel" Type="smallint" />
+          <Property Name="MParentID" Type="int" />
+          <Property Name="MSortingNumber" Type="smallint" />
+          <Property Name="IsEnabled" Type="bit" />
+          <Property Name="CreatorID" Type="int" />
+          <Property Name="CreationTime" Type="datetime" />
+          <Property Name="EditorID" Type="int" />
+          <Property Name="EditingTime" Type="datetime" />
+          <Property Name="Creator" Type="nvarchar" MaxLength="20" />
+          <Property Name="Editor" Type="nvarchar" MaxLength="20" />
+        </EntityType>
+        <!--生成过程中发现错误:
+警告 6002: 表/视图“GlsunView.dbo.v_Role”未定义主键。已推断出该键，并将定义创建为只读的表/视图。-->
+        <EntityType Name="v_Role">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="RName" Type="nvarchar" MaxLength="20" />
+          <Property Name="RCode" Type="varchar" MaxLength="20" />
+          <Property Name="CreatorID" Type="int" />
+          <Property Name="CreationTime" Type="datetime" />
+          <Property Name="EditorID" Type="int" />
+          <Property Name="EditingTime" Type="datetime" />
+          <Property Name="Creator" Type="nvarchar" MaxLength="20" />
+          <Property Name="Editor" Type="nvarchar" MaxLength="20" />
+        </EntityType>
+        <!--生成过程中发现错误:
+警告 6002: 表/视图“GlsunView.dbo.v_User”未定义主键。已推断出该键，并将定义创建为只读的表/视图。-->
+        <EntityType Name="v_User">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ROW_ID" Type="bigint" />
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="ULoginName" Type="nvarchar" MaxLength="20" />
+          <Property Name="UPassword" Type="varchar" MaxLength="20" />
+          <Property Name="UName" Type="nvarchar" MaxLength="20" />
+          <Property Name="UUserType" Type="smallint" />
+          <Property Name="UIsLock" Type="bit" />
+          <Property Name="UExpireTime" Type="datetime" />
+          <Property Name="CreatorID" Type="int" />
+          <Property Name="CreationTime" Type="datetime" />
+          <Property Name="EditorID" Type="int" />
+          <Property Name="EditingTime" Type="datetime" />
+          <Property Name="Creator" Type="nvarchar" MaxLength="20" />
+          <Property Name="Editor" Type="nvarchar" MaxLength="20" />
+          <Property Name="RoleNames" Type="nvarchar(max)" />
+        </EntityType>
+        <!--生成过程中发现错误:
+警告 6002: 表/视图“GlsunView.dbo.v_UserModule”未定义主键。已推断出该键，并将定义创建为只读的表/视图。-->
+        <EntityType Name="v_UserModule">
+          <Key>
+            <PropertyRef Name="ROW_ID" />
+          </Key>
+          <Property Name="ROW_ID" Type="bigint" Nullable="false" />
+          <Property Name="UID" Type="int" />
+          <Property Name="UName" Type="nvarchar" MaxLength="20" />
+          <Property Name="MID" Type="int" />
+          <Property Name="MPID" Type="int" />
+          <Property Name="MName" Type="nvarchar" MaxLength="20" />
+          <Property Name="MUrl" Type="varchar" MaxLength="255" />
+        </EntityType>
+        <!--生成过程中发现错误:
+警告 6002: 表/视图“GlsunView.dbo.v_UserModuleAuthority”未定义主键。已推断出该键，并将定义创建为只读的表/视图。-->
+        <EntityType Name="v_UserModuleAuthority">
+          <Key>
+            <PropertyRef Name="V_ID" />
+            
+          </Key>
+          <Property Name="V_ID" Type="bigint" Nullable="false" />
+          <Property Name="UID" Type="int" Nullable="false" />
+          <Property Name="UName" Type="nvarchar" MaxLength="20" />
+          <Property Name="MID" Type="int" />
+          <Property Name="MPID" Type="int" />
+          <Property Name="MName" Type="nvarchar" MaxLength="20" />
+          <Property Name="MUrl" Type="varchar" MaxLength="255" />
+          <Property Name="ID" Type="int" />
+          <Property Name="AName" Type="nvarchar" MaxLength="20" />
+          <Property Name="ACode" Type="varchar" MaxLength="20" />
+          <Property Name="AType" Type="varchar" MaxLength="20" />
+          <Property Name="AIcon" Type="varchar" MaxLength="50" />
+          <Property Name="AIconType" Type="varchar" MaxLength="10" />
+          <Property Name="AClassName" Type="varchar" MaxLength="255" />
+          <Property Name="AShowNumber" Type="smallint" />
+          <Property Name="AIsCommon" Type="bit" />
+          <Property Name="IsEnabled" Type="bit" />
+          <Property Name="CreatorID" Type="int" />
+          <Property Name="CreationTime" Type="datetime" />
+          <Property Name="EditorID" Type="int" />
+          <Property Name="EditingTime" Type="datetime" />
+        </EntityType>
+        <!--生成过程中发现错误:
+警告 6002: 表/视图“GlsunView.dbo.v_UserRole”未定义主键。已推断出该键，并将定义创建为只读的表/视图。-->
+        <EntityType Name="v_UserRole">
+          <Key>
+            <PropertyRef Name="ROW_ID" />
+            <PropertyRef Name="UID" />
+          </Key>
+          <Property Name="ROW_ID" Type="bigint" Nullable="false" />
+          <Property Name="UID" Type="int" Nullable="false" />
+          <Property Name="ULoginName" Type="nvarchar" MaxLength="20" />
+          <Property Name="UName" Type="nvarchar" MaxLength="20" />
+          <Property Name="RID" Type="int" />
+          <Property Name="RName" Type="nvarchar" MaxLength="20" />
+        </EntityType>
+        <Association Name="FK_DEVICE_REFERENCE_SUBNET">
+          <End Role="Subnet" Type="Self.Subnet" Multiplicity="0..1" />
+          <End Role="Device" Type="Self.Device" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Subnet">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Device">
+              <PropertyRef Name="SID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MODULEAU_FK_MODULE_MODULE">
+          <End Role="Module" Type="Self.Module" Multiplicity="0..1" />
+          <End Role="ModuleAuthority" Type="Self.ModuleAuthority" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Module">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ModuleAuthority">
+              <PropertyRef Name="MID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MODULEAU_REFERENCE_AUTHORIT">
+          <End Role="Authority" Type="Self.Authority" Multiplicity="0..1" />
+          <End Role="ModuleAuthority" Type="Self.ModuleAuthority" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Authority">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ModuleAuthority">
+              <PropertyRef Name="AID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ROLEAUTH_REFERENCE_MODULEAU">
+          <End Role="ModuleAuthority" Type="Self.ModuleAuthority" Multiplicity="0..1" />
+          <End Role="RoleAuthority" Type="Self.RoleAuthority" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ModuleAuthority">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="RoleAuthority">
+              <PropertyRef Name="MAID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ROLEAUTH_REFERENCE_ROLE">
+          <End Role="Role" Type="Self.Role" Multiplicity="0..1" />
+          <End Role="RoleAuthority" Type="Self.RoleAuthority" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Role">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="RoleAuthority">
+              <PropertyRef Name="RID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_USERLOG_FK_USELOG_USER">
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="UserLog" Type="Self.UserLog" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="UserLog">
+              <PropertyRef Name="ULOperatorID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_USERROLE_REFERENCE_ROLE">
+          <End Role="Role" Type="Self.Role" Multiplicity="0..1" />
+          <End Role="UserRole" Type="Self.UserRole" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Role">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="UserRole">
+              <PropertyRef Name="RID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_USERROLE_REFERENCE_USER">
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="UserRole" Type="Self.UserRole" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="UserRole">
+              <PropertyRef Name="UID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Function Name="F_GetTreeModuleID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <ReturnType>
+            <CollectionType>
+              <RowType>
+                <Property Name="ID" Type="int" />
+              </RowType>
+            </CollectionType>
+          </ReturnType>
+        </Function>
+        <EntityContainer Name="GlsunViewModelStoreContainer">
+          <EntitySet Name="AlarmInformation" EntityType="Self.AlarmInformation" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Authority" EntityType="Self.Authority" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Device" EntityType="Self.Device" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DeviceLine" EntityType="Self.DeviceLine" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DeviceOperationLog" EntityType="Self.DeviceOperationLog" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Module" EntityType="Self.Module" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ModuleAuthority" EntityType="Self.ModuleAuthority" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Role" EntityType="Self.Role" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="RoleAuthority" EntityType="Self.RoleAuthority" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SceneLocation" EntityType="Self.SceneLocation" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Subnet" EntityType="Self.Subnet" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SubnetLine" EntityType="Self.SubnetLine" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TopologyOperationLog" EntityType="Self.TopologyOperationLog" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserLog" EntityType="Self.UserLog" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserRole" EntityType="Self.UserRole" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="v_Authority" EntityType="Self.v_Authority" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [v_Authority].[ID] AS [ID], 
+    [v_Authority].[AName] AS [AName], 
+    [v_Authority].[ACode] AS [ACode], 
+    [v_Authority].[AType] AS [AType], 
+    [v_Authority].[AIcon] AS [AIcon], 
+    [v_Authority].[AIconType] AS [AIconType], 
+    [v_Authority].[AClassName] AS [AClassName], 
+    [v_Authority].[AShowNumber] AS [AShowNumber], 
+    [v_Authority].[AIsCommon] AS [AIsCommon], 
+    [v_Authority].[IsEnabled] AS [IsEnabled], 
+    [v_Authority].[CreatorID] AS [CreatorID], 
+    [v_Authority].[CreationTime] AS [CreationTime], 
+    [v_Authority].[EditorID] AS [EditorID], 
+    [v_Authority].[EditingTime] AS [EditingTime], 
+    [v_Authority].[Creator] AS [Creator], 
+    [v_Authority].[Editor] AS [Editor]
+    FROM [dbo].[v_Authority] AS [v_Authority]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="v_ModuleAuthority" EntityType="Self.v_ModuleAuthority" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [v_ModuleAuthority].[ROW_ID] AS [ROW_ID], 
+    [v_ModuleAuthority].[MID] AS [MID], 
+    [v_ModuleAuthority].[MName] AS [MName], 
+    [v_ModuleAuthority].[MAID] AS [MAID], 
+    [v_ModuleAuthority].[AName] AS [AName]
+    FROM [dbo].[v_ModuleAuthority] AS [v_ModuleAuthority]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="v_ModuleTree" EntityType="Self.v_ModuleTree" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [v_ModuleTree].[ID] AS [ID], 
+    [v_ModuleTree].[MName] AS [MName], 
+    [v_ModuleTree].[MUrl] AS [MUrl], 
+    [v_ModuleTree].[MType] AS [MType], 
+    [v_ModuleTree].[MIcon] AS [MIcon], 
+    [v_ModuleTree].[MIconType] AS [MIconType], 
+    [v_ModuleTree].[MLevel] AS [MLevel], 
+    [v_ModuleTree].[MParentID] AS [MParentID], 
+    [v_ModuleTree].[MSortingNumber] AS [MSortingNumber], 
+    [v_ModuleTree].[IsEnabled] AS [IsEnabled], 
+    [v_ModuleTree].[CreatorID] AS [CreatorID], 
+    [v_ModuleTree].[CreationTime] AS [CreationTime], 
+    [v_ModuleTree].[EditorID] AS [EditorID], 
+    [v_ModuleTree].[EditingTime] AS [EditingTime], 
+    [v_ModuleTree].[Creator] AS [Creator], 
+    [v_ModuleTree].[Editor] AS [Editor]
+    FROM [dbo].[v_ModuleTree] AS [v_ModuleTree]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="v_ModuleUser" EntityType="Self.v_ModuleUser" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [v_ModuleUser].[ID] AS [ID], 
+    [v_ModuleUser].[MName] AS [MName], 
+    [v_ModuleUser].[MUrl] AS [MUrl], 
+    [v_ModuleUser].[MType] AS [MType], 
+    [v_ModuleUser].[MIcon] AS [MIcon], 
+    [v_ModuleUser].[MIconType] AS [MIconType], 
+    [v_ModuleUser].[MLevel] AS [MLevel], 
+    [v_ModuleUser].[MParentID] AS [MParentID], 
+    [v_ModuleUser].[MSortingNumber] AS [MSortingNumber], 
+    [v_ModuleUser].[IsEnabled] AS [IsEnabled], 
+    [v_ModuleUser].[CreatorID] AS [CreatorID], 
+    [v_ModuleUser].[CreationTime] AS [CreationTime], 
+    [v_ModuleUser].[EditorID] AS [EditorID], 
+    [v_ModuleUser].[EditingTime] AS [EditingTime], 
+    [v_ModuleUser].[Creator] AS [Creator], 
+    [v_ModuleUser].[Editor] AS [Editor]
+    FROM [dbo].[v_ModuleUser] AS [v_ModuleUser]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="v_Role" EntityType="Self.v_Role" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [v_Role].[ID] AS [ID], 
+    [v_Role].[RName] AS [RName], 
+    [v_Role].[RCode] AS [RCode], 
+    [v_Role].[CreatorID] AS [CreatorID], 
+    [v_Role].[CreationTime] AS [CreationTime], 
+    [v_Role].[EditorID] AS [EditorID], 
+    [v_Role].[EditingTime] AS [EditingTime], 
+    [v_Role].[Creator] AS [Creator], 
+    [v_Role].[Editor] AS [Editor]
+    FROM [dbo].[v_Role] AS [v_Role]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="v_User" EntityType="Self.v_User" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [v_User].[ROW_ID] AS [ROW_ID], 
+    [v_User].[ID] AS [ID], 
+    [v_User].[ULoginName] AS [ULoginName], 
+    [v_User].[UPassword] AS [UPassword], 
+    [v_User].[UName] AS [UName], 
+    [v_User].[UUserType] AS [UUserType], 
+    [v_User].[UIsLock] AS [UIsLock], 
+    [v_User].[UExpireTime] AS [UExpireTime], 
+    [v_User].[CreatorID] AS [CreatorID], 
+    [v_User].[CreationTime] AS [CreationTime], 
+    [v_User].[EditorID] AS [EditorID], 
+    [v_User].[EditingTime] AS [EditingTime], 
+    [v_User].[Creator] AS [Creator], 
+    [v_User].[Editor] AS [Editor], 
+    [v_User].[RoleNames] AS [RoleNames]
+    FROM [dbo].[v_User] AS [v_User]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="v_UserModule" EntityType="Self.v_UserModule" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [v_UserModule].[ROW_ID] AS [ROW_ID], 
+    [v_UserModule].[UID] AS [UID], 
+    [v_UserModule].[UName] AS [UName], 
+    [v_UserModule].[MID] AS [MID], 
+    [v_UserModule].[MPID] AS [MPID], 
+    [v_UserModule].[MName] AS [MName], 
+    [v_UserModule].[MUrl] AS [MUrl]
+    FROM [dbo].[v_UserModule] AS [v_UserModule]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="v_UserModuleAuthority" EntityType="Self.v_UserModuleAuthority" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [v_UserModuleAuthority].[V_ID] AS [V_ID], 
+    [v_UserModuleAuthority].[UID] AS [UID], 
+    [v_UserModuleAuthority].[UName] AS [UName], 
+    [v_UserModuleAuthority].[MID] AS [MID], 
+    [v_UserModuleAuthority].[MPID] AS [MPID], 
+    [v_UserModuleAuthority].[MName] AS [MName], 
+    [v_UserModuleAuthority].[MUrl] AS [MUrl], 
+    [v_UserModuleAuthority].[ID] AS [ID], 
+    [v_UserModuleAuthority].[AName] AS [AName], 
+    [v_UserModuleAuthority].[ACode] AS [ACode], 
+    [v_UserModuleAuthority].[AType] AS [AType], 
+    [v_UserModuleAuthority].[AIcon] AS [AIcon], 
+    [v_UserModuleAuthority].[AIconType] AS [AIconType], 
+    [v_UserModuleAuthority].[AClassName] AS [AClassName], 
+    [v_UserModuleAuthority].[AShowNumber] AS [AShowNumber], 
+    [v_UserModuleAuthority].[AIsCommon] AS [AIsCommon], 
+    [v_UserModuleAuthority].[IsEnabled] AS [IsEnabled], 
+    [v_UserModuleAuthority].[CreatorID] AS [CreatorID], 
+    [v_UserModuleAuthority].[CreationTime] AS [CreationTime], 
+    [v_UserModuleAuthority].[EditorID] AS [EditorID], 
+    [v_UserModuleAuthority].[EditingTime] AS [EditingTime]
+    FROM [dbo].[v_UserModuleAuthority] AS [v_UserModuleAuthority]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="v_UserRole" EntityType="Self.v_UserRole" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [v_UserRole].[ROW_ID] AS [ROW_ID], 
+    [v_UserRole].[UID] AS [UID], 
+    [v_UserRole].[ULoginName] AS [ULoginName], 
+    [v_UserRole].[UName] AS [UName], 
+    [v_UserRole].[RID] AS [RID], 
+    [v_UserRole].[RName] AS [RName]
+    FROM [dbo].[v_UserRole] AS [v_UserRole]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="FK_DEVICE_REFERENCE_SUBNET" Association="Self.FK_DEVICE_REFERENCE_SUBNET">
+            <End Role="Subnet" EntitySet="Subnet" />
+            <End Role="Device" EntitySet="Device" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MODULEAU_FK_MODULE_MODULE" Association="Self.FK_MODULEAU_FK_MODULE_MODULE">
+            <End Role="Module" EntitySet="Module" />
+            <End Role="ModuleAuthority" EntitySet="ModuleAuthority" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MODULEAU_REFERENCE_AUTHORIT" Association="Self.FK_MODULEAU_REFERENCE_AUTHORIT">
+            <End Role="Authority" EntitySet="Authority" />
+            <End Role="ModuleAuthority" EntitySet="ModuleAuthority" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ROLEAUTH_REFERENCE_MODULEAU" Association="Self.FK_ROLEAUTH_REFERENCE_MODULEAU">
+            <End Role="ModuleAuthority" EntitySet="ModuleAuthority" />
+            <End Role="RoleAuthority" EntitySet="RoleAuthority" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ROLEAUTH_REFERENCE_ROLE" Association="Self.FK_ROLEAUTH_REFERENCE_ROLE">
+            <End Role="Role" EntitySet="Role" />
+            <End Role="RoleAuthority" EntitySet="RoleAuthority" />
+          </AssociationSet>
+          <AssociationSet Name="FK_USERLOG_FK_USELOG_USER" Association="Self.FK_USERLOG_FK_USELOG_USER">
+            <End Role="User" EntitySet="User" />
+            <End Role="UserLog" EntitySet="UserLog" />
+          </AssociationSet>
+          <AssociationSet Name="FK_USERROLE_REFERENCE_ROLE" Association="Self.FK_USERROLE_REFERENCE_ROLE">
+            <End Role="Role" EntitySet="Role" />
+            <End Role="UserRole" EntitySet="UserRole" />
+          </AssociationSet>
+          <AssociationSet Name="FK_USERROLE_REFERENCE_USER" Association="Self.FK_USERROLE_REFERENCE_USER">
+            <End Role="User" EntitySet="User" />
+            <End Role="UserRole" EntitySet="UserRole" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="GlsunViewModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Authority">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="AName" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="ACode" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="IsEnabled" Type="Boolean" />
+          <Property Name="CreatorID" Type="Int32" />
+          <Property Name="CreationTime" Type="DateTime" Precision="3" />
+          <Property Name="EditorID" Type="Int32" />
+          <Property Name="EditingTime" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="ModuleAuthority" Relationship="Self.FK_MODULEAU_REFERENCE_AUTHORIT" FromRole="Authority" ToRole="ModuleAuthority" />
+          <Property Name="AType" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="AIcon" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="AIconType" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="AClassName" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="AShowNumber" Type="Int16" />
+          <Property Name="AIsCommon" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="Module">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MName" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="MUrl" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="MType" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="MIcon" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="MIconType" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="MLevel" Type="Int16" />
+          <Property Name="MParentID" Type="Int32" />
+          <Property Name="MSortingNumber" Type="Int16" />
+          <Property Name="IsEnabled" Type="Boolean" />
+          <Property Name="CreatorID" Type="Int32" />
+          <Property Name="CreationTime" Type="DateTime" Precision="3" />
+          <Property Name="EditorID" Type="Int32" />
+          <Property Name="EditingTime" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="ModuleAuthority" Relationship="Self.FK_MODULEAU_FK_MODULE_MODULE" FromRole="Module" ToRole="ModuleAuthority" />
+        </EntityType>
+        <EntityType Name="ModuleAuthority">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MID" Type="Int32" />
+          <Property Name="AID" Type="Int32" />
+          <Property Name="CreatorID" Type="Int32" />
+          <Property Name="CreationTime" Type="DateTime" Precision="3" />
+          <Property Name="EditorID" Type="Int32" />
+          <Property Name="EditingTime" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Authority" Relationship="Self.FK_MODULEAU_REFERENCE_AUTHORIT" FromRole="ModuleAuthority" ToRole="Authority" />
+          <NavigationProperty Name="Module" Relationship="Self.FK_MODULEAU_FK_MODULE_MODULE" FromRole="ModuleAuthority" ToRole="Module" />
+          <NavigationProperty Name="RoleAuthority" Relationship="GlsunViewModel.FK_ROLEAUTH_REFERENCE_MODULEAU" FromRole="ModuleAuthority" ToRole="RoleAuthority" />
+        </EntityType>
+        <EntityType Name="Role">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RName" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="RCode" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="CreatorID" Type="Int32" />
+          <Property Name="CreationTime" Type="DateTime" Precision="3" />
+          <Property Name="EditorID" Type="Int32" />
+          <Property Name="EditingTime" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="UserRole" Relationship="Self.FK_USERROLE_REFERENCE_ROLE" FromRole="Role" ToRole="UserRole" />
+          <NavigationProperty Name="RoleAuthority" Relationship="GlsunViewModel.FK_ROLEAUTH_REFERENCE_ROLE" FromRole="Role" ToRole="RoleAuthority" />
+          </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ULoginName" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="UPassword" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="UName" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="UUserType" Type="Int16" />
+          <Property Name="UIsLock" Type="Boolean" />
+          <Property Name="UExpireTime" Type="DateTime" Precision="3" />
+          <Property Name="CreatorID" Type="Int32" />
+          <Property Name="CreationTime" Type="DateTime" Precision="3" />
+          <Property Name="EditorID" Type="Int32" />
+          <Property Name="EditingTime" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="UserRole" Relationship="Self.FK_USERROLE_REFERENCE_USER" FromRole="User" ToRole="UserRole" />
+          <NavigationProperty Name="UserLog" Relationship="GlsunViewModel.FK_USERLOG_FK_USELOG_USER" FromRole="User" ToRole="UserLog" />
+        </EntityType>
+        <EntityType Name="UserRole">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UID" Type="Int32" />
+          <Property Name="RID" Type="Int32" />
+          <Property Name="CreatorID" Type="Int32" />
+          <Property Name="CreationTime" Type="DateTime" Precision="3" />
+          <Property Name="EditorID" Type="Int32" />
+          <Property Name="EditingTime" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Role" Relationship="Self.FK_USERROLE_REFERENCE_ROLE" FromRole="UserRole" ToRole="Role" />
+          <NavigationProperty Name="User" Relationship="Self.FK_USERROLE_REFERENCE_USER" FromRole="UserRole" ToRole="User" />
+        </EntityType>
+        <Association Name="FK_MODULEAU_REFERENCE_AUTHORIT">
+          <End Role="Authority" Type="Self.Authority" Multiplicity="0..1" />
+          <End Role="ModuleAuthority" Type="Self.ModuleAuthority" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Authority">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ModuleAuthority">
+              <PropertyRef Name="AID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MODULEAU_FK_MODULE_MODULE">
+          <End Role="Module" Type="Self.Module" Multiplicity="0..1" />
+          <End Role="ModuleAuthority" Type="Self.ModuleAuthority" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Module">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ModuleAuthority">
+              <PropertyRef Name="MID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_USERROLE_REFERENCE_ROLE">
+          <End Role="Role" Type="Self.Role" Multiplicity="0..1" />
+          <End Role="UserRole" Type="Self.UserRole" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Role">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="UserRole">
+              <PropertyRef Name="RID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_USERROLE_REFERENCE_USER">
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="UserRole" Type="Self.UserRole" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="UserRole">
+              <PropertyRef Name="UID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="GlsunViewEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Authority" EntityType="Self.Authority" />
+          <EntitySet Name="Module" EntityType="Self.Module" />
+          <EntitySet Name="ModuleAuthority" EntityType="Self.ModuleAuthority" />
+          <EntitySet Name="Role" EntityType="Self.Role" />
+          <EntitySet Name="User" EntityType="Self.User" />
+          <EntitySet Name="UserRole" EntityType="Self.UserRole" />
+          <AssociationSet Name="FK_MODULEAU_REFERENCE_AUTHORIT" Association="Self.FK_MODULEAU_REFERENCE_AUTHORIT">
+            <End Role="Authority" EntitySet="Authority" />
+            <End Role="ModuleAuthority" EntitySet="ModuleAuthority" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MODULEAU_FK_MODULE_MODULE" Association="Self.FK_MODULEAU_FK_MODULE_MODULE">
+            <End Role="Module" EntitySet="Module" />
+            <End Role="ModuleAuthority" EntitySet="ModuleAuthority" />
+          </AssociationSet>
+          <AssociationSet Name="FK_USERROLE_REFERENCE_ROLE" Association="Self.FK_USERROLE_REFERENCE_ROLE">
+            <End Role="Role" EntitySet="Role" />
+            <End Role="UserRole" EntitySet="UserRole" />
+          </AssociationSet>
+          <AssociationSet Name="FK_USERROLE_REFERENCE_USER" Association="Self.FK_USERROLE_REFERENCE_USER">
+            <End Role="User" EntitySet="User" />
+            <End Role="UserRole" EntitySet="UserRole" />
+          </AssociationSet>
+          <EntitySet Name="v_ModuleUser" EntityType="GlsunViewModel.v_ModuleUser" />
+          <EntitySet Name="v_ModuleTree" EntityType="GlsunViewModel.v_ModuleTree" />
+          <FunctionImport Name="F_GetTreeModuleID" IsComposable="true" ReturnType="Collection(Int32)" />
+          <EntitySet Name="v_User" EntityType="GlsunViewModel.v_User" />
+          <EntitySet Name="v_Role" EntityType="GlsunViewModel.v_Role" />
+          <EntitySet Name="v_ModuleAuthority" EntityType="GlsunViewModel.v_ModuleAuthority" />
+          <EntitySet Name="v_UserRole" EntityType="GlsunViewModel.v_UserRole" />
+          <EntitySet Name="RoleAuthority" EntityType="GlsunViewModel.RoleAuthority" />
+          <AssociationSet Name="FK_ROLEAUTH_REFERENCE_MODULEAU" Association="GlsunViewModel.FK_ROLEAUTH_REFERENCE_MODULEAU">
+            <End Role="ModuleAuthority" EntitySet="ModuleAuthority" />
+            <End Role="RoleAuthority" EntitySet="RoleAuthority" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ROLEAUTH_REFERENCE_ROLE" Association="GlsunViewModel.FK_ROLEAUTH_REFERENCE_ROLE">
+            <End Role="Role" EntitySet="Role" />
+            <End Role="RoleAuthority" EntitySet="RoleAuthority" />
+          </AssociationSet>
+          <EntitySet Name="v_Authority" EntityType="GlsunViewModel.v_Authority" />
+          <EntitySet Name="v_UserModule" EntityType="GlsunViewModel.v_UserModule" />
+          <EntitySet Name="v_UserModuleAuthority" EntityType="GlsunViewModel.v_UserModuleAuthority" />
+          <EntitySet Name="UserLog" EntityType="GlsunViewModel.UserLog" />
+          <AssociationSet Name="FK_USERLOG_FK_USELOG_USER" Association="GlsunViewModel.FK_USERLOG_FK_USELOG_USER">
+            <End Role="User" EntitySet="User" />
+            <End Role="UserLog" EntitySet="UserLog" />
+          </AssociationSet>
+          <EntitySet Name="Device" EntityType="GlsunViewModel.Device" />
+          <EntitySet Name="DeviceLine" EntityType="GlsunViewModel.DeviceLine" />
+          <EntitySet Name="Subnet" EntityType="GlsunViewModel.Subnet" />
+          <EntitySet Name="SubnetLine" EntityType="GlsunViewModel.SubnetLine" />
+          <AssociationSet Name="FK_DEVICE_REFERENCE_SUBNET" Association="GlsunViewModel.FK_DEVICE_REFERENCE_SUBNET">
+            <End Role="Subnet" EntitySet="Subnet" />
+            <End Role="Device" EntitySet="Device" />
+          </AssociationSet>
+          <EntitySet Name="SceneLocation" EntityType="GlsunViewModel.SceneLocation" />
+          <EntitySet Name="DeviceOperationLog" EntityType="GlsunViewModel.DeviceOperationLog" />
+          <EntitySet Name="TopologyOperationLog" EntityType="GlsunViewModel.TopologyOperationLog" />
+          <EntitySet Name="AlarmInformation" EntityType="GlsunViewModel.AlarmInformation" />
+          </EntityContainer>
+        <EntityType Name="v_ModuleUser">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="MName" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="MUrl" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="MType" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="MIcon" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="MIconType" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="MLevel" Type="Int16" />
+          <Property Name="MParentID" Type="Int32" />
+          <Property Name="MSortingNumber" Type="Int16" />
+          <Property Name="IsEnabled" Type="Boolean" />
+          <Property Name="CreatorID" Type="Int32" />
+          <Property Name="CreationTime" Type="DateTime" Precision="3" />
+          <Property Name="EditorID" Type="Int32" />
+          <Property Name="EditingTime" Type="DateTime" Precision="3" />
+          <Property Name="Creator" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Editor" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="v_ModuleTree">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="MName" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="MUrl" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="MType" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="MIcon" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="MIconType" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="MLevel" Type="Int16" />
+          <Property Name="MParentID" Type="Int32" />
+          <Property Name="MSortingNumber" Type="Int16" />
+          <Property Name="IsEnabled" Type="Boolean" />
+          <Property Name="CreatorID" Type="Int32" />
+          <Property Name="CreationTime" Type="DateTime" Precision="3" />
+          <Property Name="EditorID" Type="Int32" />
+          <Property Name="EditingTime" Type="DateTime" Precision="3" />
+          <Property Name="Creator" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Editor" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="v_User">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="ULoginName" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="UPassword" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="UName" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="UUserType" Type="Int16" />
+          <Property Name="UIsLock" Type="Boolean" />
+          <Property Name="UExpireTime" Type="DateTime" Precision="3" />
+          <Property Name="CreatorID" Type="Int32" />
+          <Property Name="CreationTime" Type="DateTime" Precision="3" />
+          <Property Name="EditorID" Type="Int32" />
+          <Property Name="EditingTime" Type="DateTime" Precision="3" />
+          <Property Name="Creator" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Editor" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="ROW_ID" Type="Int64" />
+          <Property Name="RoleNames" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="v_Role">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="RName" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="RCode" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="CreatorID" Type="Int32" />
+          <Property Name="CreationTime" Type="DateTime" Precision="3" />
+          <Property Name="EditorID" Type="Int32" />
+          <Property Name="EditingTime" Type="DateTime" Precision="3" />
+          <Property Name="Creator" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Editor" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="v_ModuleAuthority">
+          <Key>
+            <PropertyRef Name="MID" />
+          </Key>
+          <Property Name="ROW_ID" Type="Int64" />
+          <Property Name="MID" Type="Int32" Nullable="false" />
+          <Property Name="MAID" Type="Int32" />
+          <Property Name="AName" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="MName" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="v_UserRole">
+          <Key>
+            <PropertyRef Name="ROW_ID" />
+            <PropertyRef Name="UID" />
+          </Key>
+          <Property Name="ROW_ID" Type="Int64" Nullable="false" />
+          <Property Name="UID" Type="Int32" Nullable="false" />
+          <Property Name="ULoginName" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="UName" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="RID" Type="Int32" />
+          <Property Name="RName" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="RoleAuthority">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RID" Type="Int32" />
+          <Property Name="MAID" Type="Int32" />
+          <Property Name="IsEnabled" Type="Boolean" />
+          <Property Name="CreatorID" Type="Int32" />
+          <Property Name="CreationTime" Type="DateTime" Precision="3" />
+          <Property Name="EditorID" Type="Int32" />
+          <Property Name="EditingTime" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="ModuleAuthority" Relationship="GlsunViewModel.FK_ROLEAUTH_REFERENCE_MODULEAU" FromRole="RoleAuthority" ToRole="ModuleAuthority" />
+          <NavigationProperty Name="Role" Relationship="GlsunViewModel.FK_ROLEAUTH_REFERENCE_ROLE" FromRole="RoleAuthority" ToRole="Role" />
+        </EntityType>
+        <Association Name="FK_ROLEAUTH_REFERENCE_MODULEAU">
+          <End Type="GlsunViewModel.ModuleAuthority" Role="ModuleAuthority" Multiplicity="0..1" />
+          <End Type="GlsunViewModel.RoleAuthority" Role="RoleAuthority" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ModuleAuthority">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="RoleAuthority">
+              <PropertyRef Name="MAID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ROLEAUTH_REFERENCE_ROLE">
+          <End Type="GlsunViewModel.Role" Role="Role" Multiplicity="0..1" />
+          <End Type="GlsunViewModel.RoleAuthority" Role="RoleAuthority" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Role">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="RoleAuthority">
+              <PropertyRef Name="RID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="v_Authority">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="AName" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="ACode" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="AType" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="AIcon" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="AIconType" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="AClassName" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="AShowNumber" Type="Int16" />
+          <Property Name="AIsCommon" Type="Boolean" />
+          <Property Name="IsEnabled" Type="Boolean" />
+          <Property Name="CreatorID" Type="Int32" />
+          <Property Name="CreationTime" Type="DateTime" Precision="3" />
+          <Property Name="EditorID" Type="Int32" />
+          <Property Name="EditingTime" Type="DateTime" Precision="3" />
+          <Property Name="Creator" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Editor" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="v_UserModule">
+          <Key>
+            <PropertyRef Name="ROW_ID" />
+          </Key>
+          <Property Name="ROW_ID" Type="Int64" Nullable="false" />
+          <Property Name="UID" Type="Int32" />
+          <Property Name="UName" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="MID" Type="Int32" />
+          <Property Name="MPID" Type="Int32" />
+          <Property Name="MName" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="MUrl" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="v_UserModuleAuthority">
+          <Key>
+            <PropertyRef Name="V_ID" />
+          </Key>
+          <Property Name="V_ID" Type="Int64" Nullable="false" />
+          <Property Name="UID" Type="Int32" Nullable="false" />
+          <Property Name="UName" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="MID" Type="Int32" />
+          <Property Name="MPID" Type="Int32" />
+          <Property Name="MName" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="MUrl" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="ID" Type="Int32" />
+          <Property Name="AName" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="ACode" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="AType" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="AIcon" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="AIconType" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="AClassName" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="AShowNumber" Type="Int16" />
+          <Property Name="AIsCommon" Type="Boolean" />
+          <Property Name="IsEnabled" Type="Boolean" />
+          <Property Name="CreatorID" Type="Int32" />
+          <Property Name="CreationTime" Type="DateTime" Precision="3" />
+          <Property Name="EditorID" Type="Int32" />
+          <Property Name="EditingTime" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="UserLog">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ULOperatorID" Type="Int32" />
+          <Property Name="ULOperator" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="ULOperationType" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="ULOperationDetials" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ULOperationResult" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="ULOperationTime" Type="DateTime" Precision="3" />
+          <Property Name="UID" Type="Int32" />
+          <Property Name="ULoginName" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="UName" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="ULRemark" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="User" Relationship="GlsunViewModel.FK_USERLOG_FK_USELOG_USER" FromRole="UserLog" ToRole="User" />
+        </EntityType>
+        <Association Name="FK_USERLOG_FK_USELOG_USER">
+          <End Type="GlsunViewModel.User" Role="User" Multiplicity="0..1" />
+          <End Type="GlsunViewModel.UserLog" Role="UserLog" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="UserLog">
+              <PropertyRef Name="ULOperatorID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Device">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="SID" Type="Int32" />
+          <Property Name="DName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="DAddress" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="DIcon" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="DType" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="DProtocal" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="CoordinateX" Type="Int32" />
+          <Property Name="CoordinateY" Type="Int32" />
+          <Property Name="Remark" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatorID" Type="Int32" />
+          <Property Name="CreationTime" Type="DateTime" Precision="3" />
+          <Property Name="EditorID" Type="Int32" />
+          <Property Name="EditingTime" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Subnet" Relationship="GlsunViewModel.FK_DEVICE_REFERENCE_SUBNET" FromRole="Device" ToRole="Subnet" />
+          <Property Name="DPort" Type="Int32" />
+        </EntityType>
+        <EntityType Name="DeviceLine">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="DLName" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="DIDA" Type="Int32" />
+          <Property Name="DIDB" Type="Int32" />
+          <Property Name="CreatorID" Type="Int32" />
+          <Property Name="CreationTime" Type="DateTime" Precision="3" />
+          <Property Name="EditorID" Type="Int32" />
+          <Property Name="EditingTime" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="Subnet">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SAddress" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="SIcon" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="CoordinateX" Type="Int32" />
+          <Property Name="CoordinateY" Type="Int32" />
+          <Property Name="Remark" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatorID" Type="Int32" />
+          <Property Name="CreationTime" Type="DateTime" Precision="3" />
+          <Property Name="EditorID" Type="Int32" />
+          <Property Name="EditingTime" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Device" Relationship="GlsunViewModel.FK_DEVICE_REFERENCE_SUBNET" FromRole="Subnet" ToRole="Device" />
+        </EntityType>
+        <EntityType Name="SubnetLine">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SLName" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="SIDA" Type="Int32" />
+          <Property Name="SIDB" Type="Int32" />
+          <Property Name="CreatorID" Type="Int32" />
+          <Property Name="CreationTime" Type="DateTime" Precision="3" />
+          <Property Name="EditorID" Type="Int32" />
+          <Property Name="EditingTime" Type="DateTime" Precision="3" />
+        </EntityType>
+        <Association Name="FK_DEVICE_REFERENCE_SUBNET">
+          <End Type="GlsunViewModel.Subnet" Role="Subnet" Multiplicity="0..1" />
+          <End Type="GlsunViewModel.Device" Role="Device" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Subnet">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Device">
+              <PropertyRef Name="SID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="SceneLocation">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CoordinateX" Type="Int32" />
+          <Property Name="CoordinateY" Type="Int32" />
+          <Property Name="SceneType" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="UserID" Type="Int32" />
+        </EntityType>
+        <EntityType Name="DeviceOperationLog">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="UID" Type="Int32" />
+          <Property Name="ULoginName" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="UName" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="DOLOperationType" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="DOLOperationDetials" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="DOLOperationResult" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="DOLOperationTime" Type="DateTime" Precision="3" />
+          <Property Name="Remark" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SID" Type="Int32" />
+          <Property Name="SName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SAddress" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="DID" Type="Int32" />
+          <Property Name="DName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="DAddress" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="DOLDeviceSlot" Type="Int16" />
+          <Property Name="DOLCardSN" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="DOLCardType" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="TopologyOperationLog">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UID" Type="Int32" />
+          <Property Name="ULoginName" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="UName" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="TOLOperationType" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="TOLOperationDetials" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="TOLOperationResult" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="TOLOperationTime" Type="DateTime" Precision="3" />
+          <Property Name="Remark" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="TOLObjectID" Type="Int32" />
+          <Property Name="TOLObjectName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="TOLObjectType" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="AlarmInformation">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="DID" Type="Int32" />
+          <Property Name="DName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="DAddress" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="AISlot" Type="Int16" />
+          <Property Name="AIType" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="AILevel" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="AIContent" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="AITime" Type="DateTime" Precision="3" />
+          <Property Name="AIConfirm" Type="Boolean" />
+          <Property Name="AIConfirmTime" Type="DateTime" Precision="3" />
+          <Property Name="UID" Type="Int32" />
+          <Property Name="ULoginName" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="UName" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+        </EntityType>
+        </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="GlsunViewModelStoreContainer" CdmEntityContainer="GlsunViewEntities">
+          <EntitySetMapping Name="Authority">
+            <EntityTypeMapping TypeName="GlsunViewModel.Authority">
+              <MappingFragment StoreEntitySet="Authority">
+                <ScalarProperty Name="AIsCommon" ColumnName="AIsCommon" />
+                <ScalarProperty Name="AShowNumber" ColumnName="AShowNumber" />
+                <ScalarProperty Name="AClassName" ColumnName="AClassName" />
+                <ScalarProperty Name="AIconType" ColumnName="AIconType" />
+                <ScalarProperty Name="AIcon" ColumnName="AIcon" />
+                <ScalarProperty Name="AType" ColumnName="AType" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="AName" ColumnName="AName" />
+                <ScalarProperty Name="ACode" ColumnName="ACode" />
+                <ScalarProperty Name="IsEnabled" ColumnName="IsEnabled" />
+                <ScalarProperty Name="CreatorID" ColumnName="CreatorID" />
+                <ScalarProperty Name="CreationTime" ColumnName="CreationTime" />
+                <ScalarProperty Name="EditorID" ColumnName="EditorID" />
+                <ScalarProperty Name="EditingTime" ColumnName="EditingTime" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Module">
+            <EntityTypeMapping TypeName="GlsunViewModel.Module">
+              <MappingFragment StoreEntitySet="Module">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="MName" ColumnName="MName" />
+                <ScalarProperty Name="MUrl" ColumnName="MUrl" />
+                <ScalarProperty Name="MType" ColumnName="MType" />
+                <ScalarProperty Name="MIcon" ColumnName="MIcon" />
+                <ScalarProperty Name="MIconType" ColumnName="MIconType" />
+                <ScalarProperty Name="MLevel" ColumnName="MLevel" />
+                <ScalarProperty Name="MParentID" ColumnName="MParentID" />
+                <ScalarProperty Name="MSortingNumber" ColumnName="MSortingNumber" />
+                <ScalarProperty Name="IsEnabled" ColumnName="IsEnabled" />
+                <ScalarProperty Name="CreatorID" ColumnName="CreatorID" />
+                <ScalarProperty Name="CreationTime" ColumnName="CreationTime" />
+                <ScalarProperty Name="EditorID" ColumnName="EditorID" />
+                <ScalarProperty Name="EditingTime" ColumnName="EditingTime" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ModuleAuthority">
+            <EntityTypeMapping TypeName="GlsunViewModel.ModuleAuthority">
+              <MappingFragment StoreEntitySet="ModuleAuthority">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="MID" ColumnName="MID" />
+                <ScalarProperty Name="AID" ColumnName="AID" />
+                <ScalarProperty Name="CreatorID" ColumnName="CreatorID" />
+                <ScalarProperty Name="CreationTime" ColumnName="CreationTime" />
+                <ScalarProperty Name="EditorID" ColumnName="EditorID" />
+                <ScalarProperty Name="EditingTime" ColumnName="EditingTime" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Role">
+            <EntityTypeMapping TypeName="GlsunViewModel.Role">
+              <MappingFragment StoreEntitySet="Role">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="RName" ColumnName="RName" />
+                <ScalarProperty Name="RCode" ColumnName="RCode" />
+                <ScalarProperty Name="CreatorID" ColumnName="CreatorID" />
+                <ScalarProperty Name="CreationTime" ColumnName="CreationTime" />
+                <ScalarProperty Name="EditorID" ColumnName="EditorID" />
+                <ScalarProperty Name="EditingTime" ColumnName="EditingTime" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="User">
+            <EntityTypeMapping TypeName="GlsunViewModel.User">
+              <MappingFragment StoreEntitySet="User">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="ULoginName" ColumnName="ULoginName" />
+                <ScalarProperty Name="UPassword" ColumnName="UPassword" />
+                <ScalarProperty Name="UName" ColumnName="UName" />
+                <ScalarProperty Name="UUserType" ColumnName="UUserType" />
+                <ScalarProperty Name="UIsLock" ColumnName="UIsLock" />
+                <ScalarProperty Name="UExpireTime" ColumnName="UExpireTime" />
+                <ScalarProperty Name="CreatorID" ColumnName="CreatorID" />
+                <ScalarProperty Name="CreationTime" ColumnName="CreationTime" />
+                <ScalarProperty Name="EditorID" ColumnName="EditorID" />
+                <ScalarProperty Name="EditingTime" ColumnName="EditingTime" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserRole">
+            <EntityTypeMapping TypeName="GlsunViewModel.UserRole">
+              <MappingFragment StoreEntitySet="UserRole">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="UID" ColumnName="UID" />
+                <ScalarProperty Name="RID" ColumnName="RID" />
+                <ScalarProperty Name="CreatorID" ColumnName="CreatorID" />
+                <ScalarProperty Name="CreationTime" ColumnName="CreationTime" />
+                <ScalarProperty Name="EditorID" ColumnName="EditorID" />
+                <ScalarProperty Name="EditingTime" ColumnName="EditingTime" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="v_ModuleUser">
+            <EntityTypeMapping TypeName="GlsunViewModel.v_ModuleUser">
+              <MappingFragment StoreEntitySet="v_ModuleUser">
+                <ScalarProperty Name="Editor" ColumnName="Editor" />
+                <ScalarProperty Name="Creator" ColumnName="Creator" />
+                <ScalarProperty Name="EditingTime" ColumnName="EditingTime" />
+                <ScalarProperty Name="EditorID" ColumnName="EditorID" />
+                <ScalarProperty Name="CreationTime" ColumnName="CreationTime" />
+                <ScalarProperty Name="CreatorID" ColumnName="CreatorID" />
+                <ScalarProperty Name="IsEnabled" ColumnName="IsEnabled" />
+                <ScalarProperty Name="MSortingNumber" ColumnName="MSortingNumber" />
+                <ScalarProperty Name="MParentID" ColumnName="MParentID" />
+                <ScalarProperty Name="MLevel" ColumnName="MLevel" />
+                <ScalarProperty Name="MIconType" ColumnName="MIconType" />
+                <ScalarProperty Name="MIcon" ColumnName="MIcon" />
+                <ScalarProperty Name="MType" ColumnName="MType" />
+                <ScalarProperty Name="MUrl" ColumnName="MUrl" />
+                <ScalarProperty Name="MName" ColumnName="MName" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="v_ModuleTree">
+            <EntityTypeMapping TypeName="GlsunViewModel.v_ModuleTree">
+              <MappingFragment StoreEntitySet="v_ModuleTree">
+                <ScalarProperty Name="Editor" ColumnName="Editor" />
+                <ScalarProperty Name="Creator" ColumnName="Creator" />
+                <ScalarProperty Name="EditingTime" ColumnName="EditingTime" />
+                <ScalarProperty Name="EditorID" ColumnName="EditorID" />
+                <ScalarProperty Name="CreationTime" ColumnName="CreationTime" />
+                <ScalarProperty Name="CreatorID" ColumnName="CreatorID" />
+                <ScalarProperty Name="IsEnabled" ColumnName="IsEnabled" />
+                <ScalarProperty Name="MSortingNumber" ColumnName="MSortingNumber" />
+                <ScalarProperty Name="MParentID" ColumnName="MParentID" />
+                <ScalarProperty Name="MLevel" ColumnName="MLevel" />
+                <ScalarProperty Name="MIconType" ColumnName="MIconType" />
+                <ScalarProperty Name="MIcon" ColumnName="MIcon" />
+                <ScalarProperty Name="MType" ColumnName="MType" />
+                <ScalarProperty Name="MUrl" ColumnName="MUrl" />
+                <ScalarProperty Name="MName" ColumnName="MName" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="F_GetTreeModuleID" FunctionName="GlsunViewModel.Store.F_GetTreeModuleID" />
+          <EntitySetMapping Name="v_User">
+            <EntityTypeMapping TypeName="GlsunViewModel.v_User">
+              <MappingFragment StoreEntitySet="v_User">
+                <ScalarProperty Name="RoleNames" ColumnName="RoleNames" />
+                <ScalarProperty Name="ROW_ID" ColumnName="ROW_ID" />
+                <ScalarProperty Name="Editor" ColumnName="Editor" />
+                <ScalarProperty Name="Creator" ColumnName="Creator" />
+                <ScalarProperty Name="EditingTime" ColumnName="EditingTime" />
+                <ScalarProperty Name="EditorID" ColumnName="EditorID" />
+                <ScalarProperty Name="CreationTime" ColumnName="CreationTime" />
+                <ScalarProperty Name="CreatorID" ColumnName="CreatorID" />
+                <ScalarProperty Name="UExpireTime" ColumnName="UExpireTime" />
+                <ScalarProperty Name="UIsLock" ColumnName="UIsLock" />
+                <ScalarProperty Name="UUserType" ColumnName="UUserType" />
+                <ScalarProperty Name="UName" ColumnName="UName" />
+                <ScalarProperty Name="UPassword" ColumnName="UPassword" />
+                <ScalarProperty Name="ULoginName" ColumnName="ULoginName" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="v_Role">
+            <EntityTypeMapping TypeName="GlsunViewModel.v_Role">
+              <MappingFragment StoreEntitySet="v_Role">
+                <ScalarProperty Name="Editor" ColumnName="Editor" />
+                <ScalarProperty Name="Creator" ColumnName="Creator" />
+                <ScalarProperty Name="EditingTime" ColumnName="EditingTime" />
+                <ScalarProperty Name="EditorID" ColumnName="EditorID" />
+                <ScalarProperty Name="CreationTime" ColumnName="CreationTime" />
+                <ScalarProperty Name="CreatorID" ColumnName="CreatorID" />
+                <ScalarProperty Name="RCode" ColumnName="RCode" />
+                <ScalarProperty Name="RName" ColumnName="RName" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="v_ModuleAuthority">
+            <EntityTypeMapping TypeName="GlsunViewModel.v_ModuleAuthority">
+              <MappingFragment StoreEntitySet="v_ModuleAuthority">
+                <ScalarProperty Name="MName" ColumnName="MName" />
+                <ScalarProperty Name="AName" ColumnName="AName" />
+                <ScalarProperty Name="MAID" ColumnName="MAID" />
+                <ScalarProperty Name="MID" ColumnName="MID" />
+                <ScalarProperty Name="ROW_ID" ColumnName="ROW_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="v_UserRole">
+            <EntityTypeMapping TypeName="GlsunViewModel.v_UserRole">
+              <MappingFragment StoreEntitySet="v_UserRole">
+                <ScalarProperty Name="RName" ColumnName="RName" />
+                <ScalarProperty Name="RID" ColumnName="RID" />
+                <ScalarProperty Name="UName" ColumnName="UName" />
+                <ScalarProperty Name="ULoginName" ColumnName="ULoginName" />
+                <ScalarProperty Name="UID" ColumnName="UID" />
+                <ScalarProperty Name="ROW_ID" ColumnName="ROW_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="RoleAuthority">
+            <EntityTypeMapping TypeName="GlsunViewModel.RoleAuthority">
+              <MappingFragment StoreEntitySet="RoleAuthority">
+                <ScalarProperty Name="EditingTime" ColumnName="EditingTime" />
+                <ScalarProperty Name="EditorID" ColumnName="EditorID" />
+                <ScalarProperty Name="CreationTime" ColumnName="CreationTime" />
+                <ScalarProperty Name="CreatorID" ColumnName="CreatorID" />
+                <ScalarProperty Name="IsEnabled" ColumnName="IsEnabled" />
+                <ScalarProperty Name="MAID" ColumnName="MAID" />
+                <ScalarProperty Name="RID" ColumnName="RID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="v_Authority">
+            <EntityTypeMapping TypeName="GlsunViewModel.v_Authority">
+              <MappingFragment StoreEntitySet="v_Authority">
+                <ScalarProperty Name="Editor" ColumnName="Editor" />
+                <ScalarProperty Name="Creator" ColumnName="Creator" />
+                <ScalarProperty Name="EditingTime" ColumnName="EditingTime" />
+                <ScalarProperty Name="EditorID" ColumnName="EditorID" />
+                <ScalarProperty Name="CreationTime" ColumnName="CreationTime" />
+                <ScalarProperty Name="CreatorID" ColumnName="CreatorID" />
+                <ScalarProperty Name="IsEnabled" ColumnName="IsEnabled" />
+                <ScalarProperty Name="AIsCommon" ColumnName="AIsCommon" />
+                <ScalarProperty Name="AShowNumber" ColumnName="AShowNumber" />
+                <ScalarProperty Name="AClassName" ColumnName="AClassName" />
+                <ScalarProperty Name="AIconType" ColumnName="AIconType" />
+                <ScalarProperty Name="AIcon" ColumnName="AIcon" />
+                <ScalarProperty Name="AType" ColumnName="AType" />
+                <ScalarProperty Name="ACode" ColumnName="ACode" />
+                <ScalarProperty Name="AName" ColumnName="AName" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="v_UserModule">
+            <EntityTypeMapping TypeName="GlsunViewModel.v_UserModule">
+              <MappingFragment StoreEntitySet="v_UserModule">
+                <ScalarProperty Name="MUrl" ColumnName="MUrl" />
+                <ScalarProperty Name="MName" ColumnName="MName" />
+                <ScalarProperty Name="MPID" ColumnName="MPID" />
+                <ScalarProperty Name="MID" ColumnName="MID" />
+                <ScalarProperty Name="UName" ColumnName="UName" />
+                <ScalarProperty Name="UID" ColumnName="UID" />
+                <ScalarProperty Name="ROW_ID" ColumnName="ROW_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="v_UserModuleAuthority">
+            <EntityTypeMapping TypeName="GlsunViewModel.v_UserModuleAuthority">
+              <MappingFragment StoreEntitySet="v_UserModuleAuthority">
+                <ScalarProperty Name="EditingTime" ColumnName="EditingTime" />
+                <ScalarProperty Name="EditorID" ColumnName="EditorID" />
+                <ScalarProperty Name="CreationTime" ColumnName="CreationTime" />
+                <ScalarProperty Name="CreatorID" ColumnName="CreatorID" />
+                <ScalarProperty Name="IsEnabled" ColumnName="IsEnabled" />
+                <ScalarProperty Name="AIsCommon" ColumnName="AIsCommon" />
+                <ScalarProperty Name="AShowNumber" ColumnName="AShowNumber" />
+                <ScalarProperty Name="AClassName" ColumnName="AClassName" />
+                <ScalarProperty Name="AIconType" ColumnName="AIconType" />
+                <ScalarProperty Name="AIcon" ColumnName="AIcon" />
+                <ScalarProperty Name="AType" ColumnName="AType" />
+                <ScalarProperty Name="ACode" ColumnName="ACode" />
+                <ScalarProperty Name="AName" ColumnName="AName" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="MUrl" ColumnName="MUrl" />
+                <ScalarProperty Name="MName" ColumnName="MName" />
+                <ScalarProperty Name="MPID" ColumnName="MPID" />
+                <ScalarProperty Name="MID" ColumnName="MID" />
+                <ScalarProperty Name="UName" ColumnName="UName" />
+                <ScalarProperty Name="UID" ColumnName="UID" />
+                <ScalarProperty Name="V_ID" ColumnName="V_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserLog">
+            <EntityTypeMapping TypeName="GlsunViewModel.UserLog">
+              <MappingFragment StoreEntitySet="UserLog">
+                <ScalarProperty Name="ULRemark" ColumnName="ULRemark" />
+                <ScalarProperty Name="UName" ColumnName="UName" />
+                <ScalarProperty Name="ULoginName" ColumnName="ULoginName" />
+                <ScalarProperty Name="UID" ColumnName="UID" />
+                <ScalarProperty Name="ULOperationTime" ColumnName="ULOperationTime" />
+                <ScalarProperty Name="ULOperationResult" ColumnName="ULOperationResult" />
+                <ScalarProperty Name="ULOperationDetials" ColumnName="ULOperationDetials" />
+                <ScalarProperty Name="ULOperationType" ColumnName="ULOperationType" />
+                <ScalarProperty Name="ULOperator" ColumnName="ULOperator" />
+                <ScalarProperty Name="ULOperatorID" ColumnName="ULOperatorID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Device">
+            <EntityTypeMapping TypeName="GlsunViewModel.Device">
+              <MappingFragment StoreEntitySet="Device">
+                <ScalarProperty Name="DPort" ColumnName="DPort" />
+                <ScalarProperty Name="EditingTime" ColumnName="EditingTime" />
+                <ScalarProperty Name="EditorID" ColumnName="EditorID" />
+                <ScalarProperty Name="CreationTime" ColumnName="CreationTime" />
+                <ScalarProperty Name="CreatorID" ColumnName="CreatorID" />
+                <ScalarProperty Name="Remark" ColumnName="Remark" />
+                <ScalarProperty Name="CoordinateY" ColumnName="CoordinateY" />
+                <ScalarProperty Name="CoordinateX" ColumnName="CoordinateX" />
+                <ScalarProperty Name="DProtocal" ColumnName="DProtocal" />
+                <ScalarProperty Name="DType" ColumnName="DType" />
+                <ScalarProperty Name="DIcon" ColumnName="DIcon" />
+                <ScalarProperty Name="DAddress" ColumnName="DAddress" />
+                <ScalarProperty Name="DName" ColumnName="DName" />
+                <ScalarProperty Name="SID" ColumnName="SID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DeviceLine">
+            <EntityTypeMapping TypeName="GlsunViewModel.DeviceLine">
+              <MappingFragment StoreEntitySet="DeviceLine">
+                <ScalarProperty Name="EditingTime" ColumnName="EditingTime" />
+                <ScalarProperty Name="EditorID" ColumnName="EditorID" />
+                <ScalarProperty Name="CreationTime" ColumnName="CreationTime" />
+                <ScalarProperty Name="CreatorID" ColumnName="CreatorID" />
+                <ScalarProperty Name="DIDB" ColumnName="DIDB" />
+                <ScalarProperty Name="DIDA" ColumnName="DIDA" />
+                <ScalarProperty Name="DLName" ColumnName="DLName" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Subnet">
+            <EntityTypeMapping TypeName="GlsunViewModel.Subnet">
+              <MappingFragment StoreEntitySet="Subnet">
+                <ScalarProperty Name="EditingTime" ColumnName="EditingTime" />
+                <ScalarProperty Name="EditorID" ColumnName="EditorID" />
+                <ScalarProperty Name="CreationTime" ColumnName="CreationTime" />
+                <ScalarProperty Name="CreatorID" ColumnName="CreatorID" />
+                <ScalarProperty Name="Remark" ColumnName="Remark" />
+                <ScalarProperty Name="CoordinateY" ColumnName="CoordinateY" />
+                <ScalarProperty Name="CoordinateX" ColumnName="CoordinateX" />
+                <ScalarProperty Name="SIcon" ColumnName="SIcon" />
+                <ScalarProperty Name="SAddress" ColumnName="SAddress" />
+                <ScalarProperty Name="SName" ColumnName="SName" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SubnetLine">
+            <EntityTypeMapping TypeName="GlsunViewModel.SubnetLine">
+              <MappingFragment StoreEntitySet="SubnetLine">
+                <ScalarProperty Name="EditingTime" ColumnName="EditingTime" />
+                <ScalarProperty Name="EditorID" ColumnName="EditorID" />
+                <ScalarProperty Name="CreationTime" ColumnName="CreationTime" />
+                <ScalarProperty Name="CreatorID" ColumnName="CreatorID" />
+                <ScalarProperty Name="SIDB" ColumnName="SIDB" />
+                <ScalarProperty Name="SIDA" ColumnName="SIDA" />
+                <ScalarProperty Name="SLName" ColumnName="SLName" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SceneLocation">
+            <EntityTypeMapping TypeName="GlsunViewModel.SceneLocation">
+              <MappingFragment StoreEntitySet="SceneLocation">
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="SceneType" ColumnName="SceneType" />
+                <ScalarProperty Name="CoordinateY" ColumnName="CoordinateY" />
+                <ScalarProperty Name="CoordinateX" ColumnName="CoordinateX" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DeviceOperationLog">
+            <EntityTypeMapping TypeName="GlsunViewModel.DeviceOperationLog">
+              <MappingFragment StoreEntitySet="DeviceOperationLog">
+                <ScalarProperty Name="DOLCardType" ColumnName="DOLCardType" />
+                <ScalarProperty Name="DOLCardSN" ColumnName="DOLCardSN" />
+                <ScalarProperty Name="DOLDeviceSlot" ColumnName="DOLDeviceSlot" />
+                <ScalarProperty Name="DAddress" ColumnName="DAddress" />
+                <ScalarProperty Name="DName" ColumnName="DName" />
+                <ScalarProperty Name="DID" ColumnName="DID" />
+                <ScalarProperty Name="SAddress" ColumnName="SAddress" />
+                <ScalarProperty Name="SName" ColumnName="SName" />
+                <ScalarProperty Name="SID" ColumnName="SID" />
+                <ScalarProperty Name="Remark" ColumnName="Remark" />
+                <ScalarProperty Name="DOLOperationTime" ColumnName="DOLOperationTime" />
+                <ScalarProperty Name="DOLOperationResult" ColumnName="DOLOperationResult" />
+                <ScalarProperty Name="DOLOperationDetials" ColumnName="DOLOperationDetials" />
+                <ScalarProperty Name="DOLOperationType" ColumnName="DOLOperationType" />
+                <ScalarProperty Name="UName" ColumnName="UName" />
+                <ScalarProperty Name="ULoginName" ColumnName="ULoginName" />
+                <ScalarProperty Name="UID" ColumnName="UID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TopologyOperationLog">
+            <EntityTypeMapping TypeName="GlsunViewModel.TopologyOperationLog">
+              <MappingFragment StoreEntitySet="TopologyOperationLog">
+                <ScalarProperty Name="TOLObjectType" ColumnName="TOLObjectType" />
+                <ScalarProperty Name="TOLObjectName" ColumnName="TOLObjectName" />
+                <ScalarProperty Name="TOLObjectID" ColumnName="TOLObjectID" />
+                <ScalarProperty Name="Remark" ColumnName="Remark" />
+                <ScalarProperty Name="TOLOperationTime" ColumnName="TOLOperationTime" />
+                <ScalarProperty Name="TOLOperationResult" ColumnName="TOLOperationResult" />
+                <ScalarProperty Name="TOLOperationDetials" ColumnName="TOLOperationDetials" />
+                <ScalarProperty Name="TOLOperationType" ColumnName="TOLOperationType" />
+                <ScalarProperty Name="UName" ColumnName="UName" />
+                <ScalarProperty Name="ULoginName" ColumnName="ULoginName" />
+                <ScalarProperty Name="UID" ColumnName="UID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AlarmInformation">
+            <EntityTypeMapping TypeName="GlsunViewModel.AlarmInformation">
+              <MappingFragment StoreEntitySet="AlarmInformation">
+                <ScalarProperty Name="UName" ColumnName="UName" />
+                <ScalarProperty Name="ULoginName" ColumnName="ULoginName" />
+                <ScalarProperty Name="UID" ColumnName="UID" />
+                <ScalarProperty Name="AIConfirmTime" ColumnName="AIConfirmTime" />
+                <ScalarProperty Name="AIConfirm" ColumnName="AIConfirm" />
+                <ScalarProperty Name="AITime" ColumnName="AITime" />
+                <ScalarProperty Name="AIContent" ColumnName="AIContent" />
+                <ScalarProperty Name="AILevel" ColumnName="AILevel" />
+                <ScalarProperty Name="AIType" ColumnName="AIType" />
+                <ScalarProperty Name="AISlot" ColumnName="AISlot" />
+                <ScalarProperty Name="DAddress" ColumnName="DAddress" />
+                <ScalarProperty Name="DName" ColumnName="DName" />
+                <ScalarProperty Name="DID" ColumnName="DID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="无" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

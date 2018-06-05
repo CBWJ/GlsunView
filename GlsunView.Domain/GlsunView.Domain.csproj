@@ -1,0 +1,182 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{D7F1722A-6028-413B-826C-660258CC05E0}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>GlsunView.Domain</RootNamespace>
+    <AssemblyName>GlsunView.Domain</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AlarmInformation.cs">
+      <DependentUpon>GlsunViewModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Authority.cs">
+      <DependentUpon>GlsunViewModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Device.cs">
+      <DependentUpon>GlsunViewModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DeviceLine.cs">
+      <DependentUpon>GlsunViewModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DeviceOperationLog.cs">
+      <DependentUpon>GlsunViewModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GlsunViewModel.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>GlsunViewModel.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GlsunViewModel.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>GlsunViewModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GlsunViewModel.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>GlsunViewModel.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Module.cs">
+      <DependentUpon>GlsunViewModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModuleAuthority.cs">
+      <DependentUpon>GlsunViewModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Role.cs">
+      <DependentUpon>GlsunViewModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="RoleAuthority.cs">
+      <DependentUpon>GlsunViewModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SceneLocation.cs">
+      <DependentUpon>GlsunViewModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Subnet.cs">
+      <DependentUpon>GlsunViewModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SubnetLine.cs">
+      <DependentUpon>GlsunViewModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TopologyOperationLog.cs">
+      <DependentUpon>GlsunViewModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="User.cs">
+      <DependentUpon>GlsunViewModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="UserLog.cs">
+      <DependentUpon>GlsunViewModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="UserRole.cs">
+      <DependentUpon>GlsunViewModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="v_Authority.cs">
+      <DependentUpon>GlsunViewModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="v_ModuleAuthority.cs">
+      <DependentUpon>GlsunViewModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="v_ModuleTree.cs">
+      <DependentUpon>GlsunViewModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="v_ModuleUser.cs">
+      <DependentUpon>GlsunViewModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="v_Role.cs">
+      <DependentUpon>GlsunViewModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="v_User.cs">
+      <DependentUpon>GlsunViewModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="v_UserModule.cs">
+      <DependentUpon>GlsunViewModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="v_UserModuleAuthority.cs">
+      <DependentUpon>GlsunViewModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="v_UserRole.cs">
+      <DependentUpon>GlsunViewModel.tt</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EntityDeploy Include="GlsunViewModel.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>GlsunViewModel.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.Config" />
+    <None Include="GlsunViewModel.edmx.diagram">
+      <DependentUpon>GlsunViewModel.edmx</DependentUpon>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="GlsunViewModel.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>GlsunViewModel.edmx</DependentUpon>
+      <LastGenOutput>GlsunViewModel.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="GlsunViewModel.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>GlsunViewModel.edmx</DependentUpon>
+      <LastGenOutput>GlsunViewModel.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

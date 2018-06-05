@@ -1,0 +1,179 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <link rel="stylesheet" href="~/Content/bootstrap.min.css"/>
+    <title>_CardInfo</title>
+    <style>
+        *{
+            padding: 0;
+            margin: 0;
+        }
+        .clearfix:after{
+            content:"";
+            display:table;
+            clear:both;
+        }
+        .tab{
+            height: 100%;
+        }
+        .tab-title{
+            background-color: #fff;
+            border-bottom: 1px solid #bbb;
+        }
+        .tab-title>li{
+            list-style: none;
+            float: left;
+            /*width: 90px;*/
+            margin-right: 5px;
+            margin-bottom: -1px;
+            border-top:3px solid transparent;
+        }
+        .tab-title>li.active{
+            border-top-color: #3c8dbc;
+        }
+        .tab-title>li>a{
+            text-align: center;
+            text-decoration: none;
+            padding: 5px 10px;
+            display: block;
+            border: 1px solid transparent;
+            color: #444;
+            z-index: 1;
+        }
+        .tab-title>li.active>a{
+            cursor: default;
+            border: 1px solid #ddd;
+            border-bottom-color: #fff;
+            border-top-color: transparent;
+        }
+        .tab-title>li:first-of-type.active>a{
+            border-left: transparent;
+        }
+        .tab-content>.tab-pane{
+            display: none;
+        }
+        .tab-content>div.active{
+            display: block;
+        }
+        #alert{
+            position:absolute;  
+            top:50%;            
+            left:50%; 
+            margin:-100px 0 0 -150px;     
+            width:300px;                             
+            /*height:200px;*/                           
+            z-index:99; 
+            text-align:center;
+            display:none;
+        }
+    </style>
+    @if (IsSectionDefined("AddToHead"))
+    {
+        @RenderSection("AddToHead", required: false)
+    }
+</head>
+<body>
+    @RenderBody()
+    <div class="alert" id="alert"></div>
+    <script src="~/scripts/jquery-1.9.1.min.js"></script>
+    <script src="~/scripts/jquery.form.min.js"></script>
+    <script src="~/scripts/jquery.validate.min.js"></script>
+    <script src="~/scripts/bootstrap.min.js"></script>
+    <script>
+        $(function () {
+            $(".tab-title>li").click(function () {
+                var $this = $(this);
+                if ($this.hasClass("active")) return;
+                $(".tab-title>li.active").removeClass("active");
+                $(".tab-content>div.active").removeClass("active");
+                $this.addClass("active");
+                var id = $this.children("a").attr("href");
+                $(id).addClass("active");
+                //document.documentElement.scrollTop = document.body.scrollTop = 0;
+                //setTimeout(function () {
+                //    console.log(document.documentElement.scrollTop + "," + document.body.scrollTop);
+                //    document.documentElement.scrollTop = document.body.scrollTop = 0;
+                //}, 50);
+                setTimeout(function () {
+                    if ($(document).scrollTop() != 0) {
+                        $(document).scrollTop(0);
+                    }
+                }, 10);
+            });
+        });
+        //  提交后
+        function onSuccess(data, statusText, xhr) {
+            if (statusText == "success" && data) {
+                var divAlert = $("#alert");
+                if (data.Code == "") {
+                    divAlert.removeClass("alert-danger").addClass("alert-success");
+                }
+                else {
+                    divAlert.removeClass("alert-success").addClass("alert-danger");
+                }
+                divAlert.text(data.Data);
+                divAlert.show();
+                setInterval(function () {
+                    divAlert.fadeOut();
+                }, 1500);
+            }
+        }
+        function setParam(url, endPoint, dId) {
+            var td = $(this).parent("td").prev();
+            var c = traverseChild(td[0]);
+            $.post(url,
+                {
+                    endpoint: endPoint,
+                    name: c.name,
+                    value: c.value,
+                    did: dId
+                },
+                function (data, status, jqXHR) {
+                    if (data) {
+                        var divAlert = $("#alert");
+                        if (data.Code == "") {
+                            divAlert.removeClass("alert-danger").addClass("alert-success");
+                        }
+                        else {
+                            divAlert.removeClass("alert-success").addClass("alert-danger");
+                        }
+                        divAlert.text(data.Data);
+                        divAlert.show();
+                        setInterval(function () {
+                            divAlert.fadeOut();
+                        }, 1500);
+                    }
+                }, "json");
+        }
+        //遍历子节点，不通用
+        function traverseChild(elem) {
+            //只遍历元素节点
+            if (elem.nodeType == 1) {
+                //没有子元素跳出
+                if (elem.children.length == 0) return null;
+                for (var i = 0; i < elem.children.length; ++i) {
+                    var child = elem.children[i];
+                    if (child.nodeName == "SELECT" || child.nodeName == "INPUT") {
+                        return child;
+                    }
+                    if (child.children.length != 0) {
+                        return traverseChild(child);
+                    }
+                }
+            }
+            else return null;
+        }
+    </script>
+    @if (IsSectionDefined("AddToEnd"))
+    {
+        @RenderSection("AddToEnd", required: false)
+    }
+</body>
+</html>

@@ -1,0 +1,362 @@
+﻿@model GlsunView.Models.OEOInfo
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_CardInfo.cshtml";
+    List<GlsunView.Models.SFPModule> spfList = new List<GlsunView.Models.SFPModule>();
+}
+@section AddToHead{
+    <style>
+        html,body{
+            height: 100%;
+            font-family: Arial, Microsoft YaHei, SimSun , Tahoma, Helvetica, "\5b8b\4f53", sans-serif;
+        }
+        .device-info {
+            width: 100%;
+        }
+
+            .device-info td {
+                padding: 2px 2px;
+            }
+
+            .device-info tr > td.name {
+                width: 150px;
+            }
+
+            .device-info tr > td.value {
+                text-align: center;
+            }
+
+        .panel {
+            margin-bottom: 2px;
+        }
+
+        .panel-body {
+            padding: 0px;
+        }
+
+        .table-config tr > td.name {
+            width: 70px;
+        }
+
+        .table-config tr > td.value {
+            text-align: center;
+        }
+
+        .table-config td {
+            padding: 2px 2px;
+        }
+
+        .row {
+            margin-right: 0px;
+            margin-left: 0px;
+        }
+
+        .col-xs-6 {
+            padding-right: 2px;
+            padding-left: 2px;
+        }
+        .log-frame{
+            height:100%;
+            width:100%;
+            border:0;
+        }
+        #tab_3, #tab_4{
+            position:absolute;
+            left:0;
+            top:35px;
+            right:0;
+            bottom:5px;
+        }
+    </style>
+}
+<div class="tab">
+    <ul class="tab-title clearfix">
+        <li class="active"><a href="#tab_1">基本信息</a></li>
+        <li><a href="#tab_2">配置管理</a></li>
+        <li><a href="#tab_3">告警信息</a></li>
+        <li><a href="#tab_4">日志</a></li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane active" id="tab_1">
+            <table class="table-striped device-info">
+                <tbody>
+                    <tr id="param">
+                        <td class="name">参数</td>
+                        <td class="value">1</td>
+                        <td class="value">2</td>
+                        <td class="value">3</td>
+                        <td class="value">4</td>
+                        <td class="value">5</td>
+                        <td class="value">6</td>
+                        <td class="value">7</td>
+                        <td class="value">8</td>
+                    </tr>
+                    <tr id="param">
+                        <td class="name">状态</td>
+                        @foreach (var e in Model.SFPSet)
+                        {
+                            <td class="value sfp-module-@e.SlotPosition">@(e.Status == 1 ? "On" : "Off")</td>
+                        }
+                    </tr>
+                    <tr id="Work_Mode">
+                        <td class="name">工作模式</td>
+                        @foreach (var e in Model.SFPSet)
+                        {
+                            <td class="value sfp-module-@e.SlotPosition">
+                                @switch (e.Work_Mode)
+                                {
+                                    case 1:
+                                        @:普通
+                                        break;
+                                    case 2:
+                                        @:旁路
+                                        break;
+                                    case 3:
+                                        @:环回
+                                        break;
+                                    default:
+                                        @:其他
+                                        break;
+                                }
+                            </td>
+                        }
+                    </tr>
+                    <tr id="Tx_Power_Control">
+                        <td class="name">发光控制</td>
+                        @foreach (var e in Model.SFPSet)
+                        {
+                            <td class="value sfp-module-@e.SlotPosition">
+                                @switch (e.Tx_Power_Control)
+                                {
+                                    case 0:
+                                        @:关闭
+                                        break;
+                                    case 1:
+                                        @:开启
+                                        break;
+                                    case 2:
+                                        @:自动
+                                        break;
+                                    default:
+                                        @:其他
+                                        break;
+                                }
+                            </td>
+                        }
+                    </tr>
+                    <tr id="Tx_Power">
+                        <td class="name">发光功率 (dBm)</td>
+                        @foreach (var e in Model.SFPSet)
+                        {
+                            <td class="value sfp-module-@e.SlotPosition">@e.Tx_Power.ToString("F2")</td>
+                        }
+                    </tr>
+                    <tr id="Rx_Power">
+                        <td class="name">收光功率 (dBm)</td>
+                        @foreach (var e in Model.SFPSet)
+                        {
+                            <td class="value sfp-module-@e.SlotPosition">@e.Rx_Power.ToString("F2")</td>
+                        }
+                    </tr>
+                    <tr id="Module_Wave">
+                        <td class="name">模块波长 (nm)</td>
+                        @foreach (var e in Model.SFPSet)
+                        {
+                            <td class="value sfp-module-@e.SlotPosition">@e.Module_Wave</td>
+                        }
+                    </tr>
+                    <tr id="Transmission_Distance">
+                        <td class="name">模块传输距离 (Km)</td>
+                        @foreach (var e in Model.SFPSet)
+                        {
+                            <td class="value sfp-module-@e.SlotPosition">@e.Transmission_Distance</td>
+                        }
+                    </tr>
+                    <tr id="Transmission_Rate">
+                        <td class="name">模块速率 (Gbit/s)</td>
+                        @foreach (var e in Model.SFPSet)
+                        {
+                            <td class="value sfp-module-@e.SlotPosition">@e.Transmission_Rate</td>
+                        }
+                    </tr>
+                    <tr id="Module_Temperature">
+                        <td class="name">模块温度 (摄氏度)</td>
+                        @foreach (var e in Model.SFPSet)
+                        {
+                            <td class="value sfp-module-@e.SlotPosition">@e.Module_Temperature</td>
+                        }
+                    </tr>
+                    <tr id="Tx_Power_State">
+                        <td class="name">发光状态</td>
+                        @foreach (var e in Model.SFPSet)
+                        {
+                            <td class="value sfp-module-@e.SlotPosition">
+                                @switch (e.Tx_Power_State)
+                                {
+                                    case 0:
+                                        @:告警
+                                        break;
+                                    case 1:
+                                        @:正常
+                                        break;
+                                    default:
+                                        @:其他
+                                        break;
+                                }
+                            </td>
+                        }
+                    </tr>
+                    <tr id="Rx_Power_State">
+                        <td class="name">收光状态</td>
+                        @foreach (var e in Model.SFPSet)
+                        {
+                            <td class="value sfp-module-@e.SlotPosition">
+                                @switch (e.Rx_Power_State)
+                                {
+                                    case 0:
+                                        @:告警
+                                        break;
+                                    case 1:
+                                        @:正常
+                                        break;
+                                    default:
+                                        @:其他
+                                        break;
+                                }
+                            </td>
+                        }
+                    </tr>
+                    <tr id="Module_Temperature_State">
+                        <td class="name">模块温度状态</td>
+                        @foreach (var e in Model.SFPSet)
+                        {
+                            <td class="value sfp-module-@e.SlotPosition">
+                                @switch (e.Module_Temperature_State)
+                                {
+                                    case 0:
+                                        @:告警
+                                        break;
+                                    case 1:
+                                        @:正常
+                                        break;
+                                    default:
+                                        @:其他
+                                        break;
+                                }
+                            </td>
+                        }
+                    </tr>
+                    <tr id="Software_Version">
+                        <td class="name">软件版本号</td>
+                        <td class="value" colspan="7">@Model.Software_Version</td>
+                    </tr>
+                    <tr id="Hardware_Version">
+                        <td class="name">硬件版本号</td>
+                        <td class="value" colspan="7">@Model.Hardware_Version</td>
+                    </tr>
+                    <tr id="Serial_Number">
+                        <td class="name">生产序列号</td>
+                        <td class="value" colspan="7">@Model.Serial_Number</td>
+                    </tr>
+                    <tr id="Manufacture_Date">
+                        <td class="name">生产日期</td>
+                        <td class="value" colspan="7">@Model.Manufacture_Date</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="tab-pane" id="tab_2">
+            @for (int i = 0, k = 0; i < Model.SFPSet.Count / 2; ++i)
+            {
+                {
+                    spfList.Clear();
+                    spfList.Add(Model.SFPSet.ElementAt(k++));
+                    spfList.Add(Model.SFPSet.ElementAt(k++));
+                }
+                <div class="row">
+                    @foreach (var sfp in spfList)
+                    {
+                        <div class="col-xs-6">
+                            <div class="panel panel-info">
+                                <div class="panel-heading">模块 @sfp.SlotPosition</div>
+                                <div class="panel-body">
+                                    <form id="formSFP-@sfp.SlotPosition" class="form-sfp"
+                                          method="post" action="@Url.Action("SetParam","OEOCard")">
+                                        <input type="hidden" name="SlotPosition" value="@sfp.SlotPosition" />
+                                        <input type="hidden" name="endpoint" value="@ViewBag.EndPoint" />
+                                        <input type="hidden" name="did" value="@ViewBag.Did" />
+                                        <input type="hidden" name="paramName" value="" />
+                                        <table class="table-config">
+                                            <tbody>
+                                                <tr>
+                                                    <td class="name">工作模式</td>
+                                                    <td class="value">
+                                                        <select name="Work_Mode" class="form-control input-sm">
+                                                            <option value="1" @(sfp.Work_Mode == 1 ? "selected" : "")>普通模式</option>
+                                                            @*<option value="2" @(sfp.Work_Mode == 2 ? "selected" : "")>旁路模式</option>*@
+                                                            <option value="3" @(sfp.Work_Mode == 3 ? "selected" : "")>环回模式</option>
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <button type="button" class="btn btn-sm btn-default">SET</button>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="name">发光控制</td>
+                                                    <td class="value">
+                                                        <select name="Tx_Power_Control" class="form-control input-sm">
+                                                            <option value="0" @(sfp.Tx_Power_Control == 0 ? "selected" : "")>关闭</option>
+                                                            <option value="1" @(sfp.Tx_Power_Control == 1 ? "selected" : "")>开启</option>
+                                                            <option value="2" @(sfp.Tx_Power_Control == 2 ? "selected" : "")>自动</option>
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <button type="button" class="btn btn-sm btn-default">SET</button>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+        <div class="tab-pane" id="tab_3">
+            <iframe src="@Url.Action("CardAlarm","CurrentAlram",new { did = ViewBag.Did, slot = ((string)ViewBag.EndPoint).Split(':')[2]})"
+                    class="log-frame"></iframe>
+        </div>
+        <div class="tab-pane" id="tab_4">
+            <iframe src="@Url.Action("CardLog","DeviceLog",new { did = ViewBag.Did, slot = ((string)ViewBag.EndPoint).Split(':')[2]})"
+                    class="log-frame"></iframe>
+        </div>
+    </div>
+</div>
+@section AddToEnd{
+    <script>
+        $(function () {
+            $(".form-sfp").ajaxForm({
+                success: onSuccess
+            });
+            $(".form-sfp button").click(function () {
+                var $this = $(this);
+                var $form = $(this).parents("form");
+                //console.log($form[0].id);
+                var td = $this.parent("td").prev();
+                var c = traverseChild(td[0]);
+                //console.log(c.name);
+                var param = $form.children("input[name='paramName']");
+                param.val(c.name);
+                submitForm($form[0].id);
+            });
+        });
+        //提交表单
+        function submitForm(id) {
+            $("#" + id).submit();
+        }
+
+    </script>    
+}
+

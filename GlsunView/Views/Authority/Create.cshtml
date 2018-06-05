@@ -1,0 +1,130 @@
+﻿@model GlsunView.Domain.Authority
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_EditLayout.cshtml";
+    string action = (string)@ViewBag.Action;
+}
+
+@using (Html.BeginForm(action, "Authority", FormMethod.Post, new { id = "dataForm", @class = "form-horizontal" }))
+{
+    <div class="form-group">
+        <label class="col-xs-2 control-label">权限名</label>
+        <div class="col-xs-4">
+            @Html.TextBoxFor(m => m.AName, new { @class = "form-control" })
+        </div>
+        <label class="col-xs-2 control-label">权限代码</label>
+        <div class="col-xs-4">
+            @Html.TextBoxFor(m => m.ACode, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-xs-2 control-label">权限类型</label>
+        <div class="col-xs-4">
+            @Html.TextBoxFor(m => m.AType, new { @class = "form-control" })
+        </div>
+        <label class="col-xs-2 control-label">权限图标</label>
+        <div class="col-xs-4">
+            @Html.TextBoxFor(m => m.AIcon, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-xs-2 control-label">图标类型</label>
+        <div class="col-xs-4">
+            <select class="form-control" name="AIconType">
+                <option value="font" @(Model.AIconType == "font" ? "selected" : "")>字体</option>
+                <option value="image" @(Model.AIconType == "image" ? "selected" : "")>图像</option>
+            </select>
+        </div>
+        <label class="col-xs-2 control-label">样式类名</label>
+        <div class="col-xs-4">
+            @Html.TextBoxFor(m => m.AClassName, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-xs-2 control-label">显示序号</label>
+        <div class="col-xs-4">
+            @Html.TextBoxFor(m => m.AShowNumber, new { @class = "form-control" })
+        </div>
+        <label class="col-xs-2 control-label">是否通用</label>
+        <div class="col-xs-4">
+            <select class="form-control" name="AIsCommon">
+                <option value="False" @(!Model.AIsCommon.HasValue || (Model.AIsCommon.HasValue && Model.AIsCommon.Value == false) ? "selected" : "")>否</option>
+                <option value="True" @(Model.AIsCommon.HasValue && Model.AIsCommon.Value == true ? "selected" : "")>是</option>
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-xs-2 control-label">是否启用</label>
+        <div class="col-xs-4">
+            <select class="form-control" name="IsEnabled">
+                <option value="False" @(!Model.IsEnabled.HasValue || (Model.IsEnabled.HasValue && Model.IsEnabled.Value == false) ? "selected" : "")>否</option>
+                <option value="True" @(Model.IsEnabled.HasValue && Model.IsEnabled.Value == true ? "selected" : "")>是</option>
+            </select>
+        </div>
+    </div>
+}
+
+<script>
+        $(function () {
+            //注册表单提交方式为ajaxForm
+            $("#dataForm").ajaxForm({
+                success: onSuccess
+            });
+            //开启验证
+            $("#dataForm").validate({
+                rules: {
+                    AName:{
+                        required: true,
+                        maxlength: 20
+                    },
+                    ACode:{
+                        required: true,
+                        maxlength: 20
+                    },
+                    AType:{
+                        required: true,
+                        maxlength: 10
+                    },
+                    AIcon:{
+                        required: true,
+                        maxlength: 50
+                    },
+                    AClassName:{
+                        required: true,
+                        maxlength: 255
+                    },
+                    AShowNumber:{
+                        required: true,
+                        digits: true
+                    }
+                    }
+                });
+        });
+
+        //  提交后
+        function onSuccess(data, statusText, xhr) {
+            if (data) {
+                parent.window.childCallback(data);
+            }
+        }
+
+        //提交表单
+        function submitForm() {
+            if (!$("#dataForm").valid()) {
+                return;
+            };
+            $('#dataForm').submit();
+        }
+</script>
+@{
+    if (action == "Details")
+    {
+        <script>
+                        (function ($) {
+                            if (!$) return;
+                            $(".form-group div input").attr("disabled", "disabled");
+                            $(".form-group div select").attr("disabled", "disabled");
+                        }(jQuery));
+        </script>
+    }
+}

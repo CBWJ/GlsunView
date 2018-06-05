@@ -1,0 +1,289 @@
+﻿@using GlsunView.Infrastructure.HtmlHelpers
+@using GlsunView.Domain
+@model GlsunView.Domain.User
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <meta charset="utf-8"/>
+    <link rel="stylesheet" href="~/Content/font-awesome.min.css" />
+    <link rel="stylesheet" href="~/Content/css/layout.css" />
+    <link rel="stylesheet" href="~/Content/css/leftMenu.css" />
+    <link rel="stylesheet" href="~/Content/css/nav.css" />
+    <link rel="stylesheet" href="~/Content/css/status.css" />
+    <link rel="stylesheet" href="~/Content/css/tab.css" />
+    <link rel="stylesheet" href="~/Content/css/tabEx.css" />
+    <link rel="stylesheet" href="~/Content/css/dialog.css" />
+    <script src="~/scripts/jquery-1.9.1.min.js"></script>
+    <script src="~/scripts/glsun.control.js"></script>
+    <script src="~/scripts/jquery.leftmenu.js"></script>
+    <script src="~/scripts/lib/dialog.js"></script>
+    <title>Glsun View网管系统</title>
+</head>
+<body>
+    <div class="main_body">
+        <div class="main_body_top">
+            <div class="nav-bar">
+                <div class="nav-bar-left">
+                    <a id="menu" href="#">
+                        <i class="fa fa-list-ul fa-fw"></i>
+                    </a>
+                    <a id="status" href="#">
+                        <i class="fa fa-bar-chart fa-fw"></i>
+                    </a>
+                    <a>
+                        Glsun View 网管系统
+                    </a>
+                </div>
+                <ul class="nav-bar-menu">
+                    <li><a href="#">帮助</a></li>
+                    <li class="drop-down">
+                        <a href="#">
+                            <i class="fa fa-user"></i>
+                            <span>@Model.UName</span>
+                            <i class="fa fa-caret-down drop-down-arrow"></i>
+                        </a>
+                        <ul class="drop-down-content">
+                            <li><a href="#" onclick="changePWD();">修改密码</a></li>
+                            @*<li><a href="">退&#12288;&#12288;出</a></li>*@
+                            <li id="exit">@Html.ActionLink("退　　出", "Logout", "Account")</li>
+                        </ul>
+                    </li>
+                    <li>2018年3月8日 星期三</li>
+                </ul>
+            </div>
+        </div>
+        <div class="main_body_content">
+            <div class="content_menu">
+                <div class="leftMenu">
+                    @*@Html.ModuleMenu((IEnumerable<Module>)ViewBag.Menu)*@
+                    @Html.Action("Menu")
+                </div>
+            </div>
+            <div class="content_container">
+                <div id="tabControl" class="tab"></div>
+            </div>
+        </div>
+        <div class="main_body_bottom">
+            <div class="tabEx">
+                <div class="tabEx-body">
+                    <div class="active" id="tab1">
+                        <iframe src="@Url.Action("Index", "CurrentAlram")"></iframe>
+                    </div>
+                    <div id="tab2">
+                        <iframe src="@Url.Action("Index", "CurrentAlram")"></iframe>
+                    </div>
+                    @*<div class="active" id="tab1">
+                        <iframe src="@Url.Action("Index", "CurrentAlram", new { level="CRITICAL"})"></iframe>
+                    </div>
+                    <div id="tab2">
+                        <iframe src="@Url.Action("Index", "CurrentAlram", new { level="MAJOR"})"></iframe>
+                    </div>
+                    <div id="tab3">
+                        <iframe src="@Url.Action("Index", "CurrentAlram", new { level="MINOR"})"></iframe>
+                    </div>
+                    <div id="tab4">
+                        <iframe src="@Url.Action("Index", "CurrentAlram", new { level="WARN"})"></iframe>
+                    </div>
+                    <div id="tab5">
+                        <iframe src="@Url.Action("Index", "CurrentAlram", new { level="NORMAL"})"></iframe>
+                    </div>*@
+                </div>
+                <div class="tabEx-header">
+                    <ul>
+                        <li class="active" data-tab="tab1">当前告警</li>
+                        <li data-tab="tab2">历史告警</li>
+                        @*<li class="active" data-tab="tab1">严重</li>
+                        <li data-tab="tab2">重要</li>
+                        <li data-tab="tab3">次要</li>
+                        <li data-tab="tab4">警告</li>
+                        <li data-tab="tab5">正常</li>*@
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+            $(function(){
+                $("#menu").click(function(){
+                    var interval = 200;
+                    if($(".content_menu").css("marginLeft") != "0px"){
+                        $(".content_menu").animate({marginLeft:0},{duration:interval});
+                        $(".content_container").animate({marginLeft:201},{duration:interval});
+                    }
+                    else{
+                        $(".content_menu").animate({marginLeft:-200},{duration:interval});
+                        $(".content_container").animate({marginLeft:0},{duration:interval});
+                    }
+                });
+                $("#status").click(function(){
+                    var interval = 200;
+                    if($(".main_body_bottom").css("height") != "0px"){
+                        $(".main_body_bottom").animate({height:0},{duration:interval});
+                        $(".main_body_content").animate({bottom:0},{duration:interval});
+                    }
+                    else{
+                        $(".main_body_bottom").animate({height:150},{duration:interval});
+                        $(".main_body_content").animate({bottom:150},{duration:interval});
+                    }
+                });
+
+                glsun.tab.init("#tabControl",{onTabClose:function(e){
+                    //glsun.status.appendNormal("你关闭了一个标签页【");
+                    //glsun.status.appendError(e.title);
+                    //glsun.status.appendNormal("】地址是：");
+                    //glsun.status.appendError(e.url);
+                    //glsun.status.appendLine("","");
+                }});
+                glsun.status.init("#statusContent");
+                initMenu();
+
+                //$("#exit").on("click", function () {
+                //    var a = CefSharp;
+                //    CefSharp.BindObjectAsync("myBound");
+                //    var b = window.myBound;
+                //    alert("退出");
+                //});
+                $(".tabEx-header ul li").click(function () {
+                    var $this = $(this);
+                    if ($this.hasClass("active")) return;
+                    $(".tabEx-body div.active").removeClass("active");
+                    $(".tabEx-header ul li.active").removeClass("active");
+                    $this.addClass("active");
+                    document.getElementById($this.data("tab")).className = "active";
+                });
+            });
+            var pwdDialog = null;
+            function changePWD() {
+                pwdDialog = dialog({
+                    title: '修改密码',
+                    content: '<iframe name="formFrame" src="@Url.Action("ChangePassword", "Account")"></iframe>',
+                    okValue: '确定',
+                    ok: function () {
+                        //调用Frame的方法
+                        var childWindow = formFrame.window;
+                        childWindow.submitForm();
+                        return false;
+                    },
+                    cancelValue: '取消',
+                    cancel: function () {
+                        //alert("取消");
+                    }
+                }).width(300).height(300).show();
+            }
+        //初始化菜单
+        function initMenu() {
+            var menu = $("div.leftMenu");
+            menu.leftmenu({
+                clickCallBack: function () {
+                    //alert(this.innerText);
+                    var aTag = $(this).children("a")[0]
+                    var title = aTag.innerText;
+                    var url = aTag.href;
+                    if (url != "http://" + aTag.host + "/#") {
+                        glsun.tab.add(title, url);
+                        return;
+                        glsun.status.appendNormal("你点击了一个模块：");
+                        glsun.status.appendImportant(title);
+                        glsun.status.appendNormal("网址是：");
+                        glsun.status.appendWarnning(url);
+                        glsun.status.appendLine("", "");
+                    }
+                }
+            });
+        }
+        //菜单改变了
+        function menuChanged(dataId) {
+            var menu = $("div.leftMenu");
+            //保存已展开的数据ID
+            var expands = [];
+            var uls = $(".leftMenu li > ul");
+            uls.each(function (index, element) {
+                var $this = $(this);
+                if ($this.css("display") == "block") {
+                    var liId = $this.parent("li").data("id");
+                    expands.push(liId);
+                }
+            });
+            $.get('@Url.Action("Menu")', "", function (data, status, jqXHR) {
+                if (status == "success") {
+                    menu.html(data);
+                    initMenu();
+                    expandMenu(expands);
+                    //Tab中移除已经删除的子网和设备
+                    var a = menu.find("a");
+                    var arrHref = new Array();
+                    for (var i = 0; i < a.length; ++i) {
+                        var href = $(a[i]).attr("href");
+                        var blank = "http://" + a[i].host + "/#";
+                        if (href != "#") {
+                            var fullHref = "http://" + a[i].host + "/" + href;
+                            arrHref.push(fullHref);
+                            console.log(fullHref);
+                        }
+                    }
+                    for(var prop in glsun.tab.tabPages) {
+                        console.log(prop);
+                        //已打开标签页不存在
+                        if (arrHref.indexOf(prop) == -1) {
+                            glsun.tab.remove(prop);
+                        }
+                    }
+                    //更新标题
+                    if (dataId) {
+                        var aTag = $(".leftMenu li[data-id='" + dataId + "']").children("a")[0];
+                        var title = aTag.innerText;
+                        var url = aTag.href;
+                       glsun.tab.updateTitle(url, title);
+                    }
+                }
+            }, "html");
+        }
+        function expandMenu(ids) {
+            var uls = $(".leftMenu li > ul");
+            uls.each(function (index, element) {
+                var $this = $(this);
+                var liId = $this.parent("li").data("id");
+                if ($.inArray(liId, ids) != -1) {
+                    $this.show();
+                    $this.parent("li").addClass("expanded");
+                    $this.prev().children("i:last").addClass("expanded-Arrow");
+                }
+            });
+        }
+        //子页面回调
+        function childCallback(data) {
+            if (data.Code == "") {
+                var d = dialog({
+                    content: '修改成功！账号将退出，请重新登陆。'
+                });
+                d.show();
+                setTimeout(function () {
+                    d.close().remove();
+                    window.location.reload();
+                }, 2000);
+            } else if (data.Code == "Exception") {
+                var d = dialog({
+                    title: '提示',
+                    content: "服务器异常！\n" + data.Message
+                });
+                d.show();
+            } else {
+                var d = dialog({
+                    title: '提示',
+                    content: "请求异常！" 
+                });
+                d.show();
+            }
+            if (pwdDialog) {
+                pwdDialog.close().remove();
+            }
+        }
+    </script>
+</body>
+</html>

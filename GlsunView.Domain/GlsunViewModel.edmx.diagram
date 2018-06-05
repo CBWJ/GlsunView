@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="550df2ab24bb413896274459ff6f2002" Name="Diagram1" ZoomLevel="71">
+        <EntityTypeShape EntityType="GlsunViewModel.Authority" Width="1.5" PointX="0.75" PointY="1" IsExpanded="true" />
+        <EntityTypeShape EntityType="GlsunViewModel.Module" Width="1.5" PointX="0.75" PointY="9.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="GlsunViewModel.ModuleAuthority" Width="1.5" PointX="0.75" PointY="5.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="GlsunViewModel.Role" Width="1.5" PointX="3.125" PointY="1.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="GlsunViewModel.User" Width="1.5" PointX="5.625" PointY="5.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="GlsunViewModel.UserRole" Width="1.5" PointX="5.125" PointY="1.375" IsExpanded="true" />
+        <AssociationConnector Association="GlsunViewModel.FK_MODULEAU_REFERENCE_AUTHORIT" ManuallyRouted="false" />
+        <AssociationConnector Association="GlsunViewModel.FK_MODULEAU_FK_MODULE_MODULE" ManuallyRouted="false" />
+        <AssociationConnector Association="GlsunViewModel.FK_USERROLE_REFERENCE_ROLE" ManuallyRouted="false" />
+        <AssociationConnector Association="GlsunViewModel.FK_USERROLE_REFERENCE_USER" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="GlsunViewModel.v_ModuleUser" Width="1.5" PointX="7.375" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="GlsunViewModel.v_ModuleTree" Width="1.5" PointX="9" PointY="0.75" />
+        <EntityTypeShape EntityType="GlsunViewModel.v_User" Width="1.5" PointX="12.25" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="GlsunViewModel.v_Role" Width="1.5" PointX="9" PointY="4.875" />
+        <EntityTypeShape EntityType="GlsunViewModel.v_ModuleAuthority" Width="1.5" PointX="10.625" PointY="0.75" />
+        <EntityTypeShape EntityType="GlsunViewModel.v_UserRole" Width="1.5" PointX="13.875" PointY="3.125" />
+        <EntityTypeShape EntityType="GlsunViewModel.RoleAuthority" Width="1.5" PointX="3.5" PointY="5.75" />
+        <AssociationConnector Association="GlsunViewModel.FK_ROLEAUTH_REFERENCE_MODULEAU" />
+        <AssociationConnector Association="GlsunViewModel.FK_ROLEAUTH_REFERENCE_ROLE" />
+        <EntityTypeShape EntityType="GlsunViewModel.v_Authority" Width="1.5" PointX="7.375" PointY="4.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="GlsunViewModel.v_UserModule" Width="1.5" PointX="13.875" PointY="0.75" />
+        <EntityTypeShape EntityType="GlsunViewModel.v_UserModuleAuthority" Width="1.5" PointX="15.5" PointY="0.75" />
+        <EntityTypeShape EntityType="GlsunViewModel.UserLog" Width="1.5" PointX="5.625" PointY="9.25" />
+        <AssociationConnector Association="GlsunViewModel.FK_USERLOG_FK_USELOG_USER" />
+        <EntityTypeShape EntityType="GlsunViewModel.Device" Width="1.5" PointX="9" PointY="13.125" />
+        <EntityTypeShape EntityType="GlsunViewModel.DeviceLine" Width="1.5" PointX="2.875" PointY="13.75" />
+        <EntityTypeShape EntityType="GlsunViewModel.Subnet" Width="1.5" PointX="6.75" PointY="13.375" />
+        <EntityTypeShape EntityType="GlsunViewModel.SubnetLine" Width="1.5" PointX="4.875" PointY="13.75" />
+        <AssociationConnector Association="GlsunViewModel.FK_DEVICE_REFERENCE_SUBNET" />
+        <EntityTypeShape EntityType="GlsunViewModel.SceneLocation" Width="1.5" PointX="11.125" PointY="13.125" />
+        <EntityTypeShape EntityType="GlsunViewModel.DeviceOperationLog" Width="1.5" PointX="12.875" PointY="13.125" />
+        <EntityTypeShape EntityType="GlsunViewModel.TopologyOperationLog" Width="1.5" PointX="14.625" PointY="13.125" />
+        <EntityTypeShape EntityType="GlsunViewModel.AlarmInformation" Width="1.5" PointX="14.625" PointY="9.25" />
+        </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

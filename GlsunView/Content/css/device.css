@@ -1,0 +1,257 @@
+.module{
+    position: relative;
+    zoom: 0.16;
+}
+.module-large{
+    zoom: 0.4;
+}
+.module .light-circle{
+    position: absolute;
+    width: 25px;
+    height: 25px;
+    background-color: #ccc;
+    border-radius: 25px;
+}
+.module-large .light-circle{
+    position: absolute;
+    width: 25px;
+    height: 25px;
+    background-color: #ccc;
+    border-radius: 25px;
+}
+/*状态样式必须放在后面*/
+.module .error{
+    background-color: #f00;
+}
+.module .normal{
+    background-color: lime;
+}
+.module-large .error{
+    background-color: #f00;
+}
+.module-large .normal{
+    background-color: lime;
+}
+/*电口主控*/
+.mc-electronic .pwr1{
+    left: 164px;
+    top: 93px;
+}
+.mc-electronic .pwr2{
+    left: 164px;
+    top: 141px;
+}
+.mc-electronic .run{
+    left: 164px;
+    top: 188px;
+}
+/*光口主控*/
+.mc-optics .pwr1{
+    left: 140px;
+    top: 75px;
+}
+.mc-optics .pwr2{
+    left: 199px;
+    top: 75px;
+}
+.mc-optics .run{
+    left: 258px;
+    top: 75px;
+}
+
+/*OEO*/
+.module .light-rectangle{
+    position: absolute;
+    width: 38px;
+    height: 28px;
+    background-color: #ccc;
+}
+.module-large .light-rectangle{
+    position: absolute;
+    width: 38px;
+    height: 28px;
+    background-color: #ccc;
+}
+/*SFP模块*/            
+.sfp-module{
+    position: absolute;
+    opacity: 0;
+}
+.oeo .module-exist{
+    opacity: 1;
+}
+/*状态样式必须放在后面*/
+.oeo .error{
+    background-color: #f00;
+}
+.oeo .normal{
+    background-color: lime;
+}
+/*位置*/
+.oeo .pwr{
+    left: 275px;
+    top: 76px;
+}
+.oeo .run{
+    left: 275px;
+    top: 115px;
+}
+/*模块位置*/
+.oeo .module-1{
+    left: 374px;
+    top: 60px;
+}
+.oeo .module-2{
+    left: 542px;
+    top: 60px;
+}
+.oeo .module-3{
+    left: 710px;
+    top: 60px;
+}
+.oeo .module-4{
+    left: 878px;
+    top: 60px;
+}
+.oeo .module-5{
+    left: 1065px;
+    top: 60px;
+}
+.oeo .module-6{
+    left: 1233px;
+    top: 60px;
+}
+.oeo .module-7{
+    left: 1401px;
+    top: 60px;
+}
+.oeo .module-8{
+    left: 1569px;
+    top: 60px;
+}       
+/*模块灯位置*/
+.module-light-1{
+    left: 438px;
+    top: 203px;
+}
+.module-light-2{
+    left: 607px;
+    top: 203px;
+}
+.module-light-3{
+    left: 775px;
+    top: 203px;
+}
+.module-light-4{
+    left: 943px;
+    top: 203px;
+}
+.module-light-5{
+    left: 1129px;
+    top: 203px;
+}
+.module-light-6{
+    left: 1297px;
+    top: 203px;
+}
+.module-light-7{
+    left: 1465px;
+    top: 203px;
+}
+.module-light-8{
+    left: 1634px;
+    top: 203px;
+}
+
+/*OLP*/
+.olp .pwr{
+    left: 275px;
+    top: 76px;
+}
+.olp .run{
+    left: 275px;
+    top: 115px;
+}
+.olp .alm{
+    left: 275px;
+    top: 154px;
+}
+.olp .auto{
+    left: 364px;
+    top: 76px;
+}
+.olp .r1{
+    left: 364px;
+    top: 115px;
+}
+.olp .r2{
+    left: 364px;
+    top: 154px;
+}
+.olp .prl{
+    left: 453px;
+    top: 76px;
+}
+.olp .tx{
+    left: 453px;
+    top: 115px;
+}
+.olp .ls{
+    left: 453px;
+    top: 154px;
+}
+
+/*edfa*/
+.edfa .pwr{
+    left: 299px;
+    top: 75px;
+}
+.edfa .run{
+    left: 299px;
+    top: 114px;
+}
+.edfa .in{
+    left: 417px;
+    top: 75px;
+}
+.edfa .out{
+    left: 417px;
+    top: 114px;
+}
+.edfa .mt{
+    left: 535px;
+    top: 75px;
+}
+.edfa .pt{
+    left: 535px;
+    top: 114px;
+}
+/*风扇*/
+.fan-1u .pwr{
+    left: 57px;
+    top: 103px;
+}
+.fan-1u .state{
+    left: 57px;
+    top: 162px;
+}
+.fan-2u .pwr{
+    left: 57px;
+    top: 105px;
+}
+.fan-2u .state{
+    left: 57px;
+    top: 164px;
+}
+.fan-4u .pwr{
+    left: 59px;
+    top: 103px;
+}
+.fan-4u .state{
+    left: 59px;
+    top: 162px;
+}
+/*高亮*/
+.highLight{
+    background-color: #3d80e4;
+}

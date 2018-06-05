@@ -1,0 +1,121 @@
+﻿@model GlsunView.Domain.User
+
+@{
+    Layout = null;
+    string inputClass = "form-control";
+    if (ViewBag.IsValid != null && ViewBag.IsValid == false)
+    {
+        inputClass += " error";
+    }
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <link rel="stylesheet" href="~/Content/bootstrap.min.css"/>
+    <link rel="stylesheet" href="~/Content/bootstrap-theme.min.css" />
+    <link rel="stylesheet" href="~/Content/css/login.css" />
+    <script src="~/scripts/jquery-1.9.1.min.js"></script>
+    <script src="~/scripts/bootstrap.min.js"></script>
+    <script src="~/scripts/jquery.validate.min.js"></script>
+    <title>登录页面</title>
+</head>
+<body>
+    <div class="main-box">
+        <form id="signinForm" action="~/Account/Login" method="POST">
+            <p class="text-center logo-text">光隆科技网络管理系统</p>
+            <div id="summary" class="text-center login-msg">
+                @if (ViewBag.IsValid != null && ViewBag.IsValid == false)
+                {
+                    <label class="error">@ViewBag.LoginMsg</label>
+                }
+            </div>
+            <div class="form-group">
+                <div class="input-group">
+                    <span class="input-group-addon"><span class="glyphicon glyphicon-user"></span></span>
+                    @*<input type="text" class="form-control" value="" placeholder="登录账号" name="ULoginName">*@
+                    @Html.TextBoxFor(m => m.ULoginName, new { @class= inputClass })
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="input-group">
+                    <span class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></span>
+                    @*<input type="password" class="form-control" value="" placeholder="登录密码" name="UPassword">*@
+                    @Html.PasswordFor(m => m.UPassword, new { @class = inputClass, value = Model.UPassword  })                    
+                </div>
+            </div>
+            <div class="input-group">
+                <input type="hidden" id="checkPost" name="rememberUser" value=""/>
+                <div class="checkbox">
+                    <label>
+                        <input id="rememberUser" type="checkbox" value="">
+                        记住登陆账号!
+                    </label>
+                </div>
+            </div>
+            <div class="text-center">
+                <button id="btnLogin" type="submit" class="btn btn-primary btn-lg">&nbsp;登&nbsp;录&nbsp;</button>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <button id="btnReset" type="button" class="btn btn-default btn-lg">&nbsp;重&nbsp;置&nbsp;</button>
+            </div>
+            <div class="text-center">
+                <hr>
+                2001 - 2018 光隆光电科技有限公司
+            </div>
+        </form>
+    </div>
+    <script>
+        var bLoginError = '@(ViewBag.IsValid != null && ViewBag.IsValid == false)'.toLowerCase() == 'true' ? true : false;
+        
+        $(function () {
+            $("#rememberUser").on("click", function () {
+                var checked = document.getElementById("rememberUser").checked;
+                if (checked) {
+                    //alert("选中");
+                    $("#checkPost").val("checked");
+                } else {
+                    //alert("未选中");
+                    $("#checkPost").val("unchecked");
+                }
+            });
+            var validator = $("#signinForm").bind("invalid-form.validate", function () {
+                //此事件只有验证不通过才会触发
+                //alert(validator.numberOfInvalids());
+                //clear服务器发来的错误消息
+                $("#summary").html("");
+            }).validate({
+                debug: false,
+                errorContainer: $("#summary"),
+                errorPlacement: function (error, element) {
+                    error.appendTo($("#summary"));
+                },
+                success: function (label) {
+                },
+                rules: {
+                    ULoginName: {
+                        required: true
+                    },
+                    UPassword: {
+                        required: true
+                    }
+                },
+                messages: {
+                    ULoginName: {
+                        required: "兄弟用户名不能忘了",
+                        minlength: "太短了"
+                    },
+                    UPassword: {
+                        required: "没密码我也帮不上忙啊",
+                        minlength: "这密码长度我不敢接"
+                    }
+                }
+            });
+            $("#btnReset").on("click", function () {
+                validator.resetForm();
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,177 @@
+﻿@using GlsunView.Models;
+@model IEnumerable<GlsunView.Domain.AlarmInformation>
+@{
+    ViewBag.Title = "List";
+    Layout = "~/Views/Shared/_ListLayout.cshtml";
+    var pagingInfo = (PagingInfo)ViewBag.PagingInfo;
+    int dataRowNum = (pagingInfo.CurrentPage - 1) * pagingInfo.ItemsPerPage + 1;
+    var conditions = (AlarmQueryCondition)ViewBag.Conditions;
+    var userModuleAuth = (IEnumerable<GlsunView.Domain.v_UserModuleAuthority>)ViewBag.UserModuleAuth;
+}
+
+<div class="main_body_top">
+    <div class="row">
+        <form class="col-sm-12" action="@Url.Action("List","CurrentAlram")" method="post" id="formSearch">
+            <label class="form-inline">
+                设备IP&nbsp;
+                <input class="form-control" name="IP" value="@conditions.IP" style="width:130px" />
+            </label>
+            <label class="form-inline">
+                告警级别&nbsp;
+                <select class="form-control" name="AlarmLevel">
+                    <option value="不限" @(conditions.AlarmLevel == "不限" ? "selected" : "")>不限</option>
+                    <option value="CRITICAL" @(conditions.AlarmLevel == "CRITICAL" ? "selected" : "")>严重</option>
+                    <option value="MAJOR" @(conditions.AlarmLevel == "MAJOR" ? "selected" : "")>重要</option>
+                    <option value="MINOR" @(conditions.AlarmLevel == "MINOR" ? "selected" : "")>次要</option>
+                    <option value="WARN" @(conditions.AlarmLevel == "WARN" ? "selected" : "")>警告</option>
+                    <option value="NORMAL" @(conditions.AlarmLevel == "NORMAL" ? "selected" : "")>正常</option>
+                </select>
+            </label>
+            <label class="form-inline">
+                告警时间&nbsp;
+                <input type="text" class="form-control" style="width:160px" id="datepickerBeg" name="AlarmTimeBeg"
+                       value="@(conditions.AlarmTimeBeg.ToString("yyyy-MM-dd hh:mm:ss"))" />
+            </label>
+            <label class="form-inline">
+                &nbsp;~&nbsp;
+                <input type="text" class="form-control" style="width:160px" id="datepickerEnd" name="AlarmTimeEnd"
+                       value="@(conditions.AlarmTimeEnd.ToString("yyyy-MM-dd hh:mm:ss"))" />
+            </label>
+            @Html.AuthorityButtonList(userModuleAuth)
+        </form>
+        <form style="display:none" action="@Url.Action("Confirm","CurrentAlram")" method="post" id="formConfirm"></form>
+</div>
+</div>
+<div class="main_body_content">
+    <div class="row">
+        <div class="col-sm-12">
+            <table id="dataGrid" class="table table-bordered table-hover dataTable">
+                <thead>
+                    <tr>
+                        <th>行号</th>
+                        <th>设备名称</th>
+                        <th>设备IP</th>
+                        <th>告警槽位</th>
+                        <th>告警级别</th>
+                        <th>告警内容</th>
+                        <th>告警时间</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var e in Model)
+                    {
+                        <tr data-data-id="@e.ID">
+                            <td>@dataRowNum</td>
+                            <td>@e.DName</td>
+                            <td>@e.DAddress</td>
+                            <td>@e.AISlot</td>
+                            <td>
+                                @switch (e.AILevel)
+                                {
+                                    case "CRITICAL":
+                                        @:严重
+                                    break;
+                                    case "MAJOR":
+                                        @:重要
+                                    break;
+                                    case "MINOR":
+                                        @:次要
+                                    break;
+                                    case "WARN":
+                                        @:警告
+                                    break;
+                                    case "NORMAL":
+                                        @:正常
+                                    break;
+                                    default: break;
+                                }
+                            </td>
+                            <td>@e.AIContent</td>
+                            <td>@e.AITime</td>
+                        </tr>
+                        dataRowNum++;
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="dataTables_length">
+                <label>
+                    第<span>@pagingInfo.CurrentPage</span>页/
+                    共<span>@pagingInfo.TotalPages</span>页&nbsp;
+                    每页显示
+                    <select id="pageSize" class="form-control input-sm">
+                        <option value="10" @(pagingInfo.ItemsPerPage == 10 ? "selected" : "")>10</option>
+                        <option value="15" @(pagingInfo.ItemsPerPage == 15 ? "selected" : "")>15</option>
+                        <option value="25" @(pagingInfo.ItemsPerPage == 25 ? "selected" : "")>25</option>
+                        <option value="50" @(pagingInfo.ItemsPerPage == 50 ? "selected" : "")>50</option>
+                        <option value="100" @(pagingInfo.ItemsPerPage == 100 ? "selected" : "")>100</option>
+                    </select>
+                    条
+                </label>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="dataTables_paginate pull-right">
+                @Html.PageLinks(pagingInfo, x => Url.Action("List", new { page = x, pagesize = pagingInfo.ItemsPerPage }))
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(function () {
+        addCheckboxToTable();
+        $('#datepickerBeg').datetimepicker({
+            autoclose: true,
+            minView: "hour",
+            language: 'zh-CN',
+            format: 'yyyy-mm-dd hh:ii:ss'
+        });
+        $('#datepickerEnd').datetimepicker({
+            autoclose: true,
+            minView: "hour",
+            language: 'zh-CN',
+            format: 'yyyy-mm-dd hh:ii:ss'
+        });
+        $("#btnSearch").click(function () {
+            $("#formSearch").submit();
+        });
+        $("#btnConfirm").click(function () {
+            var $inputs = $("#dataGrid tbody tr td input:checked");
+            if ($inputs.length == 0) {
+                infoDialog.message("提示", "请选中一行进行操作！");
+                return;
+            }
+            var $confirmForm = $("#formConfirm");
+            $confirmForm.html("");
+            $inputs.each(function (i) {
+                var id = $(this).parent("td").parent("tr").data("data-id");
+                console.log(id);
+                $confirmForm.append('<input type="text" name="checkedIds" value="' + id + '"/>')
+            });
+            $confirmForm.submit();
+        });
+    });
+    function addCheckboxToTable() {
+        //标题添加复选框
+        var $tableHeader = $("#dataGrid thead tr");
+        var $checkAllTh = $('<th><input type="checkbox" id="checkAll" name="checkAll" /></th>');
+        $tableHeader.prepend($checkAllTh);
+        var $checkAll = $("#checkAll");
+        $checkAll.click(function (e) {
+            $tableRow.find("input").prop("checked", this.checked);
+            e.stopPropagation();
+        });
+        //数据行添加复选框
+        var $tableRow = $("#dataGrid tbody tr");
+        var $checkItemTd = $('<td><input type="checkbox" name="checkItem" /></td>');
+        $tableRow.prepend($checkItemTd);
+        $tableRow.find("input").click(function (e) {
+            $checkAll.prop("checked", $tableRow.find("input:checked").length == $tableRow.length ? true : false);
+            e.stopPropagation();
+        });
+    }
+</script>
+

@@ -1,0 +1,153 @@
+﻿@model GlsunView.Domain.Module
+@{ 
+    var modules = (IEnumerable<GlsunView.Domain.Module>)ViewBag.Modules;
+}
+<!DOCTYPE html>
+
+<html>
+<head>
+    @*<meta name="viewport" content="width=device-width" />*@
+    <script src="~/scripts/jquery-1.9.1.min.js"></script>
+    <script src="~/scripts/bootstrap.min.js"></script>
+    <script src="~/scripts/jquery.form.min.js"></script>
+    <script src="~/scripts/jquery.validate.min.js"></script>
+    <script src="~/scripts/messages_zh.js"></script>
+    <link rel="stylesheet" href="~/Content/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/Content/css/AdminLTE.min.css" />
+    <link rel="stylesheet" href="~/Content/css/bootstrap.font.css" />
+    <style>
+        input.error{
+            border-color:red;
+        }
+        label.error{
+            color:red;
+        }
+    </style>
+    <title>Index</title>
+</head>
+<body>
+    @using (Html.BeginForm((string)@ViewBag.Action, "Module", FormMethod.Post, new { id="dataForm", @class = "form-horizontal" }))
+    {
+        @Html.HiddenFor(m => m.ID)
+        <div class="form-group">
+            <label for="MName" class="col-xs-2 control-label">模块名</label>
+            <div class="col-xs-4">
+                <input class="form-control" type="text" id="MName" name="MName" value="@Model.MName" required/>
+            </div>
+            <label for="MUrl" class="col-xs-2 control-label">模块地址</label>
+            <div class="col-xs-4">
+                <input class="form-control" type="text" id="MUrl" name="MUrl" value="@Model.MUrl" required/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="MParentID" class="col-xs-2 control-label">父模块</label>
+            <div class="col-xs-4">
+                <select class="form-control" name="MParentID">
+                    <option value="0" @(0 == Model.MParentID ? "selected" : "")>无</option>
+                    @foreach (var e in modules)
+                    {
+                        <option value="@e.ID" @(e.ID == Model.MParentID ? "selected" : "")>@e.MName</option>
+                    }
+                </select>
+            </div>
+            <label for="MLevel" class="col-xs-2 control-label">模块类别</label>
+            <div class="col-xs-4">
+                <select class="form-control" name="MLevel">
+                    <option value="0" @(Model.MLevel == 0 ? "selected" : "")>系统</option>
+                    <option value="1" @(Model.MLevel == 1 ? "selected" : "")>用户</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="MIconType" class="col-xs-2 control-label">图标类型</label>
+            <div class="col-xs-4">
+                <select class="form-control" name="MIconType">
+                    <option value="font" @(Model.MIconType == "font" ? "selected" : "")>字体</option>
+                    <option value="image" @(Model.MIconType == "image" ? "selected" : "")>图像</option>
+                </select>
+            </div>
+            <label for="MIcon" class="col-xs-2 control-label">模块图标</label>
+            <div class="col-xs-4">
+                <input class="form-control" type="text" id="MIcon" name="MIcon" value="@Model.MIcon" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="MSortingNumber" class="col-xs-2 control-label">显示序号</label>
+            <div class="col-xs-4">
+                <input class="form-control" type="text" id="MSortingNumber" name="MSortingNumber" value="@Model.MSortingNumber" />
+            </div>
+            <label for="IsEnabled" class="col-xs-2 control-label">是否启用</label>
+            <div class="col-xs-4">
+                <select class="form-control" name="IsEnabled">
+                    <option value="True" @(Model.IsEnabled.HasValue && Model.IsEnabled.Value ? "selected" : "")>是</option>
+                    <option value="False" @(Model.IsEnabled.HasValue && !Model.IsEnabled.Value ? "selected" : "")>否</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="MType" class="col-xs-2 control-label">模块类型</label>
+            <div class="col-xs-4">
+                <select class="form-control" name="MType">
+                    <option value="menu" @(Model.MType == "menu" ? "selected" : "")>菜单</option>
+                    <option value="topology" @(Model.MType == "topology" ? "selected" : "")>拓扑</option>
+                </select>
+            </div>
+        </div>
+    }
+
+    @{
+        if (ViewBag.ReadOnly != null)
+        {
+            <script>
+            (function ($) {
+                if (!$) return;
+                $(".form-group div input").attr("disabled", "disabled");
+                $(".form-group div select").attr("disabled", "disabled");
+            }(jQuery));
+            </script>
+            }
+    }
+    <script>
+        $(function () {
+            //注册表单提交方式为ajaxForm
+            $("#dataForm").ajaxForm({
+                success: onSuccess
+            });
+            //开启验证
+            $("#dataForm").validate({
+                rules: {
+                    MName: {
+                        required: true,
+                        maxlength: 20
+                    },
+                    MUrl: {
+                        required: true
+                    },
+                    MIcon: {
+                        required: true
+                    },
+                    MSortingNumber: {
+                        required: true,
+                        digits: true
+                    }
+                }
+            });
+        });
+
+        //  提交后
+        function onSuccess(data, statusText, xhr) {
+            if (data) {
+                parent.window.childCallback(data);
+            }
+        }
+
+        //提交表单
+        function submitForm() {
+            if (!$("#dataForm").valid()) {
+                return;
+            };
+            $('#dataForm').submit();
+        }
+    </script>
+</body>
+</html>

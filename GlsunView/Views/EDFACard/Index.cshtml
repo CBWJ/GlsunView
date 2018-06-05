@@ -1,0 +1,222 @@
+﻿@model GlsunView.Models.EDFAInfo
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_CardInfo.cshtml";
+}
+
+@section AddToHead{
+    <style>
+        html,body{
+            height: 100%;
+            font-family: Arial, Microsoft YaHei, SimSun , Tahoma, Helvetica, "\5b8b\4f53", sans-serif;
+        }
+        .device-info{
+            width: 100%;
+        }
+        .device-info td, .table-config td{
+            padding: 2px 10px;
+        }
+        .device-info tr>td.name{
+            width: 200px;
+        } 
+        .device-info tr>td.value{
+            text-align: center;
+        } 
+        .table-config tr>td.name{
+            width: 100px;
+        }
+        .table-config tr>td.value{
+            width: 150px;
+        }
+        .log-frame{
+            height:100%;
+            width:100%;
+            border:0;
+        }
+        #tab_3,#tab_4{
+            position:absolute;
+            left:0;
+            top:35px;
+            right:0;
+            bottom:5px;
+        }
+    </style>
+}
+
+<div class="tab">
+    <ul class="tab-title clearfix">
+        <li class="active"><a href="#tab_1">基本信息</a></li>
+        <li><a href="#tab_2">配置管理</a></li>
+        <li><a href="#tab_3">告警信息</a></li>
+        <li><a href="#tab_4">日志</a></li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane active" id="tab_1">
+            <table class="table-striped device-info">
+                <tbody>
+                    <tr id="Work_Mode">
+                        <td class="name">工作模式</td>
+                        <td class="value">@Model.Work_Mode </td>
+                    </tr>
+                    <tr id="PUMP_Switch">
+                        <td class="name">泵浦开关</td>
+                        <td class="value">@Model.PUMP_Switch </td>
+                    </tr>
+                    <tr id="Input_Power">
+                        <td class="name">输入光功率</td>
+                        <td class="value">@Model.Input_Power dBm</td>
+                    </tr>
+                    <tr id="Output_Power">
+                        <td class="name">输出光功率</td>
+                        <td class="value">@Model.Output_Power dBm</td>
+                    </tr>
+                    <tr id="Input_Power_Limit">
+                        <td class="name">输入光告警门限</td>
+                        <td class="value">@Model.Input_Power_Limit dBm</td>
+                    </tr>
+                    <tr id="Output_Power_Limit">
+                        <td class="name">输出光告警门限</td>
+                        <td class="value">@Model.Output_Power_Limit dBm</td>
+                    </tr>
+                    <tr id="Modlue_Temperature_Upper_Limit">
+                        <td class="name">模块温度告警上限</td>
+                        <td class="value">@Model.Modlue_Temperature_Upper_Limit ℃</td>
+                    </tr>
+                    <tr id="Modlue_Temperature_Lower_Limit">
+                        <td class="name">模块温度告警下限</td>
+                        <td class="value">@Model.Modlue_Temperature_Lower_Limit ℃</td>
+                    </tr>
+                    <tr id="PUMP_Temperature_Upper_Limit">
+                        <td class="name">泵浦温度告警上限</td>
+                        <td class="value">@Model.PUMP_Temperature_Upper_Limit ℃</td>
+                    </tr>
+                    <tr id="PUMP_Temperature_Lower_Limit">
+                        <td class="name">泵浦温度告警下限</td>
+                        <td class="value">@Model.PUMP_Temperature_Lower_Limit ℃</td>
+                    </tr>
+                    <tr id="Input_Power_State">
+                        <td class="name">输入光状态</td>
+                        <td class="value">@Model.Input_Power_State </td>
+                    </tr>
+                    <tr id="Output_Power_State">
+                        <td class="name">输出光状态</td>
+                        <td class="value">@Model.Output_Power_State </td>
+                    </tr>
+                    <tr id="Modlue_Temperature_State">
+                        <td class="name">模块温度状态</td>
+                        <td class="value">@Model.Modlue_Temperature_State </td>
+                    </tr>
+                    <tr id="PUMP_Temperature_State">
+                        <td class="name">泵浦温度状态</td>
+                        <td class="value">@Model.PUMP_Temperature_State </td>
+                    </tr>
+                    <tr id="PUMP_Electric_Current_State">
+                        <td class="name">泵浦电流状态</td>
+                        <td class="value">@Model.PUMP_Electric_Current_State </td>
+                    </tr>
+                    <tr id="Output_Power_Set">
+                        <td class="name">输出光功率配置</td>
+                        <td class="value">@Model.Output_Power_Set dB</td>
+                    </tr>
+                    <tr id="Modlue_Temperature">
+                        <td class="name">模块温度</td>
+                        <td class="value">@Model.Modlue_Temperature ℃</td>
+                    </tr>
+                    <tr id="Modlue_Voltage">
+                        <td class="name">模块电压</td>
+                        <td class="value">@Model.Modlue_Voltage V</td>
+                    </tr>
+                    <tr id="PUMP_Power">
+                        <td class="name">泵浦功率</td>
+                        <td class="value">@Model.PUMP_Power dBm</td>
+                    </tr>
+                    <tr id="PUMP_Temperature">
+                        <td class="name">泵浦温度</td>
+                        <td class="value">@Model.PUMP_Temperature ℃</td>
+                    </tr>
+                    <tr id="PUMP_Electric_Current">
+                        <td class="name">泵浦电流</td>
+                        <td class="value">@Model.PUMP_Electric_Current mA</td>
+                    </tr>
+                    <tr id="TEC_Electric_Current">
+                        <td class="name">TEC 电流</td>
+                        <td class="value">@Model.TEC_Electric_Current mA</td>
+                    </tr>
+                    <tr id="Software_Version">
+                        <td class="name">软件版本</td>
+                        <td class="value">@Model.Software_Version </td>
+                    </tr>
+                    <tr id="hardware_Version">
+                        <td class="name">硬件版本</td>
+                        <td class="value">@Model.hardware_Version </td>
+                    </tr>
+                    <tr id="Serial_Number">
+                        <td class="name">生产序列号</td>
+                        <td class="value">@Model.Serial_Number </td>
+                    </tr>
+                    <tr id="Manufacture_Date">
+                        <td class="name">生产日期</td>
+                        <td class="value">@Model.Manufacture_Date </td>
+                    </tr>
+                    <tr id="Device_Type">
+                        <td class="name">设备类型描述</td>
+                        <td class="value">@Model.Device_Type </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="tab-pane" id="tab_2">
+            <form id="dataForm" action="@Url.Action("ParamSet","EDFACard")" method="post">
+                <input type="hidden" name="endpoint" value="@ViewBag.EndPoint"/>
+                <table class="table-config">
+                    <tbody>
+                        <tr>
+                            <td class="name">工作模式</td>
+                            <td class="value">
+                                <select name="WorkMode" class="form-control input-sm">
+                                    <option value="0" @(Model.Work_Mode == 0 ? "selected" : "")>其他</option>
+                                    <option value="1" @(Model.Work_Mode == 1 ? "selected" : "")>ACC模式</option>
+                                    <option value="2" @(Model.Work_Mode == 2 ? "selected" : "")>APC模式</option>
+                                    <option value="3" @(Model.Work_Mode == 3 ? "selected" : "")>AGC模式</option>
+                                </select>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-sm btn-default">SET</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="name">增益设置</td>
+                            <td class="value">
+                                <div class="input-group">
+                                    <input type="text" class="form-control input-sm" name="Gain" value="@Model.Set_Gain">
+                                    <div class="input-group-addon">dBm</div>
+                                </div>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-default btn-sm">SET</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </form>
+        </div>
+        <div class="tab-pane" id="tab_3">
+            <iframe src="@Url.Action("CardAlarm","CurrentAlram",new { did = ViewBag.Did, slot = ((string)ViewBag.EndPoint).Split(':')[2]})"
+                    class="log-frame"></iframe>
+        </div>
+        <div class="tab-pane" id="tab_4">
+            <iframe src="@Url.Action("CardLog","DeviceLog",new { did = ViewBag.Did, slot = ((string)ViewBag.EndPoint).Split(':')[2]})"
+                    class="log-frame"></iframe>
+        </div>
+    </div>
+</div>
+
+@section AddToEnd{
+    <script>
+        $(function () {
+            $("#tab_2 button").click(function () {
+                setParam.call(this, "@Url.Action("SetParam", "EDFACard")", "@ViewBag.EndPoint", @ViewBag.Did);
+            });
+        });
+    </script>
+}

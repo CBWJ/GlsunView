@@ -1,0 +1,104 @@
+﻿@model GlsunView.Models.RoleAuthrizeInfo
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <link rel="stylesheet" href="~/Content/css/zTreeStyle.css"/>
+    <script src="~/scripts/jquery-1.9.1.min.js"></script>
+    <script src="~/scripts/jquery.form.min.js"></script>
+    <script src="~/scripts/lib/jquery.ztree.core.js"></script>
+    <script src="~/scripts/lib/jquery.ztree.excheck.min.js"></script>
+    <title>Authorize</title>
+</head>
+<body>
+    @using (Html.BeginForm("Authorize", "Role", FormMethod.Post, new { id= "dataForm" }))
+    {
+        @Html.HiddenFor(m => m.RoleId)
+        <ul id="uncheckedList" style="display:none"></ul>
+        <ul id="checkedList" style="display:none"></ul>
+        <ul id="tree" class="ztree" style="width:300px; overflow:auto;"></ul>
+    }
+    <script>
+            var zTreeObj,
+            setting = {
+                view: {
+                    selectedMulti: false,
+                    fontCss : {"font-size": "1.5em"}
+                },
+                data: {
+                    simpleData: {
+                        enable: true,
+                        idKey: "id",
+                        pIdKey: "pId",
+                        rootPId: 0
+                    }
+                },
+                check: {
+                    enable: true,
+                    chkStyle: "checkbox",
+                    chkboxType: { "Y": "ps", "N": "ps" }
+                }
+            },
+            zTreeNodes = @Html.Raw(ViewBag.TreeNodes)
+
+            $(document).ready(function(){
+                zTreeObj = $.fn.zTree.init($("#tree"), setting, zTreeNodes);
+                var treeObj = $.fn.zTree.getZTreeObj("tree");
+                treeObj.expandAll(true);
+
+                //注册表单提交方式为ajaxForm
+                $("#dataForm").ajaxForm({
+                    success: onSuccess
+                });
+                $("#btnTest").click(function(){
+                    var treeObj = $.fn.zTree.getZTreeObj("tree");
+                    var changeCheckedNodes = treeObj.getChangeCheckedNodes();
+
+                    var unCheckedList = $("#uncheckedList");
+                    var checkedList = $("#checkedList");
+                    for (var index in changeCheckedNodes) {
+                        var node = changeCheckedNodes[index];
+                        if (node.level == 2) {
+                            if (node.checked) {
+                                checkedList.append('<li><input type="text" name="CheckedId" value="' + node.dataId + '"/></li>')
+                            } else {
+                                unCheckedList.append('<li><input type="text" name="UnCheckedId" value="' + node.dataId + '"/></li>')
+                            }
+                        }
+                    }
+                    $("#dataForm").submit();
+                });
+            });
+        //提交表单
+        function submitForm() {
+            var treeObj = $.fn.zTree.getZTreeObj("tree");
+            var changeCheckedNodes = treeObj.getChangeCheckedNodes();
+
+            var unCheckedList = $("#uncheckedList");
+            var checkedList = $("#checkedList");
+            for (var index in changeCheckedNodes) {
+                var node = changeCheckedNodes[index];
+                if (node.level == 2) {
+                    if (node.checked) {
+                        checkedList.append('<li><input type="text" name="CheckedId" value="' + node.dataId + '"/></li>')
+                    } else {
+                        unCheckedList.append('<li><input type="text" name="UnCheckedId" value="' + node.dataId + '"/></li>')
+                    }
+                }
+            }
+            $('#dataForm').submit();
+        }
+        //  提交后
+        function onSuccess(data, statusText, xhr) {
+            if (data) {
+                parent.window.childCallback(data);
+            }
+        }
+    </script>
+</body>
+</html>

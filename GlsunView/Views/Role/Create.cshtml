@@ -1,0 +1,68 @@
+﻿@model GlsunView.Domain.Role
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_EditLayout.cshtml";
+    string action = (string)@ViewBag.Action;
+}
+@using (Html.BeginForm(action, "Role", FormMethod.Post, new { id = "dataForm", @class = "form-horizontal" }))
+{
+    @Html.HiddenFor(m => m.ID)
+    <div class="form-group">
+        <label class="col-xs-2 control-label">角色名</label>
+        <div class="col-xs-4">
+            @Html.TextBoxFor(m => m.RName, new { @class = "form-control" })
+        </div>
+        <label class="col-xs-2 control-label">角色代码</label>
+        <div class="col-xs-4">
+            @Html.TextBoxFor(m => m.RCode, new { @class = "form-control" })
+        </div>
+    </div>
+}
+
+<script>
+    $(function () {
+        //注册表单提交方式为ajaxForm
+        $("#dataForm").ajaxForm({
+            success: onSuccess
+        });
+        //开启验证
+        $("#dataForm").validate({
+            rules: {
+                RName: {
+                    required: true,
+                    maxlength: 20
+                },
+                RCode: {
+                    required: true,
+                    maxlength: 20
+                }
+            }
+        });
+    });
+    //提交表单
+    function submitForm() {
+        if (!$("#dataForm").valid()) {
+            return;
+        };
+        $('#dataForm').submit();
+    }
+    //  提交后
+    function onSuccess(data, statusText, xhr) {
+        if (data) {
+            parent.window.childCallback(data);
+        }
+    }
+</script>
+@{
+    if (action == "Details")
+    {
+        <script>
+            (function ($) {
+                if (!$) return;
+                $(".form-group div input").attr("disabled", "disabled");
+                $(".form-group div select").attr("disabled", "disabled");
+            }(jQuery));
+        </script>
+    }
+}

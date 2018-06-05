@@ -1,0 +1,83 @@
+﻿@using GlsunView.Models;
+@model IEnumerable<GlsunView.Domain.v_Role>
+@{
+    ViewBag.Title = "List";
+    Layout = "~/Views/Shared/_ListLayout.cshtml";
+    var pagingInfo = (PagingInfo)ViewBag.PagingInfo;
+    int dataRowNum = (pagingInfo.CurrentPage - 1) * pagingInfo.ItemsPerPage + 1;
+    int startRowNum = dataRowNum;
+    var userModuleAuth = (IEnumerable<GlsunView.Domain.v_UserModuleAuthority>)ViewBag.UserModuleAuth;
+}
+
+<div class="main_body_top">
+    <div class="row">
+        <div class="col-md-6"></div>
+        <div class="col-md-6">
+            <div class="btn-group" role="group" id="edit-menu">
+                @Html.AuthorityButtonList(userModuleAuth)
+            </div>
+        </div>
+    </div>
+</div>
+<div class="main_body_content">
+    <div class="row">
+        <div class="col-sm-12">
+            <table id="dataGrid" class="table table-bordered table-hover dataTable">
+                <thead>
+                    <tr>
+                        <th>行号</th>
+                        <th>角色名</th>
+                        <th>角色代码</th>
+                        <th>创建人</th>
+                        <th>创建时间</th>
+                        <th>修改人</th>
+                        <th>修改时间</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var e in Model)
+                    {
+                        <tr data-data-id="@e.ID">
+                            <td>@dataRowNum</td>
+                            <td>@e.RName</td>
+                            <td>@e.RCode</td>
+                            <td>@e.Creator</td>
+                            <td>@e.CreationTime</td>
+                            <td>@e.Editor</td>
+                            <td>@e.EditingTime</td>
+                        </tr>
+                        dataRowNum++;
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="dataTables_length">
+                <label>
+                    第<span>@pagingInfo.CurrentPage</span>页/
+                    共<span>@pagingInfo.TotalPages</span>页&nbsp;
+                    每页显示
+                    <select id="pageSize" class="form-control input-sm">
+                        <option value="10" @(pagingInfo.ItemsPerPage == 10 ? "selected" : "")>10</option>
+                        <option value="25" @(pagingInfo.ItemsPerPage == 25 ? "selected" : "")>25</option>
+                        <option value="50" @(pagingInfo.ItemsPerPage == 50 ? "selected" : "")>50</option>
+                        <option value="100" @(pagingInfo.ItemsPerPage == 100 ? "selected" : "")>100</option>
+                    </select>
+                    条
+                </label>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="dataTables_paginate pull-right">
+                @Html.PageLinks(pagingInfo, x => Url.Action("List", new { page = x, pagesize = pagingInfo.ItemsPerPage }))
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(function () {
+        buttonEventRegister("btnAuthorize", "授权", "Authorize");
+    });
+</script>

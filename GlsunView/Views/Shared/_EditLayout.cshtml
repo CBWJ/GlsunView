@@ -1,0 +1,46 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <script src="~/scripts/jquery-1.9.1.min.js"></script>
+    <script src="~/scripts/bootstrap.min.js"></script>
+    <script src="~/scripts/lib/select2.full.js"></script>
+    <script src="~/scripts/jquery.form.min.js"></script>
+    <script src="~/scripts/jquery.validate.min.js"></script>
+    <script src="~/scripts/messages_zh.js"></script>
+    <script src="~/scripts/lib/jquery.validate.extend.js"></script>
+    <script src="~/scripts/My97DatePicker/WdatePicker.js"></script>
+
+    <link rel="stylesheet" href="~/Content/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/Content/css/bootstrap.font.css" />
+    <link rel="stylesheet" href="~/Content/css/select2.css" />
+    <link rel="stylesheet" href="~/Content/css/AdminLTE.min.css" />
+    <link rel="stylesheet" href="~/Content/css/bootstrap.font.css" />
+    @if (IsSectionDefined("AddToHead"))
+    {
+        @RenderSection("AddToHead", required: false)
+    }
+    <style>
+        input.error {
+            border-color: red;
+        }
+
+        label.error {
+            color: red;
+        }
+    </style>
+    <title>_EditLayout</title>
+</head>
+<body>
+    @RenderBody()
+    @if (IsSectionDefined("AddToEnd"))
+    {
+        @RenderSection("AddToEnd", required: false)
+    }
+</body>
+</html>

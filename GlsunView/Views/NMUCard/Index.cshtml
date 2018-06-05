@@ -1,0 +1,118 @@
+﻿@model GlsunView.Models.NMUInfo
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_CardInfo.cshtml";
+}
+
+@section AddToHead{
+    <style>
+        html,body{
+            height: 100%;
+            font-family: Arial, Microsoft YaHei, SimSun , Tahoma, Helvetica, "\5b8b\4f53", sans-serif;
+        }
+        .device-info{
+            width: 100%;
+        }
+        .device-info td{
+            padding: 5px 10px;
+        }
+        .device-info tr>td.name{
+            width: 200px;
+        } 
+        .device-info tr>td.value{
+            text-align: center;
+        } 
+    </style>
+}
+<div class="tab">
+    <ul class="tab-title clearfix">
+        <li class="active"><a href="#tab_1">基本信息</a></li>
+        <li><a href="#tab_2">配置管理</a></li>
+        <li><a href="#tab_3">告警信息</a></li>
+        <li><a href="#tab_4">日志</a></li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane active" id="tab_1">
+            <table class="table-striped device-info">
+                <tbody>
+                    <tr id="IP_Address">
+                        <td class="name">IP地址</td>
+                        <td class="value">@Model.IP_Address</td>
+                    </tr>
+                    <tr id="Gateway">
+                        <td class="name">默认网关</td>
+                        <td class="value">@Model.Gateway</td>
+                    </tr>
+                    <tr id="Subnet_Mask">
+                        <td class="name">子网掩码</td>
+                        <td class="value">@Model.Subnet_Mask</td>
+                    </tr>
+                    <tr id="Trap_IP_1">
+                        <td class="name">Trap IP地址 1</td>
+                        <td class="value">@Model.Trap_IP_1</td>
+                    </tr>
+                    <tr id="Trap_IP_2">
+                        <td class="name">Trap IP地址 2</td>
+                        <td class="value">@Model.Trap_IP_2</td>
+                    </tr>
+                    <tr id="Trap_IP_3">
+                        <td class="name">Trap IP地址 3</td>
+                        <td class="value">@Model.Trap_IP_3</td>
+                    </tr>
+                    <tr id="Power_1_Status">
+                        <td class="name">电源1状态</td>
+                        <td class="value">@Model.Power_1_Status</td>
+                    </tr>
+                    <tr id="Power_2_Status">
+                        <td class="name">电源2状态</td>
+                        <td class="value">@Model.Power_2_Status</td>
+                    </tr>
+                    <tr id="FAN_Status">
+                        <td class="name">风扇状态</td>
+                        <td class="value">@Model.FAN_Status</td>
+                    </tr>
+                    <tr id="Community_Read">
+                        <td class="name">共用体(读)</td>
+                        <td class="value">@Model.Community_Read</td>
+                    </tr>
+                    <tr id="Community_Write">
+                        <td class="name">共用体(读/写)</td>
+                        <td class="value">@Model.Community_Write</td>
+                    </tr>
+                    <tr id="Software_Version">
+                        <td class="name">软件版本号</td>
+                        <td class="value">@Model.Software_Version</td>
+                    </tr>
+                    <tr id="Hardware_Version">
+                        <td class="name">硬件版本号</td>
+                        <td class="value">@Model.Hardware_Version</td>
+                    </tr>
+                    <tr id="Serial_Number">
+                        <td class="name">生产序列号</td>
+                        <td class="value">@Model.Serial_Number</td>
+                    </tr>
+                    <tr id="Manufacturing_Date">
+                        <td class="name">生产日期</td>
+                        <td class="value">@Model.Manufacturing_Date</td>
+                    </tr>
+                    <tr id="SysLocation">
+                        <td class="name">管理员地址</td>
+                        <td class="value">@Model.SysLocation</td>
+                    </tr>
+                    <tr id="SysName">
+                        <td class="name">管理员姓名</td>
+                        <td class="value">@Model.SysName</td>
+                    </tr>
+                    <tr id="SysContact">
+                        <td class="name">管理员联系方式</td>
+                        <td class="value">@Model.SysContact</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="tab-pane" id="tab_2">内容2</div>
+        <div class="tab-pane" id="tab_3">内容3</div>
+        <div class="tab-pane" id="tab_4">内容4</div>
+    </div>
+</div>
+

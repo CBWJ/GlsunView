@@ -1,0 +1,33 @@
+html,body{
+    height: 100%;
+    font-family: Arial, Microsoft YaHei, SimSun , Tahoma, Helvetica, "\5b8b\4f53", sans-serif;
+}
+body{
+    background-color: #eee;
+    background-image: url("../../image/timg.jpg");
+}
+.main-box{
+    position: absolute;
+    top:45%;
+    left: 50%;
+    margin: -200px 0 0 -180px;
+    width:360px;
+    min-width: 320px;
+    background-color: #ddd;
+    padding: 10px;
+    background: rgba(255,255,255,0.5);
+    box-shadow: 1px 5px 8px #888888;
+    border-radius: 6px;
+}
+.logo-text{
+    font-size: 1.5em;
+    color:#426374;
+    text-shadow: 1px 0 1px #c5c5c5, 0 1px 1px #c5c5c5, 
+    0 -1px 1px #c5c5c5, -1px 0 1px #c5c5c5;
+}
+input.error {
+    border: 1px dotted red;
+}
+label.error{
+    color: red;
+}

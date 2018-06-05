@@ -1,0 +1,399 @@
+﻿@model GlsunView.Domain.Device
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" charset="utf-8"/>
+    <title>Index</title>
+    <link rel="stylesheet" href="~/Content/css/device.css"/>
+    <style>
+        *{
+            margin:0;
+            padding:0;
+        }
+        html,body{
+            height: 100%;
+            font-family: Arial, Microsoft YaHei, SimSun , Tahoma, Helvetica, "\5b8b\4f53", sans-serif;
+        }
+        .content_left{
+            position: absolute;
+            width: 850px;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            background-color: #ecf0f5;
+        }
+        .content_right{
+            position: relative;
+            margin-left: 850px;
+            height: 100%;
+            background-color:#fff;
+            border-left: 1px solid #ccc;
+        }
+        .large-view{
+            position: relative;
+            padding: 0px;
+            margin:20px;
+        }
+        .single-page .page-heaher{
+            background-color: #ecf0f5;
+            height: 30px;
+            text-align: center;
+            font-size: 20px;
+            color: #444;
+        }
+        .single-page .page-content{
+            position: absolute;
+            top:30px;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        }
+        .page-content-frame{
+            /*height: 100%;*/
+            width: 100%;
+            border:0;
+        }
+
+        .device_alert{
+            display:none;
+            font-size:2em;
+            color:red;
+        }
+    </style>
+</head>
+<body>
+    <div class="main_body">
+        <div class="main_body_content">
+            <div class="content_left">
+                <table border="1" style="border-collapse:collapse;">
+                    <tbody></tbody>
+                </table>
+                <div class="large-view-content">
+                    <div class="large-view">
+
+                    </div>
+                </div>
+                <div class="device_alert">
+                    设备连接失败，请确保IP地址与端口设置正确！
+                </div>
+            </div>
+            <div class="content_right">
+                <div class="single-page">
+                    <div id="page-heaher" class="page-heaher">
+                        点击左侧板卡查看信息
+                    </div>
+                    <div id="page-content" class="page-content">
+                        <iframe src="" class="page-content-frame"></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="~/scripts/jquery-1.9.1.min.js"></script>
+    <script src="~/scripts/lib/device_compenent.js"></script>
+    <script>
+        //闪灯对象
+        var arrBinkObject = new Array();
+        var device = null;
+        var deviceInfo = '@Html.Raw(ViewBag.DeviceInfo)';
+        var deviceObject = JSON.parse(deviceInfo);
+        $(function () {
+            var d = new window.glsun.Device();
+            device = d;
+            var focusElem = null;
+            var viewHTML = "";
+            d.init("@Model.DType", deviceObject.Unit, {
+                click: function (param) {
+                    console.log(this.id);
+                    var title = "";
+                    var src = "";
+                    if(this.id == "mcu"){
+                        title = "主控卡";
+                        src = getHostPath() + "/NMUCard/Index/" + "@Model.ID";
+                        //updateRequest();
+                    }else{
+                        var slot = this.id.substring(this.id.lastIndexOf("-") + 1);
+                        var card = d.getCard(slot);
+                        if (card) {
+                            var type = card.type.toUpperCase();
+                            title = "卡槽" + slot + "：" + type;
+                            console.log(title);
+                            src = getHostPath() + "/" + type + "Card?did=" + "@Model.ID" + "&slot=" + slot;
+                        }
+                    }
+                    if(this.id != "fan"){
+                        $("#page-heaher").text(title);
+                        $("#page-content>iframe").attr("src", src);
+                        var height = window.innerHeight - 35;
+                        $("#page-content>iframe").css("height", height);
+                    }
+                    //放大图
+                    $(".large-view").html(this.outerHTML);
+                    var $div = $(".large-view>div");
+                    $div.removeClass("highLight").removeClass("module").addClass("module-large");
+                    $div.children("img:first").css("opacity", 1);
+                    $div[0].id = $div[0].id + "-large";
+                    focusElem = this;
+                    viewHTML = this.outerHTML;
+                }
+            });
+            if (deviceObject.Type == "NoResponse") {
+                $(".device_alert").show();
+                return;
+            } else {
+                //插卡
+                for (var i = 0; i < deviceObject.Slots.length; ++i) {
+                    var slot = deviceObject.Slots[i];
+                    if (slot.CardType != "NOCARD" && slot.IsInsert) {
+                        d.insertCard(slot.SlotNumber, slot.CardType);
+                    }
+                }
+
+                //大图预览
+                setInterval(function () {
+                    if (focusElem && viewHTML != focusElem.outerHTML) {
+                        $(".large-view").html(focusElem.outerHTML);
+                        var $div = $(".large-view>div");
+                        $div.removeClass("highLight").removeClass("module").addClass("module-large");
+                        $div.children("img:first").css("opacity", 1);
+                        $div[0].id = $div[0].id + "-large";
+                        viewHTML = this.outerHTML;
+                    }
+                }, 100);
+
+                //闪灯处理
+                setInterval(function () {
+                    for (var i = 0; i < arrBinkObject.length; ++i) {
+                        //obj = {ctrl, lights}第一个控件，第二个闪烁灯名称
+                        var obj = arrBinkObject[i].ctrl;
+                        var lights = arrBinkObject[i].lights;
+                        if (obj) {
+                            if (obj instanceof glsun.ElectricMCU) {
+                                obj.runningLightBlinking();
+                            }
+                            else if (obj instanceof glsun.EDFACard ||
+                                obj instanceof glsun.OEOCard ||
+                                obj instanceof glsun.OLPCard) {
+                                    for (var k = 0; k < lights.length; ++k) {
+                                        obj.ligthBlink(lights[k], "normal");
+                                    }
+                            }
+                            else if (obj instanceof glsun.FAN) {
+                                obj.lightBlink("state", "normal");
+                            }
+                        }
+                    }
+                }, 500);
+                //更新设备状态
+                setInterval(function () {
+                    updateRequest();
+                }, 1000);
+                //右边DIV高度
+                $(".content_right").css("height", window.innerHeight);
+            }
+        });
+        window.onresize = function () {
+            var height = window.innerHeight - 35;
+            $("#page-content>iframe").css("height", height);
+            $(".content_right").css("height", window.innerHeight);
+        };
+        //更新请求
+        function updateRequest() {
+            $.post("@Url.Action("GetCardInfo", "Device")", { ip: deviceObject.IP, port: deviceObject.Port },
+                function (data, status, jqXHR) {
+                    if (data) {
+                        if (data.Code == "") {
+                            updateCardStatus(data.Data);
+                            console.log("Success");
+                        }
+                        else if(data.Code == "Exception"){
+                            console.log("Exception");
+                            console.log(data.Data);
+                        }
+                    }
+                }, "json");
+        }
+        //页面更新操作
+        function updateCardStatus(statusData) {
+            //更新插卡信息
+            arrBinkObject = [];
+            //主控卡
+            var nmu = statusData.NMUInfo;
+            if (nmu.Power_1_Status == 0) {
+                device.mcu.resetPowerLight1();
+            }
+            else if (nmu.Power_1_Status == 1) {
+                device.mcu.setPowerLight1ToNormal();
+            }
+            if (nmu.Power_2_Status == 0) {
+                device.mcu.resetPowerLight2()
+            }
+            else if (nmu.Power_2_Status == 1) {
+                device.mcu.setPowerLight2ToNormal();
+            }
+            arrBinkObject.push({ ctrl: device.mcu, lights: [] });
+            //风扇
+            device.fan.setLightNormal_pwr();
+            if (nmu.FAN_Status == 1) {
+                device.fan.setLightNormal_state();
+            } else if (nmu.FAN_Status == 2) {
+                arrBinkObject.push({
+                    ctrl: device.fan,
+                    lights: []
+                });
+            } else if (nmu.FAN_Status == 3) {
+                device.fan.resetLight_state();
+            }
+            var slots = statusData.Overview.Slots;
+            for (var i = 0; i < slots.length; ++i) {
+                var slot = slots[i];
+                if (slot.IsInsert) {
+                    //新的状态
+                    var card = device.getCard(slot.SlotNumber);
+                    if (card == null) {
+                        device.insertCard(slot.SlotNumber, slot.CardType);
+                        //新插入的话重新获取
+                        card = device.getCard(slot.SlotNumber);
+                    }
+                    if (slot.CardInfo) {
+                        if (slot.CardType == "EDFA") {
+                            //var edfa = new glsun.EDFACard();
+                            var edfa = card.card;
+                            arrBinkObject.push({
+                                ctrl: edfa,
+                                lights: ["run"]
+                            });
+                            edfa.setNormal_pwr();
+                            //输入光状态
+                            if (slot.CardInfo.Input_Power_State == 1) {
+                                edfa.resetLight_in();
+                            } else if (slot.CardInfo.Input_Power_State == 0) {
+                                edfa.setError_in();
+                            }
+                            //输出光状态
+                            if (slot.CardInfo.Output_Power_State == 1) {
+                                edfa.resetLight_out();
+                            } else if (slot.CardInfo.Output_Power_State == 0) {
+                                edfa.setError_out();
+                            }
+                            //模块温度状态
+                            if (slot.CardInfo.Modlue_Temperature_State == 1) {
+                                edfa.resetLight_mt();
+                            } else if (slot.CardInfo.Modlue_Temperature_State == 0) {
+                                edfa.setError_mt();
+                            }
+                            //泵浦温度状态
+                            if (slot.CardInfo.PUMP_Temperature_State == 1) {
+                                edfa.resetLight_pt();
+                            } else if (slot.CardInfo.PUMP_Temperature_State == 0) {
+                                edfa.setError_pt();
+                            }
+                        }
+                        else if (slot.CardType == "OEO") {
+                            //var oeo = new glsun.OEOCard();
+                            var oeo = card.card;
+                            oeo.setNormal_pwr();
+                            arrBinkObject.push({
+                                ctrl: oeo,
+                                lights: ["run"]
+                            });
+                            for (var j = 0; j < slot.CardInfo.SFPSet.length; ++j) {
+                                var sfp = slot.CardInfo.SFPSet[j];
+                                //模块状态
+                                if (sfp.Status == 1) {
+                                    oeo.moduleInsert(sfp.SlotPosition);
+                                } else if (sfp.Status == 0) {
+                                    oeo.modulePullout(sfp.SlotPosition);
+                                }
+                                //收光状态
+                                if (sfp.Rx_Power_State == 1) {
+                                    oeo.setModuleLightToNormal(sfp.SlotPosition);
+                                } else if(sfp.Rx_Power_State == 0) {
+                                    oeo.resetModuleLight(sfp.SlotPosition);
+                                }
+
+                            }
+                        }
+                        else if (slot.CardType == "OLP") {
+                            var olp = new glsun.OLPCard();
+                            var olp = card.card;
+                            olp.setNormal_pwr();
+                            var olpBlinkLight = ["run"];
+                            //自动模式Work_Mode
+                            if (slot.CardInfo.Work_Mode == 1) {
+                                olp.setNormal_auto();
+                            } else if (slot.CardInfo.Work_Mode == 0) {
+                                olp.resetLight_auto();
+                            }
+                            //ALM红灯状态
+                            if (slot.CardInfo.ALM_State == 1) {
+                                olp.setError_alm();
+                            } else if (slot.CardInfo.ALM_State == 0) {
+                                olp.resetLight_alm();
+                            }
+                            //R1绿灯灯状态
+                            if (slot.CardInfo.R1_State == 1) {
+                                olp.setNormal_r1();
+                            } else if (slot.CardInfo.R1_State == 0) {
+                                olp.resetLight_r1();
+                            } else if (slot.CardInfo.R1_State == 2) {
+                                olpBlinkLight.push("r1");
+                            }
+                            //R2绿灯状态
+                            if (slot.CardInfo.R2_State == 1) {
+                                olp.setNormal_r2();
+                            } else if (slot.CardInfo.R2_State == 0) {
+                                olp.resetLight_r2();
+                            } else if (slot.CardInfo.R2_State == 2) {
+                                olpBlinkLight.push("r2");
+                            }
+                            //TX绿灯状态
+                            if (slot.CardInfo.TX_State == 1) {
+                                olp.setNormal_tx();
+                            } else if (slot.CardInfo.TX_State == 0) {
+                                olp.resetLight_tx();
+                            }
+                            //LS绿灯状态
+                            if (slot.CardInfo.LS_State == 1) {
+                                olp.setNormal_ls();
+                            } else if (slot.CardInfo.LS_State == 0) {
+                                olp.resetLight_ls();
+                            }
+                            arrBinkObject.push({
+                                ctrl: olp,
+                                lights: olpBlinkLight
+                            });
+                        }
+                    }
+                } else {//没插卡
+                    card = device.getCard(slot.SlotNumber);
+                    if (card != null) {
+                        device.removeCard(slot.SlotNumber);
+                    }
+                }
+            }
+        }
+        function getRandomMax(max){
+            return Math.floor(Math.random() * max);
+        }
+        //主机地址
+        function getHostPath() {
+            //获取当前网址，如： http://localhost:8080/Tmall/index.jsp
+            var curWwwPath = window.document.location.href;
+
+            //获取主机地址之后的目录
+            var pathName = window.document.location.pathname;
+            var pos = curWwwPath.indexOf(pathName);
+
+            //获取主机地址，如： http://localhost:8080
+            var localhostPath = curWwwPath.substring(0, pos);
+            return localhostPath;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+﻿@model GlsunView.Models.ModuleAuth
+@{
+    ViewBag.Title = "Authority";
+    Layout = "~/Views/Shared/_EditLayout.cshtml";
+}
+
+@using (Html.BeginForm("Authority", "Module", FormMethod.Post, new { id = "dataForm", @class = "form-horizontal" }))
+{
+    @Html.HiddenFor(m=> m.ModuleID)
+    <ul class="list-group">
+        @foreach(var e in Model.Authorities)
+        {
+            <li class="list-group-item">
+                <div class="checkbox">
+                    <label>
+                        <input name="OwnAuthorityID" value="@e.ID" type="checkbox" @(Model.OwnAuthorityID.Contains(e.ID) ? "checked" : "")>@e.AName
+                    </label>
+                </div>
+            </li>
+        }
+    </ul>
+}
+<script>
+    $(function () {
+        //注册表单提交方式为ajaxForm
+        $("#dataForm").ajaxForm({
+            success: onSuccess,
+            timeout: 3000
+        });
+    });
+    //提交表单
+    function submitForm() {
+        if (!$("#dataForm").valid()) {
+            return;
+        };
+        $('#dataForm').submit();
+    }
+    //  提交后
+    function onSuccess(data, statusText, xhr) {
+        if (data) {
+            parent.window.childCallback(data);
+        }
+    }
+</script>

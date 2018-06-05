@@ -1,0 +1,251 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    @*<meta name="viewport" content="width=device-width" />*@
+    <script src="~/scripts/jquery-1.9.1.min.js"></script>
+    <script src="~/scripts/jquery.treetable.js"></script>
+    <script src="~/scripts/bootstrap.min.js"></script>
+    <script src="~/scripts/jquery.bootstrapmodal.js"></script>
+    <script src="~/scripts/jquery.table.js"></script>
+    <script src="~/scripts/bootstrap-datetimepicker.min.js"></script>
+    <script src="~/scripts/bootstrap-datetimepicker.zh-CN.js"></script>
+
+    <link rel="stylesheet" href="~/Content/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/Content/css/AdminLTE.min.css" />
+    <link rel="stylesheet" href="~/Content/css/bootstrap.font.css" />
+    <link rel="stylesheet" href="~/Content/bootstrap-datetimepicker.min.css" />
+    @if (IsSectionDefined("AddToHead"))
+    {
+        @RenderSection("AddToHead", required: false)
+    }
+    <style>
+        .container {
+            width: 1280px !important;
+            max-width: none !important;
+        }
+        /*布局样式*/
+        html, body {
+            height: 100%;
+        }
+
+        .main_body {
+            height: 100%;
+        }
+
+        #edit-menu {
+            float: right;
+        }
+
+        .main_body_top {
+            background-color: #fcfcfc;
+            border-bottom: 1px solid #ccc;
+            padding: 3px;
+            width: 100%;
+            height: 40px;
+        }
+
+        .main_body_content {
+            /* background-color: aquamarine; */
+            width: 100%;
+            position: absolute;
+            top: 40px;
+            bottom: 0px;
+        }
+        /*表格样式*/
+        table.dataTable tr.selected {
+                background-color: #3875d7;
+                color: #fff;
+            }
+        /*分页*/
+        .dataTables_paginate ul.pagination{
+            margin: 2px 0;
+            white-space: nowrap;
+        }
+        .dataTables_length{
+            margin: 2px 0;
+        }
+        .dataTables_length label{
+            font-weight:normal;
+        }
+        .dataTables_length label select{
+            width: 75px;
+            display: inline-block;
+        }
+        /*Bootstrap修改*/
+        .form-control{
+            height: 30px;
+            padding: 3px 6px;
+        }
+        .table>tbody>tr>td{
+            padding:4px;
+            white-space: nowrap;
+        }
+        .table>thead>tr>th{
+            padding:6px;
+            white-space: nowrap;
+        }
+        .table>thead>tr{
+            background-color: #3c8dbc;
+            color:#eee;
+        }
+    </style>
+    <title>Index</title>
+</head>
+<body>
+    <div class="main_body">
+        @RenderBody()
+    </div>
+    <!--主对话框-->
+    <div class="modal fade" id="mainModal" tabindex="-1" role="dialog" data-backdrop="static">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 id="titleModal" class="modal-title">Modal title</h4>
+                </div>
+                <div class="modal-body" id="mainModalBody">
+                    <div class="embed-responsive embed-responsive-16by9">
+                        <iframe name="formFrame" id="formFrame" class="embed-responsive-item" src=""></iframe>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" id="btnModalSubmit">提交</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+    <!-- 信息删除确认 -->
+    <div class="modal fade bs-example-modal-sm" id="confirmModal" tabindex="-1" role="dialog" data-backdrop="static">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="confirmTitle">提示信息</h4>
+                </div>
+                <div class="modal-body" id="confirmBody">
+                    <p>确认要删除吗？</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" id="btnCancel">取消</button>
+                    <button type="button" class="btn btn-success" id="btnConfirm">确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--消息框-->
+    <div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" id="infoModal" data-backdrop="static">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="infoTitle">Modal title</h4>
+                </div>
+                <div class="modal-body" id="infoBody">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">确定</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+    <script>
+        $(function () {
+            //表格
+            $("#dataGrid tbody").on("mousedown", "tr", function () {
+                $(".selected").not(this).removeClass("selected");
+                $(this).toggleClass("selected");
+                //设置id到相关按钮
+                var id = $(this).data("data-id");
+                $("#edit-menu").children("button").data("selected-id", id);
+            });
+            $("#pageSize").on("change", function () {
+                var pagesize = $(this).val();
+                var url = "@Url.Action("List", new { page = 1})" + "&pagesize=" + pagesize;
+                window.location.href = url;
+            });
+            //模态对话框
+            $('#mainModal').on('hidden.bs.modal', function (e) {
+                document.getElementById("formFrame").src = "";
+            })
+            //删除
+            $("#btnDelete").click(function () {
+                var id = $(this).data("selected-id");
+                if (id == 0) {
+                    infoDialog.message("提示", "请选中一行进行操作！");
+                    return;
+                }
+                confirmDialog.init(null, function () {
+                    $.post("Delete/" + id, function (data, status) {
+                        window.location.reload();
+                    });
+                });
+                confirmDialog.confirm("确认操作","真的要删除了吗？该操作无法撤销！");
+            });
+
+            buttonEventRegister("btnAdd", "新增", "Create");
+            buttonEventRegister("btnEdit", "编辑", "Edit");
+            buttonEventRegister("btnView", "查看", "Details");
+        });
+        var mainDialog = new bootstrapModal.modal("#mainModal");
+        var infoDialog = new bootstrapModal.message("#infoModal");
+        var confirmDialog = new bootstrapModal.confirm("#confirmModal");
+
+        //子页面回调
+        function childCallback(data, noRefresh) {
+            if (data.Code == "") {
+                //infoDialog.message("提示", "提交成功！");
+                $("#mainModal").modal("hide");
+                if (!noRefresh)
+                    window.location.reload();
+            } else if (data.Code == "Exception") {
+                infoDialog.message("提示", "服务器异常！\n" + data.Message);
+            } else {
+                infoDialog.message("提示", "请求异常！");
+            }
+
+            if (childCallbackEx && typeof childCallbackEx == "function") {
+                childCallbackEx(data);
+            }
+        }
+        //增改查事件注册
+        function buttonEventRegister(btnId, op, action) {
+            var submit = null;
+            if (btnId == "btnView") {
+                submit = function () {
+                    $("#mainModal").modal("hide");
+                }
+            } else {
+                submit = function () {
+                    //调用Frame的方法
+                    formFrame.window.submitForm();
+                }
+            }
+
+            $("#" + btnId).click(function () {
+                var id = $(this).data("selected-id");
+                if (btnId !="btnAdd" && id == 0) {
+                    infoDialog.message("提示", "请选中一行进行操作！");
+                    return;
+                }
+                mainDialog.init(op, function () {
+                    var frame = document.getElementById("formFrame");
+                    frame.src = action +"/"+ id;
+                }, submit);
+                mainDialog.modal();
+            });
+        }
+    </script>
+    @if (IsSectionDefined("AddToEnd"))
+    {
+        @RenderSection("AddToEnd", required: false)
+    }
+</body>
+</html>

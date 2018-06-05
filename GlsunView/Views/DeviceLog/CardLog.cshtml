@@ -1,0 +1,70 @@
+﻿@model IEnumerable<GlsunView.Domain.DeviceOperationLog>
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <meta charset="utf-8"/>
+    <title>CardLog</title>
+    <style>
+        *{
+            margin:0;
+            padding:0;
+        }
+        html,body{
+            height: 100%;
+            font-family: Arial, Microsoft YaHei, SimSun , Tahoma, Helvetica, "\5b8b\4f53", sans-serif;
+        }
+        table{
+            color:#444;
+            border:0;
+            width:100%;
+            border-collapse: collapse;    
+            background-color: #edf5ff;     
+        }
+        thead{
+            background-color: #445577;
+            color: #eee;
+        }
+        tbody td,thead th{
+            padding:2px 0px;
+        }
+        tbody td{
+            text-align:center;
+            border-top:solid 1px #ccc;
+        }
+    </style>
+</head>
+<body>
+    <table>
+        <thead>
+            <tr>
+                <th>操作人</th>
+                <th>操作明细</th>
+                <th>操作结果</th>
+                <th>操作时间</th>
+                <th>序列号</th>
+                <th>板卡类型</th>
+            </tr>
+        </thead>
+            @foreach(var e in Model)
+            {
+                <tr>
+                    <td>@e.ULoginName</td>
+                    <td>@e.DOLOperationDetials</td>
+                    <td>@e.DOLOperationResult</td>
+                    <td>@e.DOLOperationTime</td>
+                    <td>@e.DOLCardSN</td>
+                    <td>@e.DOLCardType</td>
+                </tr>
+            }
+        <tbody>
+
+        </tbody>
+    </table>
+</body>
+</html>

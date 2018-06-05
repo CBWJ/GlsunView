@@ -1,0 +1,55 @@
+*{
+    padding: 0;
+    margin: 0;
+}
+body{
+    overflow-x: hidden;
+    overflow-y: hidden;
+}
+/* .main_body_top a{
+    text-decoration: none;
+    line-height: 30px;
+    color: black;
+    font-size: 1.2em;
+    position: relative;
+    top:1px;
+} */
+html,body{
+    height: 100%;
+    font-family: Arial, Microsoft YaHei, SimSun , Tahoma, Helvetica, "\5b8b\4f53", sans-serif;
+}
+.main_body{
+    height: 100%;
+}
+.main_body_top{
+    background-color: antiquewhite;
+    width:100%;
+    height: 50px;
+    position: relative;
+}
+.main_body_content{
+    width: 100%;
+    position: absolute;
+    top:50px;
+    bottom: 150px;
+}
+.main_body_bottom{
+    border-top: 3px solid #ccc;
+    width: 100%;
+    height: 150px;
+    position: absolute;
+    bottom: 0px;
+}
+.content_menu{
+    height: 100%;
+    width: 200px;
+    position: absolute;
+}
+.content_container{
+    --background-color:goldenrod;
+    height: 100%;
+    margin-left: 201px;
+    position: absolute;
+    left: 0px;
+    right: 0px;
+}

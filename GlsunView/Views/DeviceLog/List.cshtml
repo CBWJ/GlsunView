@@ -1,0 +1,138 @@
+﻿@using GlsunView.Models;
+@model IEnumerable<GlsunView.Domain.DeviceOperationLog>
+@{
+    ViewBag.Title = "List";
+    Layout = "~/Views/Shared/_ListLayout.cshtml";
+    var pagingInfo = (PagingInfo)ViewBag.PagingInfo;
+    int dataRowNum = (pagingInfo.CurrentPage - 1) * pagingInfo.ItemsPerPage + 1;
+    int startRowNum = dataRowNum;
+    var userModuleAuth = (IEnumerable<GlsunView.Domain.v_UserModuleAuthority>)ViewBag.UserModuleAuth;
+    var conditions = (LogSearchConditions)ViewBag.Conditions;
+}
+
+<div class="main_body_top">
+    <div class="row">
+        <form class="col-sm-12" action="@Url.Action("List","DeviceLog")" method="post" id="formSearch">
+            <label class="form-inline">
+                操作人&nbsp;
+                <input type="text" class="form-control" style="width:150px" name="Operator" placeholder="登陆名或用户名"
+                       value="@conditions.Operator" />
+            </label>
+            <label class="form-inline">
+                操作类型&nbsp;
+                <select class="form-control" name="OperationType">
+                    <option value="不限" @(conditions.OperationType == "不限" ? "selected" : "")>不限</option>
+                    <option value="设备配置" @(conditions.OperationType == "设备配置" ? "selected" : "")>设备配置</option>
+                    <option value="板卡配置" @(conditions.OperationType == "板卡配置" ? "selected" : "")>板卡配置</option>
+                </select>
+            </label>
+            <label class="form-inline">
+                操作结果&nbsp;
+                <select class="form-control" name="OperationResult">
+                    <option value="不限" @(conditions.OperationResult == "不限" ? "selected" : "")>不限</option>
+                    <option value="成功" @(conditions.OperationResult == "成功" ? "selected" : "")>成功</option>
+                    <option value="失败" @(conditions.OperationResult == "失败" ? "selected" : "")>失败</option>
+                </select>
+            </label>
+            <label class="form-inline">
+                操作日期&nbsp;
+                <input type="text" class="form-control" style="width:100px" id="datepickerBeg" name="OperationDateBeg"
+                       value="@(conditions.OperationDateBeg.ToString("yyyy-MM-dd"))" />
+            </label>
+            <label class="form-inline">
+                &nbsp;~&nbsp;
+                <input type="text" class="form-control" style="width:100px" id="datepickerEnd" name="OperationDateEnd"
+                       value="@(conditions.OperationDateEnd.ToString("yyyy-MM-dd"))" />
+            </label>
+            @Html.AuthorityButtonList(userModuleAuth)
+        </form>
+    </div>
+</div>
+<div class="main_body_content">
+    <div class="row">
+        <div class="col-sm-12">
+            <table id="dataGrid" class="table table-bordered table-hover dataTable">
+                <thead>
+                    <tr>
+                        <th>行号</th>
+                        <th>子网名称</th>
+                        <th>子网地址</th>
+                        <th>设备名称</th>
+                        <th>设备地址</th>
+                        <th>设备槽位</th>
+                        <th>板卡序列号</th>
+                        <th>板卡类型</th>
+                        <th>操作者</th>
+                        <th>操作明细</th>
+                        <th>操作结果</th>
+                        <th>操作时间</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var e in Model)
+                    {
+                        <tr data-data-id="@e.ID">
+                            <td>@dataRowNum</td>
+                            <td>@e.SName</td>
+                            <td>@e.SAddress</td>
+                            <td>@e.DName</td>
+                            <td>@e.DAddress</td>
+                            <td>@e.DOLDeviceSlot</td>
+                            <td>@e.DOLCardSN</td>
+                            <td>@e.DOLCardType</td>
+                            <td>@e.ULoginName</td>
+                            <td>@e.DOLOperationDetials</td>
+                            <td>@e.DOLOperationResult</td>
+                            <td>@e.DOLOperationTime</td>
+                        </tr>
+                        dataRowNum++;
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="dataTables_length">
+                <label>
+                    第<span>@pagingInfo.CurrentPage</span>页/
+                    共<span>@pagingInfo.TotalPages</span>页&nbsp;
+                    每页显示
+                    <select id="pageSize" class="form-control input-sm">
+                        <option value="10" @(pagingInfo.ItemsPerPage == 10 ? "selected" : "")>10</option>
+                        <option value="15" @(pagingInfo.ItemsPerPage == 15 ? "selected" : "")>15</option>
+                        <option value="25" @(pagingInfo.ItemsPerPage == 25 ? "selected" : "")>25</option>
+                        <option value="50" @(pagingInfo.ItemsPerPage == 50 ? "selected" : "")>50</option>
+                        <option value="100" @(pagingInfo.ItemsPerPage == 100 ? "selected" : "")>100</option>
+                    </select>
+                    条
+                </label>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="dataTables_paginate pull-right">
+                @Html.PageLinks(pagingInfo, x => Url.Action("List", new { page = x, pagesize = pagingInfo.ItemsPerPage }))
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(function () {
+        $('#datepickerBeg').datetimepicker({
+            autoclose: true,
+            minView: "month",
+            language: 'zh-CN',
+            format: 'yyyy-mm-dd'
+        });
+        $('#datepickerEnd').datetimepicker({
+            autoclose: true,
+            minView: "month",
+            language: 'zh-CN',
+            format: 'yyyy-mm-dd'
+        });
+        $("#btnSearch").click(function () {
+            $("#formSearch").submit();
+        });
+    });
+</script>
+
