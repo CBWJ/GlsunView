@@ -256,6 +256,28 @@
           <Property Name="EditingTime" Type="datetime" />
         </EntityType>
         <!--生成过程中发现错误:
+警告 6002: 表/视图“GlsunView.dbo.v_AlarmInfo”未定义主键。已推断出该键，并将定义创建为只读的表/视图。-->
+        <EntityType Name="v_AlarmInfo">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="DID" Type="int" />
+          <Property Name="DName" Type="nvarchar" MaxLength="50" />
+          <Property Name="DAddress" Type="varchar" MaxLength="20" />
+          <Property Name="AISlot" Type="smallint" />
+          <Property Name="AIType" Type="varchar" MaxLength="20" />
+          <Property Name="AILevel" Type="varchar" MaxLength="20" />
+          <Property Name="AIContent" Type="nvarchar" MaxLength="255" />
+          <Property Name="AITime" Type="datetime" />
+          <Property Name="AIConfirm" Type="bit" />
+          <Property Name="AIConfirmTime" Type="datetime" />
+          <Property Name="UID" Type="int" />
+          <Property Name="ULoginName" Type="nvarchar" MaxLength="20" />
+          <Property Name="UName" Type="nvarchar" MaxLength="20" />
+          <Property Name="SName" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <!--生成过程中发现错误:
 警告 6002: 表/视图“GlsunView.dbo.v_Authority”未定义主键。已推断出该键，并将定义创建为只读的表/视图。-->
         <EntityType Name="v_Authority">
           <Key>
@@ -553,6 +575,25 @@
           <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserLog" EntityType="Self.UserLog" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserRole" EntityType="Self.UserRole" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="v_AlarmInfo" EntityType="Self.v_AlarmInfo" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [v_AlarmInfo].[ID] AS [ID], 
+    [v_AlarmInfo].[DID] AS [DID], 
+    [v_AlarmInfo].[DName] AS [DName], 
+    [v_AlarmInfo].[DAddress] AS [DAddress], 
+    [v_AlarmInfo].[AISlot] AS [AISlot], 
+    [v_AlarmInfo].[AIType] AS [AIType], 
+    [v_AlarmInfo].[AILevel] AS [AILevel], 
+    [v_AlarmInfo].[AIContent] AS [AIContent], 
+    [v_AlarmInfo].[AITime] AS [AITime], 
+    [v_AlarmInfo].[AIConfirm] AS [AIConfirm], 
+    [v_AlarmInfo].[AIConfirmTime] AS [AIConfirmTime], 
+    [v_AlarmInfo].[UID] AS [UID], 
+    [v_AlarmInfo].[ULoginName] AS [ULoginName], 
+    [v_AlarmInfo].[UName] AS [UName], 
+    [v_AlarmInfo].[SName] AS [SName]
+    FROM [dbo].[v_AlarmInfo] AS [v_AlarmInfo]</DefiningQuery>
+          </EntitySet>
           <EntitySet Name="v_Authority" EntityType="Self.v_Authority" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
     [v_Authority].[ID] AS [ID], 
@@ -945,6 +986,7 @@
           <EntitySet Name="DeviceOperationLog" EntityType="GlsunViewModel.DeviceOperationLog" />
           <EntitySet Name="TopologyOperationLog" EntityType="GlsunViewModel.TopologyOperationLog" />
           <EntitySet Name="AlarmInformation" EntityType="GlsunViewModel.AlarmInformation" />
+          <EntitySet Name="v_AlarmInfo" EntityType="GlsunViewModel.v_AlarmInfo" />
           </EntityContainer>
         <EntityType Name="v_ModuleUser">
           <Key>
@@ -1315,6 +1357,26 @@
           <Property Name="UID" Type="Int32" />
           <Property Name="ULoginName" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="UName" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="v_AlarmInfo">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="DID" Type="Int32" />
+          <Property Name="DName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="DAddress" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="AISlot" Type="Int16" />
+          <Property Name="AIType" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="AILevel" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="AIContent" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="AITime" Type="DateTime" Precision="3" />
+          <Property Name="AIConfirm" Type="Boolean" />
+          <Property Name="AIConfirmTime" Type="DateTime" Precision="3" />
+          <Property Name="UID" Type="Int32" />
+          <Property Name="ULoginName" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="UName" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="SName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         </Schema>
     </edmx:ConceptualModels>
@@ -1737,6 +1799,27 @@
           <EntitySetMapping Name="AlarmInformation">
             <EntityTypeMapping TypeName="GlsunViewModel.AlarmInformation">
               <MappingFragment StoreEntitySet="AlarmInformation">
+                <ScalarProperty Name="UName" ColumnName="UName" />
+                <ScalarProperty Name="ULoginName" ColumnName="ULoginName" />
+                <ScalarProperty Name="UID" ColumnName="UID" />
+                <ScalarProperty Name="AIConfirmTime" ColumnName="AIConfirmTime" />
+                <ScalarProperty Name="AIConfirm" ColumnName="AIConfirm" />
+                <ScalarProperty Name="AITime" ColumnName="AITime" />
+                <ScalarProperty Name="AIContent" ColumnName="AIContent" />
+                <ScalarProperty Name="AILevel" ColumnName="AILevel" />
+                <ScalarProperty Name="AIType" ColumnName="AIType" />
+                <ScalarProperty Name="AISlot" ColumnName="AISlot" />
+                <ScalarProperty Name="DAddress" ColumnName="DAddress" />
+                <ScalarProperty Name="DName" ColumnName="DName" />
+                <ScalarProperty Name="DID" ColumnName="DID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="v_AlarmInfo">
+            <EntityTypeMapping TypeName="GlsunViewModel.v_AlarmInfo">
+              <MappingFragment StoreEntitySet="v_AlarmInfo">
+                <ScalarProperty Name="SName" ColumnName="SName" />
                 <ScalarProperty Name="UName" ColumnName="UName" />
                 <ScalarProperty Name="ULoginName" ColumnName="ULoginName" />
                 <ScalarProperty Name="UID" ColumnName="UID" />

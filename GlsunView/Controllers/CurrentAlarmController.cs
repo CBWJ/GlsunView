@@ -9,16 +9,16 @@ using GlsunView.Infrastructure.Util;
 
 namespace GlsunView.Controllers
 {
-    public class CurrentAlramController : ShareListController
+    public class CurrentAlarmController : ShareListController
     {
         // GET: CurrentAlram
         public ActionResult Index()
         {
-            IEnumerable<AlarmInformation> alarmInfo = null;
+            IEnumerable<v_AlarmInfo> alarmInfo = null;
             //数据库取数据
             using (var ctx = new GlsunViewEntities())
             {
-                alarmInfo = ctx.AlarmInformation.Where(a => a.AIConfirm == false).ToList();
+                alarmInfo = ctx.v_AlarmInfo.Where(a => a.AIConfirm == false).ToList();
             }
             alarmInfo = alarmInfo.OrderByDescending(a => a.AITime);
             ViewBag.Level = "";
@@ -154,11 +154,11 @@ namespace GlsunView.Controllers
         public ActionResult RealTimeAlarm(string level, string exceptIds)
         {
             JsonResult json = new JsonResult();
-            IEnumerable<AlarmInformation> alarmInfo = null;
+            IEnumerable<v_AlarmInfo> alarmInfo = null;
             //数据库取数据
             using (var ctx = new GlsunViewEntities())
             {
-                alarmInfo = ctx.AlarmInformation.Where(a => a.AIConfirm == false && a.AILevel == level).ToList();
+                alarmInfo = ctx.v_AlarmInfo.Where(a => a.AIConfirm == false).ToList();
             }
             //排除已显示的项
             if (!string.IsNullOrWhiteSpace(exceptIds))

@@ -115,6 +115,9 @@
     <Compile Include="UserRole.cs">
       <DependentUpon>GlsunViewModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="v_AlarmInfo.cs">
+      <DependentUpon>GlsunViewModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="v_Authority.cs">
       <DependentUpon>GlsunViewModel.tt</DependentUpon>
     </Compile>

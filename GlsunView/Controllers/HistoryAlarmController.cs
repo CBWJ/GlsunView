@@ -13,7 +13,15 @@ namespace GlsunView.Controllers
         // GET: HistoryAlarm
         public ActionResult Index()
         {
-            return View();
+            IEnumerable<v_AlarmInfo> alarmInfo = null;
+            //数据库取数据
+            using (var ctx = new GlsunViewEntities())
+            {
+                alarmInfo = ctx.v_AlarmInfo.Where(a => a.AIConfirm == true).ToList();
+            }
+            alarmInfo = alarmInfo.OrderByDescending(a => a.AITime);
+            ViewBag.Level = "";
+            return View(alarmInfo);
         }
         public ActionResult List(int page = 1, int pageSize = 10)
         {
@@ -76,6 +84,30 @@ namespace GlsunView.Controllers
             if (conditions != null)
                 Session["AlarmHistoryConditions"] = conditions;
             return List();
+        }
+
+        public ActionResult RealTimeAlarm(string exceptIds)
+        {
+            JsonResult json = new JsonResult();
+            IEnumerable<v_AlarmInfo> alarmInfo = null;
+            //数据库取数据
+            using (var ctx = new GlsunViewEntities())
+            {
+                alarmInfo = ctx.v_AlarmInfo.Where(a => a.AIConfirm == true).ToList();
+            }
+            //排除已显示的项
+            if (!string.IsNullOrWhiteSpace(exceptIds))
+            {
+                var arrIds = exceptIds.Split(',');
+                if (arrIds.Length > 0)
+                {
+                    var Ids = (from id in arrIds
+                               select int.Parse(id)).ToList();
+                    alarmInfo = alarmInfo.Where(a => !Ids.Contains(a.ID)).OrderBy(a => a.AITime);
+                }
+            }
+            json.Data = alarmInfo;
+            return json;
         }
     }
 }

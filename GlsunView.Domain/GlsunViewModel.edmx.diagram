@@ -38,6 +38,7 @@
         <EntityTypeShape EntityType="GlsunViewModel.DeviceOperationLog" Width="1.5" PointX="12.875" PointY="13.125" />
         <EntityTypeShape EntityType="GlsunViewModel.TopologyOperationLog" Width="1.5" PointX="14.625" PointY="13.125" />
         <EntityTypeShape EntityType="GlsunViewModel.AlarmInformation" Width="1.5" PointX="14.625" PointY="9.25" />
+        <EntityTypeShape EntityType="GlsunViewModel.v_AlarmInfo" Width="1.5" PointX="16.375" PointY="9.25" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

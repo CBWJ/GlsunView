@@ -52,6 +52,7 @@ namespace GlsunView.Domain
         public virtual DbSet<DeviceOperationLog> DeviceOperationLog { get; set; }
         public virtual DbSet<TopologyOperationLog> TopologyOperationLog { get; set; }
         public virtual DbSet<AlarmInformation> AlarmInformation { get; set; }
+        public virtual DbSet<v_AlarmInfo> v_AlarmInfo { get; set; }
     
         [DbFunction("GlsunViewEntities", "F_GetTreeModuleID")]
         public virtual IQueryable<Nullable<int>> F_GetTreeModuleID()

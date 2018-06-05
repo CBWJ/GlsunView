@@ -1,0 +1,254 @@
+﻿@model IEnumerable<GlsunView.Domain.v_AlarmInfo>
+@{
+    ViewBag.Title = "Index";
+    string level = (string)ViewBag.Level;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        *{
+            padding:0;
+            margin:0;
+        }
+        table{
+            font-size:14px;
+            border: 0;
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #000;
+        }
+        .table-data thead{
+            display:block;
+            color: #eee;
+            background-color:#445577;
+        }
+        .table-data thead tr th{
+            text-align:left;
+        }
+        .table-data tbody{
+            font-size:13px;
+            display:block;
+            overflow-x:hidden;
+            overflow-y:scroll;
+            height:110px;
+        }
+        .table-data tbody tr td{
+            cursor:context-menu;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;  
+        }
+        .critical{
+	        color:red;
+        }
+        .major{
+	        color:orange;
+        }
+        .minor{
+	        color:yellow;
+        }
+        .warn{
+	        color:deepskyblue;
+        }
+        .normal{
+	        color:green;
+        }
+        .selected{
+            color:#eee;
+            background-color:#222;
+        }
+        /*菜单*/
+        .menu{
+                margin: 0;
+                padding: 0;
+                list-style: none;
+                width: 150px;
+                border:1px solid #ccc;
+                box-shadow: 1px 1px 2px #ccc;
+                font-size: 14px;
+                position: absolute;
+                display: none;
+                background-color:#fff;
+            }
+            .menu-item{
+                height: 20px;
+                line-height: 20px;
+                cursor: default;
+                padding-left:20px;
+            }
+            .menu-item:hover{
+                background-color: #eee;
+            }
+    </style>
+</head>
+<body>
+    @*<button type="button" id="btnTest">测试</button>*@
+    <table class="table-data">
+        <thead>
+            <tr>
+                <th width="100px">设备名称</th>
+                <th width="100px">子网名称</th>
+                <th width="150px">设备IP</th>
+                <th width="100px">告警级别</th>
+                <th width="300px">详细信息</th>
+                <th width="150px">时间</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var e in Model)
+            {
+                <tr class="@e.AILevel.ToLower()" data-data-id="@e.ID">
+                    <td width="100px">@e.DName</td>
+                    <td width="100px">@e.SName</td>
+                    <td width="150px">@e.DAddress</td>
+                    <td width="100px">@e.AILevel</td>
+                    <td width="300px">@e.AIContent</td>
+                    <td width="150px">@e.AITime.Value.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <ul class="menu">
+        <li class="menu-item">确认</li>
+        <li class="menu-item">确认全部</li>
+    </ul>
+    <script src="~/scripts/jquery-1.9.1.min.js"></script>
+    <script src="~/scripts/lib/contextmenu.js"></script>
+    <script>
+        var hTimer;
+        $(function () {
+            $("#btnTest").click(function () {
+                updateAlarm();
+            });
+            hTimer = setInterval(function () {
+                updateAlarm();
+            }, 1000);
+            //选中标记
+            $(".table-data tbody tr").click(function () {
+                //$(".table-data tr").removeClass("selected");
+                //$(this).addClass("selected");
+                registerRowClick(this);
+            });
+            //点击标题取消选中
+            $(".table-data thead tr").click(function () {
+                $(".table-data tr").removeClass("selected");
+            });
+            //上下文菜单
+            var menu = new SimpleMenu(".menu");
+            menu.init(function () {
+                var text = this.textContent;
+                var ids = "";
+                if (text == "确认") {
+                    ids = $(".table-data tbody tr.selected").data("data-id");
+                }
+                else if (text == "确认全部") {
+                    ids = getAllDataId();
+                }
+                console.log(ids);
+                if (ids && ids != "") {
+                    $.post("@Url.Action("ConfirmFast", "CurrentAlarm")", { confirmIds: ids },
+                    function (data, status, jqXHR) {
+                        if (status == "success" && data) {
+                            console.log("ok:" + data.length);
+                            if (data.length > 0) {
+                                for (var i = 0; i < data.length; ++i) {
+                                    $(".table-data tbody tr").each(function (index, element) {
+                                        if ($(element).data("data-id") == data[i]) {
+                                            $(element).remove();
+                                        }
+                                    });
+                                }
+                            }
+                        }
+                    }, "json");
+                }
+            });
+        });
+        //注册行点击事件
+        function registerRowClick(elem) {
+            $(".table-data tbody tr").removeClass("selected");
+            $(elem).addClass("selected");
+        }
+        //获得所有数据行ID
+        function getAllDataId() {
+            var ids = '';
+            $(".table-data tbody tr").each(function (index, element) {
+                ids += "," + $(element).data("data-id");
+            });
+            if(ids != "")
+                ids = ids.substring(1, ids.length);
+            return ids;
+        }
+        function updateAlarm() {
+            try{
+                var ids = '';
+                var level = '@(((string)ViewBag.Level).ToUpper())';
+                $(".table-data tbody tr").each(function (index, element) {
+                    ids += "," + $(element).data("data-id");
+                });
+                ids = ids.substring(1, ids.length);
+                $.post("@Url.Action("RealTimeAlarm", "CurrentAlarm")", { level: level, exceptIds: ids },
+                    function (data, status, jqXHR) {
+                        if (status == "success" && data) {
+                            console.log("ok:" + data.length);
+                            if (data.length > 0) {
+                                for (var i = 0; i < data.length; ++i) {
+                                    var item = data[i];
+                                    var time = data[i].AITime;
+                                    console.log(time);
+                                    console.log(formatNumToDate(time));
+                                    var tr = '<tr class="' + item.AILevel.toLowerCase() + '" data-data-id="' + item.ID + '">';
+                                    //tr += '<td>' + item.DAddress + '</td>';
+                                    //tr += '<td>&nbsp;:&nbsp;</td>';
+                                    //tr += '<td>' + item.AIContent + '</td>';
+                                    //tr += '<td width="50px"></td>';
+                                    //tr += '<td>' + formatNumToDate(item.AITime) + '</td>';
+                                    tr += '<td width="100px">' + item.DName + '</td>';
+                                    tr += '<td width="100px">' + item.SName + '</td>';
+                                    tr += '<td width="150px">' + item.DAddress + '</td>';
+                                    tr += '<td width="100px">' + item.AILevel + '</td>';
+                                    tr += '<td width="300px">' + item.AIContent + '</td>';
+                                    tr += '<td width="150px">' + formatNumToDate(item.AITime) + '</td>';
+                                    tr += '</tr>';
+                                    console.log(tr);
+
+                                    var $tr = $(tr);
+                                    $(".table-data tbody").prepend($tr);
+                                    //先添加的注册事件
+                                    $(".table-data tbody tr[data-data-id='" + item.ID + "']").click(function () {
+                                        registerRowClick(this);
+                                    });
+                                }
+                            }
+                        }
+                    }, "json");
+            }
+            catch (e) {
+                console.log(e.description);
+                clearInterval(hTimer);
+            }
+            finally{
+
+            }
+        }
+        function compareNine(value) {
+            return value > 9 ? value : '0' + value;
+        }
+        function formatNumToDate(value) {
+            var now = eval(value.replace(/\/Date\((\d+)\)\//gi, "new Date($1)"));///.../gi是用来标记正则开始和结束；\是转义符；()标注了正则匹配分组1，$1
+
+            //直接借助datapattern.js扩展 return now.pattern('yyyy-MM-dd hh:mm:ss');
+            //或者使用下面方式计算
+            var year = now.getYear() + 1900;//或者 now.getFullYear();
+            var month = now.getMonth() + 1;
+            var date = now.getDate();
+            var hour = now.getHours();
+            var minute = now.getMinutes();
+            var second = now.getSeconds();
+            return year + "-" + compareNine(month) + "-" + compareNine(date) + " " + compareNine(hour) + ":" + compareNine(minute) + ":" + compareNine(second);
+        }
+    </script>
+</body>
+</html>
+

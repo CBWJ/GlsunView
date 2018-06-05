@@ -287,7 +287,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AuthorityController.cs" />
-    <Compile Include="Controllers\CurrentAlramController.cs" />
+    <Compile Include="Controllers\CurrentAlarmController.cs" />
     <Compile Include="Controllers\DeviceController.cs" />
     <Compile Include="Controllers\DeviceLineController.cs" />
     <Compile Include="Controllers\DeviceLogController.cs" />
@@ -367,10 +367,11 @@
     <Content Include="Views\DeviceLog\List.cshtml" />
     <Content Include="Views\DeviceLog\CardLog.cshtml" />
     <Content Include="Views\TopologyLog\List.cshtml" />
-    <Content Include="Views\CurrentAlram\Index.cshtml" />
-    <Content Include="Views\CurrentAlram\List.cshtml" />
+    <Content Include="Views\CurrentAlarm\Index.cshtml" />
+    <Content Include="Views\CurrentAlarm\List.cshtml" />
     <Content Include="Views\HistoryAlarm\List.cshtml" />
-    <Content Include="Views\CurrentAlram\CardAlarm.cshtml" />
+    <Content Include="Views\CurrentAlarm\CardAlarm.cshtml" />
+    <Content Include="Views\HistoryAlarm\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

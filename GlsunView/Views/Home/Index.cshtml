@@ -40,8 +40,16 @@
                         Glsun View 网管系统
                     </a>
                 </div>
+                <div class="nav-bar-middle">
+                    <ul class="tag">
+                        <li class="tag_label">严重<span class="tag_badge critical">9999</span></li>
+                        <li class="tag_label">重要<span class="tag_badge major">9999</span></li>
+                        <li class="tag_label">次要<span class="tag_badge minor">9999</span></li>
+                        <li class="tag_label">警告<span class="tag_badge warn">9999</span></li>
+                        <li class="tag_label">正常<span class="tag_badge normal">0</span></li>
+                    </ul>
+                </div>
                 <ul class="nav-bar-menu">
-                    <li><a href="#">帮助</a></li>
                     <li class="drop-down">
                         <a href="#">
                             <i class="fa fa-user"></i>
@@ -54,7 +62,6 @@
                             <li id="exit">@Html.ActionLink("退　　出", "Logout", "Account")</li>
                         </ul>
                     </li>
-                    <li>2018年3月8日 星期三</li>
                 </ul>
             </div>
         </div>
@@ -73,36 +80,16 @@
             <div class="tabEx">
                 <div class="tabEx-body">
                     <div class="active" id="tab1">
-                        <iframe src="@Url.Action("Index", "CurrentAlram")"></iframe>
+                        <iframe src="@Url.Action("Index", "CurrentAlarm")"></iframe>
                     </div>
                     <div id="tab2">
-                        <iframe src="@Url.Action("Index", "CurrentAlram")"></iframe>
+                        <iframe src="@Url.Action("Index", "HistoryAlarm")"></iframe>
                     </div>
-                    @*<div class="active" id="tab1">
-                        <iframe src="@Url.Action("Index", "CurrentAlram", new { level="CRITICAL"})"></iframe>
-                    </div>
-                    <div id="tab2">
-                        <iframe src="@Url.Action("Index", "CurrentAlram", new { level="MAJOR"})"></iframe>
-                    </div>
-                    <div id="tab3">
-                        <iframe src="@Url.Action("Index", "CurrentAlram", new { level="MINOR"})"></iframe>
-                    </div>
-                    <div id="tab4">
-                        <iframe src="@Url.Action("Index", "CurrentAlram", new { level="WARN"})"></iframe>
-                    </div>
-                    <div id="tab5">
-                        <iframe src="@Url.Action("Index", "CurrentAlram", new { level="NORMAL"})"></iframe>
-                    </div>*@
                 </div>
                 <div class="tabEx-header">
                     <ul>
                         <li class="active" data-tab="tab1">当前告警</li>
                         <li data-tab="tab2">历史告警</li>
-                        @*<li class="active" data-tab="tab1">严重</li>
-                        <li data-tab="tab2">重要</li>
-                        <li data-tab="tab3">次要</li>
-                        <li data-tab="tab4">警告</li>
-                        <li data-tab="tab5">正常</li>*@
                     </ul>
                 </div>
             </div>
