@@ -19,14 +19,25 @@
             background-color: #000;
         }
         .table-data thead{
+            display:block;
             color: #eee;
             background-color:#445577;
         }
+        .table-data thead tr th{
+            text-align:left;
+        }
         .table-data tbody{
-            overflow:scroll;
+            font-size:13px;
+            display:block;
+            overflow-x:hidden;
+            overflow-y:scroll;
+            height:110px;
         }
         .table-data tbody tr td{
             cursor:context-menu;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;  
         }
         .critical{
 	        color:red;
@@ -75,24 +86,24 @@
     <table class="table-data">
         <thead>
             <tr>
-                <th>设备名称</th>
-                <th>子网名称</th>
-                <th>设备IP</th>
-                <th>告警级别</th>
-                <th>详细信息</th>
-                <th>时间</th>
+                <th width="100px">设备名称</th>
+                <th width="100px">子网名称</th>
+                <th width="150px">设备IP</th>
+                <th width="100px">告警级别</th>
+                <th width="400px">详细信息</th>
+                <th width="150px">时间</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var e in Model)
             {
                 <tr class="@e.AILevel.ToLower()" data-data-id="@e.ID">
-                    <td>@e.DName</td>
-                    <td>@e.AIType</td>
-                    <td>@e.DAddress</td>
-                    <td>@e.AILevel</td>
-                    <td>@e.AIContent</td>
-                    <td>@e.AITime.Value.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                    <td width="100px">@e.DName</td>
+                    <td width="100px">@e.AIType</td>
+                    <td width="150px">@e.DAddress</td>
+                    <td width="100px">@e.AILevel</td>
+                    <td width="400px">@e.AIContent</td>
+                    <td width="150px">@e.AITime.Value.ToString("yyyy-MM-dd HH:mm:ss")</td>
                 </tr>
             }
         </tbody>

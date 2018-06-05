@@ -62,7 +62,8 @@
 }
 .tabEx-header ul li.active, .tabEx-header ul li.active::before, .tabEx-header ul li.active::after{
     z-index: 2;
-    background-color: #fff;
+    background-color: #445577;
+    color: #eee;
 }
 .tabEx>.tabEx-body>div{
     display: none;
