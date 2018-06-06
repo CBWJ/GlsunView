@@ -10,7 +10,7 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <meta charset="utf-8"/>
+    <meta charset="utf-8" />
     <link rel="stylesheet" href="~/Content/font-awesome.min.css" />
     <link rel="stylesheet" href="~/Content/css/layout.css" />
     <link rel="stylesheet" href="~/Content/css/leftMenu.css" />
@@ -19,6 +19,7 @@
     <link rel="stylesheet" href="~/Content/css/tab.css" />
     <link rel="stylesheet" href="~/Content/css/tabEx.css" />
     <link rel="stylesheet" href="~/Content/css/dialog.css" />
+    <link rel="stylesheet" href="~/Content/css/tag.css" />
     <script src="~/scripts/jquery-1.9.1.min.js"></script>
     <script src="~/scripts/glsun.control.js"></script>
     <script src="~/scripts/jquery.leftmenu.js"></script>
@@ -96,73 +97,82 @@
         </div>
     </div>
     <script>
-            $(function(){
-                $("#menu").click(function(){
-                    var interval = 200;
-                    if($(".content_menu").css("marginLeft") != "0px"){
-                        $(".content_menu").animate({marginLeft:0},{duration:interval});
-                        $(".content_container").animate({marginLeft:201},{duration:interval});
-                    }
-                    else{
-                        $(".content_menu").animate({marginLeft:-200},{duration:interval});
-                        $(".content_container").animate({marginLeft:0},{duration:interval});
-                    }
-                });
-                $("#status").click(function(){
-                    var interval = 200;
-                    if($(".main_body_bottom").css("height") != "0px"){
-                        $(".main_body_bottom").animate({height:0},{duration:interval});
-                        $(".main_body_content").animate({bottom:0},{duration:interval});
-                    }
-                    else{
-                        $(".main_body_bottom").animate({height:150},{duration:interval});
-                        $(".main_body_content").animate({bottom:150},{duration:interval});
-                    }
-                });
+        var hTimer;
+        $(function () {
+            $("#menu").click(function () {
+                var interval = 200;
+                if ($(".content_menu").css("marginLeft") != "0px") {
+                    $(".content_menu").animate({ marginLeft: 0 }, { duration: interval });
+                    $(".content_container").animate({ marginLeft: 201 }, { duration: interval });
+                }
+                else {
+                    $(".content_menu").animate({ marginLeft: -200 }, { duration: interval });
+                    $(".content_container").animate({ marginLeft: 0 }, { duration: interval });
+                }
+            });
+            $("#status").click(function () {
+                var interval = 200;
+                if ($(".main_body_bottom").css("height") != "0px") {
+                    $(".main_body_bottom").animate({ height: 0 }, { duration: interval });
+                    $(".main_body_content").animate({ bottom: 0 }, { duration: interval });
+                }
+                else {
+                    $(".main_body_bottom").animate({ height: 150 }, { duration: interval });
+                    $(".main_body_content").animate({ bottom: 150 }, { duration: interval });
+                }
+            });
 
-                glsun.tab.init("#tabControl",{onTabClose:function(e){
+            glsun.tab.init("#tabControl", {
+                onTabClose: function (e) {
                     //glsun.status.appendNormal("你关闭了一个标签页【");
                     //glsun.status.appendError(e.title);
                     //glsun.status.appendNormal("】地址是：");
                     //glsun.status.appendError(e.url);
                     //glsun.status.appendLine("","");
-                }});
-                glsun.status.init("#statusContent");
-                initMenu();
-
-                //$("#exit").on("click", function () {
-                //    var a = CefSharp;
-                //    CefSharp.BindObjectAsync("myBound");
-                //    var b = window.myBound;
-                //    alert("退出");
-                //});
-                $(".tabEx-header ul li").click(function () {
-                    var $this = $(this);
-                    if ($this.hasClass("active")) return;
-                    $(".tabEx-body div.active").removeClass("active");
-                    $(".tabEx-header ul li.active").removeClass("active");
-                    $this.addClass("active");
-                    document.getElementById($this.data("tab")).className = "active";
-                });
+                }
             });
-            var pwdDialog = null;
-            function changePWD() {
-                pwdDialog = dialog({
-                    title: '修改密码',
-                    content: '<iframe name="formFrame" src="@Url.Action("ChangePassword", "Account")"></iframe>',
-                    okValue: '确定',
-                    ok: function () {
-                        //调用Frame的方法
-                        var childWindow = formFrame.window;
-                        childWindow.submitForm();
-                        return false;
-                    },
-                    cancelValue: '取消',
-                    cancel: function () {
-                        //alert("取消");
-                    }
-                }).width(300).height(300).show();
-            }
+            glsun.status.init("#statusContent");
+            initMenu();
+
+            //$("#exit").on("click", function () {
+            //    var a = CefSharp;
+            //    CefSharp.BindObjectAsync("myBound");
+            //    var b = window.myBound;
+            //    alert("退出");
+            //});
+            $(".tabEx-header ul li").click(function () {
+                var $this = $(this);
+                if ($this.hasClass("active")) return;
+                $(".tabEx-body div.active").removeClass("active");
+                $(".tabEx-header ul li.active").removeClass("active");
+                $this.addClass("active");
+                document.getElementById($this.data("tab")).className = "active";
+            });
+
+            //告警处理
+            updateAlarmStatistics();
+            hTimer = setInterval(function () {
+                updateAlarmStatistics();
+            }, 1000);
+        });
+        var pwdDialog = null;
+        function changePWD() {
+            pwdDialog = dialog({
+                title: '修改密码',
+                content: '<iframe name="formFrame" src="@Url.Action("ChangePassword", "Account")"></iframe>',
+                okValue: '确定',
+                ok: function () {
+                    //调用Frame的方法
+                    var childWindow = formFrame.window;
+                    childWindow.submitForm();
+                    return false;
+                },
+                cancelValue: '取消',
+                cancel: function () {
+                    //alert("取消");
+                }
+            }).width(300).height(300).show();
+        }
         //初始化菜单
         function initMenu() {
             var menu = $("div.leftMenu");
@@ -214,7 +224,7 @@
                             console.log(fullHref);
                         }
                     }
-                    for(var prop in glsun.tab.tabPages) {
+                    for (var prop in glsun.tab.tabPages) {
                         console.log(prop);
                         //已打开标签页不存在
                         if (arrHref.indexOf(prop) == -1) {
@@ -226,7 +236,7 @@
                         var aTag = $(".leftMenu li[data-id='" + dataId + "']").children("a")[0];
                         var title = aTag.innerText;
                         var url = aTag.href;
-                       glsun.tab.updateTitle(url, title);
+                        glsun.tab.updateTitle(url, title);
                     }
                 }
             }, "html");
@@ -263,12 +273,33 @@
             } else {
                 var d = dialog({
                     title: '提示',
-                    content: "请求异常！" 
+                    content: "请求异常！"
                 });
                 d.show();
             }
             if (pwdDialog) {
                 pwdDialog.close().remove();
+            }
+        }
+        //更新告警统计信息
+        function updateAlarmStatistics() {
+            try {
+                $.get("@Url.Action("GetRealTimeAlarmCount", "Home")", {},
+                function (data, status, jqXHR) {
+                if (status == "success" && data) {
+                    for (var m in data) {
+                        console.log(m + data[m]);
+                        $(".tag .tag_label ." + m).text(data[m]);
+                    }
+                }
+            }, "json");
+            }
+            catch (e) {
+                console.log(e.description);
+                clearInterval(hTimer);
+            }
+            finally {
+
             }
         }
     </script>

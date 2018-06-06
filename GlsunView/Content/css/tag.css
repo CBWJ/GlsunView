@@ -1,0 +1,50 @@
+﻿.nav-bar-middle{
+    background-color: #445577;
+    color: white;
+    font-size: 14px;
+    position:absolute;
+    right:100px;
+}
+.nav-bar-middle>ul>li{
+    list-style: none;
+    float: left;
+    height: 50px;
+    line-height: 50px;
+}
+.tag_label{
+    font-size: 75%;
+    font-weight: 700;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: .25em;
+}
+.tag_badge {
+    display: inline-block;
+    min-width: 10px;
+    padding: 3px 7px;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    border-radius: 10px;
+    margin-bottom:15px;
+}
+.critical{
+    background-color: red;
+}
+.major{
+    background-color: orange;
+}
+.minor{
+    background-color: yellowgreen;
+}
+.warn{
+    background-color: deepskyblue;
+}
+.normal{
+    background-color: green;
+}

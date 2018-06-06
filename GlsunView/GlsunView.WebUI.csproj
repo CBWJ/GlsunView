@@ -178,6 +178,7 @@
     <Content Include="Content\css\status.css" />
     <Content Include="Content\css\tab.css" />
     <Content Include="Content\css\tabEx.css" />
+    <Content Include="Content\css\tag.css" />
     <Content Include="Content\css\topomenu.css" />
     <Content Include="Content\css\veticalToolbar.css" />
     <Content Include="Content\css\zTreeStyle.css" />
