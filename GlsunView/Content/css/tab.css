@@ -38,6 +38,9 @@
     z-index: 1;
     border-left: 1px solid #ccc;
 }
+.tab-header ul li.fixed{
+    padding-right: 5px;
+}
 .tab-header ul .selected{
     background-color:#fff;
     border-left:1px solid #ccc;
@@ -139,4 +142,33 @@
 .tab-header .less-header{
     color:#aaa;
     display: none;
+}
+.tab-contextmenu{
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border:1px solid #c3ced5;
+    border-radius: 4px;
+    box-shadow: 1px 1px 2px #ccc;
+    font-size: 14px;
+    position: absolute;
+    display: none;
+    background-color: #fff;
+    z-index: 2;
+}
+.tab-contextmenu li{
+    height: 25px;
+    line-height: 25px;
+    padding: 0px 10px 0 8px;
+    cursor: pointer;
+}
+.tab-contextmenu li.disable{
+    color: #999;
+}
+.tab-contextmenu li.disable:hover{
+    cursor: default;
+    background-color: transparent;
+}
+.tab-contextmenu li:hover{
+    background-color: #d9e7f2;
 }

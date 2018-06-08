@@ -116,5 +116,10 @@ namespace GlsunView.Controllers
             };
             return json;
         }
+
+        public ActionResult Home()
+        {
+            return View();
+        }
     }
 }

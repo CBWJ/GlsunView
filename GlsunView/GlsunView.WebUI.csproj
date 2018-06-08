@@ -373,6 +373,7 @@
     <Content Include="Views\HistoryAlarm\List.cshtml" />
     <Content Include="Views\CurrentAlarm\CardAlarm.cshtml" />
     <Content Include="Views\HistoryAlarm\Index.cshtml" />
+    <Content Include="Views\Home\Home.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

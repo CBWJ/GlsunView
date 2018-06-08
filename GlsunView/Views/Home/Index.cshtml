@@ -98,16 +98,19 @@
     </div>
     <script>
         var hTimer;
+        var tab;
         $(function () {
             $("#menu").click(function () {
                 var interval = 200;
                 if ($(".content_menu").css("marginLeft") != "0px") {
                     $(".content_menu").animate({ marginLeft: 0 }, { duration: interval });
                     $(".content_container").animate({ marginLeft: 201 }, { duration: interval });
+                    tab.setMenuOffset({ x: -200, y: -50 });
                 }
                 else {
                     $(".content_menu").animate({ marginLeft: -200 }, { duration: interval });
                     $(".content_container").animate({ marginLeft: 0 }, { duration: interval });
+                    tab.setMenuOffset({ x: 0, y: -50 });
                 }
             });
             $("#status").click(function () {
@@ -121,25 +124,16 @@
                     $(".main_body_content").animate({ bottom: 150 }, { duration: interval });
                 }
             });
-
-            glsun.tab.init("#tabControl", {
+            //标签页关闭事件
+            tab = new glsun.TabControl();
+            tab.init("#tabControl", {
                 onTabClose: function (e) {
-                    //glsun.status.appendNormal("你关闭了一个标签页【");
-                    //glsun.status.appendError(e.title);
-                    //glsun.status.appendNormal("】地址是：");
-                    //glsun.status.appendError(e.url);
-                    //glsun.status.appendLine("","");
                 }
-            });
-            glsun.status.init("#statusContent");
+            }).add("首页", "@Url.Action("Home", "Home")", true);
+            tab.setMenuOffset({ x: -200, y: -50 });
             initMenu();
 
-            //$("#exit").on("click", function () {
-            //    var a = CefSharp;
-            //    CefSharp.BindObjectAsync("myBound");
-            //    var b = window.myBound;
-            //    alert("退出");
-            //});
+            //扩展标签页控件
             $(".tabEx-header ul li").click(function () {
                 var $this = $(this);
                 if ($this.hasClass("active")) return;
@@ -178,18 +172,11 @@
             var menu = $("div.leftMenu");
             menu.leftmenu({
                 clickCallBack: function () {
-                    //alert(this.innerText);
                     var aTag = $(this).children("a")[0]
                     var title = aTag.innerText;
                     var url = aTag.href;
                     if (url != "http://" + aTag.host + "/#") {
-                        glsun.tab.add(title, url);
-                        return;
-                        glsun.status.appendNormal("你点击了一个模块：");
-                        glsun.status.appendImportant(title);
-                        glsun.status.appendNormal("网址是：");
-                        glsun.status.appendWarnning(url);
-                        glsun.status.appendLine("", "");
+                        tab.add(title, url);
                     }
                 }
             });
@@ -224,11 +211,11 @@
                             console.log(fullHref);
                         }
                     }
-                    for (var prop in glsun.tab.tabPages) {
+                    for (var prop in tab.tabPages) {
                         console.log(prop);
                         //已打开标签页不存在
                         if (arrHref.indexOf(prop) == -1) {
-                            glsun.tab.remove(prop);
+                            tab.remove(prop);
                         }
                     }
                     //更新标题
@@ -236,7 +223,7 @@
                         var aTag = $(".leftMenu li[data-id='" + dataId + "']").children("a")[0];
                         var title = aTag.innerText;
                         var url = aTag.href;
-                        glsun.tab.updateTitle(url, title);
+                        tab.updateTitle(url, title);
                     }
                 }
             }, "html");
