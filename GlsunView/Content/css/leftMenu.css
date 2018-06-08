@@ -5,12 +5,24 @@
     width:200px;
     height:100%;
     font-size:1em;
-    overflow: hidden;
+    overflow-x:hidden;
+    overflow-y: overlay;
+}
+.leftMenu::-webkit-scrollbar {
+    display: none;
+}
+.leftMenu>ul>li .menu-icon{
+    width:25px;
+    font-size:20px;
+    position:relative;
+    top:1px;
+    margin-left:5px;
 }
 .leftMenu ul li{
     border-top: 1px solid #ccc;
     background-color: #eaeaea;
     display:block;
+    position:relative;
 }
 .leftMenu ul li.selected{
     background-color: #bcbcbc;
@@ -34,17 +46,26 @@
     -webkit-transition:background-color .4s ease-in;
 	-moz-transition:background-color .4s ease-in;
 	transition:background-color .4s ease-in;
+    position:relative;
 }
 .leftMenu ul li a:hover{
     cursor: pointer;
+    color:#457;
+    background-color: #fff;
+}
+.leftMenu ul li ul li a:hover{
     background-color: #bcbcbc;
 }
+/*.leftMenu>ul>li a:hover{
+    color:#457;
+    background-color: #fff;
+}*/
 .leftMenu ul li ul li a{
-    padding-left: 10px;
+    padding-left: 20px;
     line-height: 1.6em;
 }
 .leftMenu ul li ul li ul li a{
-    padding-left: 20px;
+    padding-left: 40px;
 }
 .leftMenu>ul>li:last-child{
     border-bottom: 1px solid #ccc;
@@ -53,6 +74,49 @@
     float:right;
     line-height: 1.6em;
 }
-.expanded-Arrow{
-    transform:rotate(90deg);
+.right-tag{
+    font-size: 0.8em;
+    float:right;
+    height: 1.6em;
+    line-height: 1.6em;
+    position:relative;
+    top:0.4em;
+}
+.right-tag::before{
+    content: "\f0fe";
+}
+.expanded-Arrow::before{
+    content: "\f146";
+}
+/*Ê÷Ö¦*/
+.leftMenu ul li ul li a:before{
+    content: '';
+    width: 10px;
+    height: 14px;
+    border: 1px dotted black;
+    position: absolute;
+    top: 0px;
+    left: 10px;
+    border-style: none none dotted none;
+}
+.leftMenu ul li ul li ul li a:before{
+    left: 30px;
+}
+.leftMenu ul li ul li ul li:last-child a:before{
+    border-left-style: dotted;
+}
+.leftMenu ul ul li::after{
+    position: absolute;  
+    content: '';  
+    top: 0;  
+    left: 10px;  
+    bottom: 0;  
+    border: 1px dotted black;
+    border-style: none none none dotted;
+}
+.leftMenu ul ul ul li::after{
+    left:30px;
+}
+.leftMenu ul ul ul li:last-child:after{
+    border-left-style: none;
 }

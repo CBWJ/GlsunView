@@ -213,8 +213,9 @@
                     }
                     for (var prop in tab.tabPages) {
                         console.log(prop);
+                        var tabpage = tab.tabPages[prop];
                         //已打开标签页不存在
-                        if (arrHref.indexOf(prop) == -1) {
+                        if (arrHref.indexOf(prop) == -1 && tabpage.alwaysShow == false) {
                             tab.remove(prop);
                         }
                     }
@@ -275,7 +276,7 @@
                 function (data, status, jqXHR) {
                 if (status == "success" && data) {
                     for (var m in data) {
-                        console.log(m + data[m]);
+                        //console.log(m + data[m]);
                         $(".tag .tag_label ." + m).text(data[m]);
                     }
                 }

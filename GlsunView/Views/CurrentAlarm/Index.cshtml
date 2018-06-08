@@ -145,12 +145,12 @@
                 else if (text == "确认全部") {
                     ids = getAllDataId();
                 }
-                console.log(ids);
+                //console.log(ids);
                 if (ids && ids != "") {
                     $.post("@Url.Action("ConfirmFast", "CurrentAlarm")", { confirmIds: ids },
                     function (data, status, jqXHR) {
                         if (status == "success" && data) {
-                            console.log("ok:" + data.length);
+                            //console.log("ok:" + data.length);
                             if (data.length > 0) {
                                 for (var i = 0; i < data.length; ++i) {
                                     $(".table-data tbody tr").each(function (index, element) {
@@ -191,13 +191,13 @@
                 $.post("@Url.Action("RealTimeAlarm", "CurrentAlarm")", { level: level, exceptIds: ids },
                     function (data, status, jqXHR) {
                         if (status == "success" && data) {
-                            console.log("ok:" + data.length);
+                            //console.log("ok:" + data.length);
                             if (data.length > 0) {
                                 for (var i = 0; i < data.length; ++i) {
                                     var item = data[i];
                                     var time = data[i].AITime;
-                                    console.log(time);
-                                    console.log(formatNumToDate(time));
+                                    //console.log(time);
+                                    //console.log(formatNumToDate(time));
                                     var tr = '<tr class="' + item.AILevel.toLowerCase() + '" data-data-id="' + item.ID + '">';
                                     //tr += '<td>' + item.DAddress + '</td>';
                                     //tr += '<td>&nbsp;:&nbsp;</td>';
@@ -211,7 +211,7 @@
                                     tr += '<td width="300px">' + item.AIContent + '</td>';
                                     tr += '<td width="150px">' + formatNumToDate(item.AITime) + '</td>';
                                     tr += '</tr>';
-                                    console.log(tr);
+                                    //console.log(tr);
 
                                     var $tr = $(tr);
                                     $(".table-data tbody").prepend($tr);
@@ -225,7 +225,7 @@
                     }, "json");
             }
             catch (e) {
-                console.log(e.description);
+                //console.log(e.description);
                 clearInterval(hTimer);
             }
             finally{

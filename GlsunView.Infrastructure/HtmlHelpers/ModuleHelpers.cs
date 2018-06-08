@@ -45,6 +45,10 @@ namespace GlsunView.Infrastructure.HtmlHelpers
                 if (module.MIconType == "font")
                 {
                     tagIleft.AddCssClass("fa " + module.MIcon + " fa-fw");
+                    if(module.MParentID == 0)
+                    {
+                        tagIleft.AddCssClass("menu-icon");
+                    }
                     tagLink.InnerHtml = tagIleft.ToString();
                 }
                 else if (module.MIconType == "image")
@@ -60,7 +64,7 @@ namespace GlsunView.Infrastructure.HtmlHelpers
                                  select m).ToList().Count > 0;
                 if (hasChild)
                 {
-                    tagIRight.AddCssClass("fa fa-angle-right fa-fw");
+                    tagIRight.AddCssClass("right-tag fa fa-fw");
                 }
                 tagLink.InnerHtml += tagIRight.ToString();
 

@@ -171,13 +171,13 @@
                 $.post("@Url.Action("RealTimeAlarm", "HistoryAlarm")", { exceptIds: ids },
                     function (data, status, jqXHR) {
                         if (status == "success" && data) {
-                            console.log("ok:" + data.length);
+                            //console.log("ok:" + data.length);
                             if (data.length > 0) {
                                 for (var i = 0; i < data.length; ++i) {
                                     var item = data[i];
                                     var time = data[i].AITime;
-                                    console.log(time);
-                                    console.log(formatNumToDate(time));
+                                    //console.log(time);
+                                    //console.log(formatNumToDate(time));
                                     var tr = '<tr class="' + item.AILevel.toLowerCase() + '" data-data-id="' + item.ID + '">';
                                     tr += '<td width="100px">' + item.DName + '</td>';
                                     tr += '<td width="100px">' + item.SName + '</td>';
@@ -188,7 +188,7 @@
                                     tr += '<td width="150px">' + item.ULoginName + ' (' + item.UName + ')</td>';
                                     tr += '<td width="150px">' + formatNumToDate(item.AIConfirmTime) + '</td>';
                                     tr += '</tr>';
-                                    console.log(tr);
+                                    //console.log(tr);
 
                                     var $tr = $(tr);
                                     $(".table-data tbody").prepend($tr);
@@ -202,7 +202,7 @@
                     }, "json");
             }
             catch (e) {
-                console.log(e.description);
+                //console.log(e.description);
                 clearInterval(hTimer);
             }
             finally{
