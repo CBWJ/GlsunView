@@ -198,13 +198,14 @@
         this.addTabPage = function (tabPage) {
             //构建标题和内容DIV插入到相应位置
             var header = document.createElement("li");
+            var icon = document.createElement("i");
             var span = document.createElement("span");
             var link = document.createElement("a");
             var close = document.createElement("i");
             var placeholder = document.createElement("div");
 
             span.innerText = tabPage.title;
-            close.className = "fa fa-close fa-fw";
+            close.className = "fa fa-close fa-fw close";
             link.href = "#";
             header.id = tabPage.headId;
             var self = this;
@@ -214,6 +215,7 @@
                 e.stopPropagation();
             });
             placeholder.className = "blank-placeholder fa-fw";
+            link.appendChild(icon);
             link.appendChild(span);
             //可关闭的标签页
             if (tabPage.alwaysShow == false) {
@@ -222,6 +224,7 @@
             }
             else {
                 header.className = "fixed";
+                icon.className = "fa fa-home fa-fw";
             }
             header.appendChild(link);
 

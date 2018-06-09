@@ -7,6 +7,8 @@
     font-size:1em;
     overflow-x:hidden;
     overflow-y: overlay;
+    position:relative;
+    left:-1px;
 }
 .leftMenu::-webkit-scrollbar {
     display: none;
@@ -24,6 +26,24 @@
     display:block;
     position:relative;
 }
+.leftMenu>ul>li>a{
+    padding-left: 3px;
+}
+.leftMenu>ul>li>a:hover::before{
+    display: block;
+}
+.leftMenu>ul>li>a::before{
+    display: none;
+    content:'';
+    width:3px;
+    max-width: 3px;
+    height: 1.8em;
+    background-color: #457;
+    position: absolute;
+    left: 0;
+    top: -1px;
+}
+
 .leftMenu ul li.selected{
     background-color: #bcbcbc;
 }
@@ -54,18 +74,18 @@
     background-color: #fff;
 }
 .leftMenu ul li ul li a:hover{
-    background-color: #bcbcbc;
+    background-color: #eee;
 }
 /*.leftMenu>ul>li a:hover{
     color:#457;
     background-color: #fff;
 }*/
 .leftMenu ul li ul li a{
-    padding-left: 20px;
+    padding-left: 25px;
     line-height: 1.6em;
 }
 .leftMenu ul li ul li ul li a{
-    padding-left: 40px;
+    padding-left: 45px;
 }
 .leftMenu>ul>li:last-child{
     border-bottom: 1px solid #ccc;
@@ -96,11 +116,11 @@
     border: 1px dotted black;
     position: absolute;
     top: 0px;
-    left: 10px;
+    left: 18px;
     border-style: none none dotted none;
 }
 .leftMenu ul li ul li ul li a:before{
-    left: 30px;
+    left: 35px;
 }
 .leftMenu ul li ul li ul li:last-child a:before{
     border-left-style: dotted;
@@ -109,13 +129,13 @@
     position: absolute;  
     content: '';  
     top: 0;  
-    left: 10px;  
+    left: 18px;  
     bottom: 0;  
     border: 1px dotted black;
     border-style: none none none dotted;
 }
 .leftMenu ul ul ul li::after{
-    left:30px;
+    left:35px;
 }
 .leftMenu ul ul ul li:last-child:after{
     border-left-style: none;

@@ -70,16 +70,16 @@
 .tab-header ul .selected:hover{
     z-index: 1;
 }
-.tab-header a i{
+.tab-header a i.close{
     font-size: 0.8em;
     display: none;
     position: relative;
     top:-8px;
 }
-.tab-header .selected a i{
+.tab-header .selected a i.close{
     display: inline-block;
 }
-.tab-header .selected a i:hover{
+.tab-header .selected a i.close:hover{
     color:red;
     cursor: pointer;
 }
