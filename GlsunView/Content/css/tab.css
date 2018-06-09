@@ -5,6 +5,7 @@
 .tab-header{
     color:#444;
     border:1px solid #cccccc;  
+    border-left:0;
     background-color: #eaeaea;
     border-bottom:0;
     height:30px;
