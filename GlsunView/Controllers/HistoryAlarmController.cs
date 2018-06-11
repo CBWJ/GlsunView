@@ -41,6 +41,8 @@ namespace GlsunView.Controllers
                     IP = "",
                     AlarmLevel = "不限",
                     Confirmor = "",
+                    AlarmTimeBeg = DateTime.Now.AddMonths(-3),
+                    AlarmTimeEnd = DateTime.Now,
                     ConfirmTimeBeg = DateTime.Now.AddMonths(-3),
                     ConfirmTimeEnd = DateTime.Now
                 };
@@ -57,8 +59,10 @@ namespace GlsunView.Controllers
             {
                 alarmInfo = alarmInfo.Where(a => a.ULoginName.Contains(conditions.Confirmor) || a.UName.Contains(conditions.Confirmor));
             }
-            alarmInfo = alarmInfo.Where(a => a.AIConfirmTime > conditions.ConfirmTimeBeg);
-            alarmInfo = alarmInfo.Where(a => a.AIConfirmTime < conditions.ConfirmTimeEnd.AddDays(1));
+            alarmInfo = alarmInfo.Where(a => a.AITime > conditions.AlarmTimeBeg);
+            alarmInfo = alarmInfo.Where(a => a.AITime < conditions.AlarmTimeEnd.AddDays(1));
+            //alarmInfo = alarmInfo.Where(a => a.AIConfirmTime > conditions.ConfirmTimeBeg);
+            //alarmInfo = alarmInfo.Where(a => a.AIConfirmTime < conditions.ConfirmTimeEnd.AddDays(1));
             //分页处理
             var totals = alarmInfo.Count();
             alarmInfo = alarmInfo.OrderBy(a => a.AITime)

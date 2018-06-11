@@ -32,14 +32,14 @@
                 <input class="form-control" name="Confirmor" value="@conditions.Confirmor" style="width:130px" placeholder="登陆名或用户名"/>
             </label>
             <label class="form-inline">
-                确认时间&nbsp;
-                <input type="text" class="form-control" style="width:160px" id="datepickerBeg" name="ConfirmTimeBeg"
-                       value="@(conditions.ConfirmTimeBeg.ToString("yyyy-MM-dd hh:mm:ss"))" />
+                告警时间&nbsp;
+                <input type="text" class="form-control" style="width:160px" id="datepickerBeg" name="AlarmTimeBeg"
+                       value="@(conditions.AlarmTimeBeg.ToString("yyyy-MM-dd hh:mm:ss"))" />
             </label>
             <label class="form-inline">
                 &nbsp;~&nbsp;
-                <input type="text" class="form-control" style="width:160px" id="datepickerEnd" name="ConfirmTimeEnd"
-                       value="@(conditions.ConfirmTimeEnd.ToString("yyyy-MM-dd hh:mm:ss"))" />
+                <input type="text" class="form-control" style="width:160px" id="datepickerEnd" name="AlarmTimeEnd"
+                       value="@(conditions.AlarmTimeEnd.ToString("yyyy-MM-dd hh:mm:ss"))" />
             </label>
             @Html.AuthorityButtonList(userModuleAuth)
         </form>
