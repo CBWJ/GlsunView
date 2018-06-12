@@ -116,11 +116,14 @@
             $("#status").click(function () {
                 var interval = 200;
                 if ($(".main_body_bottom").css("height") != "0px") {
-                    $(".main_body_bottom").animate({ height: 0 }, { duration: interval });
+                    $(".main_body_bottom").animate({ height: 0 }, interval, null,
+                            function () {
+                                $(this).hide();
+                            });
                     $(".main_body_content").animate({ bottom: 0 }, { duration: interval });
                 }
                 else {
-                    $(".main_body_bottom").animate({ height: 150 }, { duration: interval });
+                    $(".main_body_bottom").show().animate({ height: 150 }, { duration: interval });
                     $(".main_body_content").animate({ bottom: 150 }, { duration: interval });
                 }
             });

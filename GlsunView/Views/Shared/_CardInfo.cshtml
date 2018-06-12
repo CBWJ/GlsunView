@@ -22,10 +22,12 @@
         }
         .tab{
             height: 100%;
+            position:relative;
         }
         .tab-title{
             background-color: #fff;
             border-bottom: 1px solid #bbb;
+            height:35px;
         }
         .tab-title>li{
             list-style: none;
@@ -56,10 +58,18 @@
         .tab-title>li:first-of-type.active>a{
             border-left: transparent;
         }
+        .tab-content{
+            position: absolute;
+            top:35px;
+            bottom: 0;
+            left:0;
+            right:0;
+        }
         .tab-content>.tab-pane{
             display: none;
+            overflow: auto;
         }
-        .tab-content>div.active{
+        .tab-content>.active{
             display: block;
         }
         #alert{
@@ -88,6 +98,7 @@
     <script src="~/scripts/bootstrap.min.js"></script>
     <script>
         $(function () {
+            $(".tab-pane").css("height", $(".tab").innerHeight() - 35);
             $(".tab-title>li").click(function () {
                 var $this = $(this);
                 if ($this.hasClass("active")) return;
@@ -101,11 +112,16 @@
                 //    console.log(document.documentElement.scrollTop + "," + document.body.scrollTop);
                 //    document.documentElement.scrollTop = document.body.scrollTop = 0;
                 //}, 50);
-                setTimeout(function () {
-                    if ($(document).scrollTop() != 0) {
-                        $(document).scrollTop(0);
-                    }
-                }, 10);
+
+                //setTimeout(function () {
+                //    if ($(document).scrollTop() != 0) {
+                //        $(document).scrollTop(0);
+                //    }
+                //}, 50);
+            });
+            $(window).on("resize", function () {
+                console.log('size change');
+                $(".tab-pane").css("height", $(".tab").innerHeight() - 35);
             });
         });
         //  提交后
