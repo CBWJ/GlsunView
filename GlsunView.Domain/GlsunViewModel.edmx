@@ -301,6 +301,15 @@
           <Property Name="Editor" Type="nvarchar" MaxLength="20" />
         </EntityType>
         <!--生成过程中发现错误:
+警告 6002: 表/视图“GlsunView.dbo.v_LastestWeekAlarmStatistics”未定义主键。已推断出该键，并将定义创建为只读的表/视图。-->
+        <EntityType Name="v_LastestWeekAlarmStatistics">
+          <Key>
+            <PropertyRef Name="Cnt" />
+          </Key>
+          <Property Name="QDate" Type="varchar" MaxLength="10" />
+          <Property Name="Cnt" Type="int" Nullable="false" />
+        </EntityType>
+        <!--生成过程中发现错误:
 警告 6002: 表/视图“GlsunView.dbo.v_ModuleAuthority”未定义主键。已推断出该键，并将定义创建为只读的表/视图。-->
         <EntityType Name="v_ModuleAuthority">
           <Key>
@@ -613,6 +622,12 @@
     [v_Authority].[Creator] AS [Creator], 
     [v_Authority].[Editor] AS [Editor]
     FROM [dbo].[v_Authority] AS [v_Authority]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="v_LastestWeekAlarmStatistics" EntityType="Self.v_LastestWeekAlarmStatistics" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [v_LastestWeekAlarmStatistics].[QDate] AS [QDate], 
+    [v_LastestWeekAlarmStatistics].[Cnt] AS [Cnt]
+    FROM [dbo].[v_LastestWeekAlarmStatistics] AS [v_LastestWeekAlarmStatistics]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="v_ModuleAuthority" EntityType="Self.v_ModuleAuthority" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
@@ -987,6 +1002,7 @@
           <EntitySet Name="TopologyOperationLog" EntityType="GlsunViewModel.TopologyOperationLog" />
           <EntitySet Name="AlarmInformation" EntityType="GlsunViewModel.AlarmInformation" />
           <EntitySet Name="v_AlarmInfo" EntityType="GlsunViewModel.v_AlarmInfo" />
+          <EntitySet Name="v_LastestWeekAlarmStatistics" EntityType="GlsunViewModel.v_LastestWeekAlarmStatistics" />
           </EntityContainer>
         <EntityType Name="v_ModuleUser">
           <Key>
@@ -1377,6 +1393,13 @@
           <Property Name="ULoginName" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="UName" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="SName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="v_LastestWeekAlarmStatistics">
+          <Key>
+            <PropertyRef Name="Cnt" />
+          </Key>
+          <Property Name="QDate" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="Cnt" Type="Int32" Nullable="false" />
         </EntityType>
         </Schema>
     </edmx:ConceptualModels>
@@ -1834,6 +1857,14 @@
                 <ScalarProperty Name="DName" ColumnName="DName" />
                 <ScalarProperty Name="DID" ColumnName="DID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="v_LastestWeekAlarmStatistics">
+            <EntityTypeMapping TypeName="GlsunViewModel.v_LastestWeekAlarmStatistics">
+              <MappingFragment StoreEntitySet="v_LastestWeekAlarmStatistics">
+                <ScalarProperty Name="Cnt" ColumnName="Cnt" />
+                <ScalarProperty Name="QDate" ColumnName="QDate" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

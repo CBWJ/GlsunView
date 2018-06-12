@@ -267,6 +267,7 @@
     <Content Include="scripts\lib\contextmenu.js" />
     <Content Include="scripts\lib\device_compenent.js" />
     <Content Include="scripts\lib\dialog.js" />
+    <Content Include="scripts\lib\echarts.min.js" />
     <Content Include="scripts\lib\jquery.ztree.core.js" />
     <Content Include="scripts\lib\jquery.ztree.excheck.min.js" />
     <Content Include="scripts\lib\jtopo-min.js" />

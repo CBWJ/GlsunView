@@ -11,23 +11,148 @@
     <title>Index</title>
     <script src="~/scripts/jquery-1.9.1.min.js"></script>
     <script src="~/scripts/bootstrap.min.js"></script>
+    <script src="~/scripts/lib/echarts.min.js"></script>
     <link rel="stylesheet" href="~/Content/bootstrap.min.css" />
     <link rel="stylesheet" href="~/Content/css/AdminLTE.min.css" />
+    <style>
+        .dashboard{
+            height:300px;
+        }
+    </style>
 </head>
 <body>
     <div class="row"> 
-        <div class="col-xs-6">
+        <div class="col-xs-4">
             <div class="panel panel-default">
-                <div class="panel-heading">面板1</div>
-                <div class="panel-body"> something</div>
+                <div class="panel-body dashboard" id="chartAlarm">
+                </div>
             </div>
         </div>
-        <div class="col-xs-6">
+        <div class="col-xs-4">
             <div class="panel panel-default">
-                <div class="panel-heading">面板1</div>
-                <div class="panel-body"> something</div>
+                <div class="panel-body dashboard" id="chartAlarmWeek"></div>
             </div>
         </div>
     </div>
+    <script>
+        // 基于准备好的dom，初始化echarts实例
+        var chartAlarm = echarts.init(document.getElementById('chartAlarm'));
+        var chartAlarmWeek = echarts.init(document.getElementById('chartAlarmWeek'));
+        var weekAlarm = '@Html.Raw(ViewBag.WeekAlarm)';
+        $(function () {
+            //取消异步请求
+            $.ajaxSetup({
+                async: false
+            });
+            updateAlarm();
+            updateWeekAlarm();
+
+            $(window).on("resize", function () {
+                updateAlarm();
+                updateWeekAlarm();
+            })
+        });
+        function updateAlarm() {
+            var seriesData = [];
+            $.get("@Url.Action("GetRealTimeAlarmCount", "Home")", {},
+            function (data, status, jqXHR) {
+                if (status == "success" && data) {
+                    for (var m in data) {
+                        seriesData.push({ name: getAlarmLevel(m), value: data[m] })
+                    }
+                }
+            }, "json");
+            function getAlarmLevel(level) {
+                if (level == 'critical') return '严重';
+                if (level == 'major') return '重要';
+                if (level == 'minor') return '次要';
+                if (level == 'warn') return '警告';
+                if (level == 'normal') return '正常';
+                return '';
+            }
+            // 指定图表的配置项和数据
+            var option = {
+                title: {
+                    text: '当前告警统计',
+                    x: 'center'
+                },
+                tooltip: {
+                    trigger: 'item',
+                    formatter: "{a} <br/>{b} : {c} ({d}%)"
+                },
+                legend: {
+                    bottom: 10,
+                    left: 'center',
+                    data: ['严重', '重要', '次要', '警告', '正常']
+                },
+                series: [
+                    {
+                        name: '告警',
+                        type: 'pie',
+                        radius: '55%',
+                        center: ['50%', '50%'],
+                        data: seriesData,
+                        color: ['red',
+                            'orange',
+                            'yellowgreen',
+                            'deepskyblue',
+                            'green']
+                    }
+                ]
+            };
+
+            // 使用刚指定的配置项和数据显示图表。
+            chartAlarm.setOption(option);
+        }
+        function updateWeekAlarm() {
+            var arrWeekAlarm = JSON.parse(weekAlarm);
+            var xAxisData = [];
+            var serieData = [];
+            for (var obj in arrWeekAlarm) {
+                var date = arrWeekAlarm[obj]['QDate'];
+                xAxisData.push(date.substring(5));
+                serieData.push(arrWeekAlarm[obj]['Cnt']);
+            }
+            // 指定图表的配置项和数据
+            var option = {
+                color: ['#3398DB'],
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+                        type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                    }
+                },
+                title: {
+                    text: '最近7天告警统计',
+                    x: 'center'
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                xAxis: {
+                    type: 'category',
+                    data: xAxisData,
+                    axisTick: {
+                        alignWithLabel: true
+                    }
+                },
+                yAxis: {
+                    type: 'value'
+                },
+                series: [{
+                    data: serieData,
+                    type: 'bar',
+                    name: '当天告警',
+                    barWidth: '60%'
+                }]
+            };
+
+            // 使用刚指定的配置项和数据显示图表。
+            chartAlarmWeek.setOption(option);
+        }
+    </script>
 </body>
 </html>
