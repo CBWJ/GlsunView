@@ -17,9 +17,7 @@ namespace GlsunView.Controllers
             IEnumerable<v_LastestWeekAlarmStatistics> weekAlarm = null;
             using (var ctx = new GlsunViewEntities())
             {
-                weekAlarm = ctx.v_LastestWeekAlarmStatistics
-                            .OrderBy(a => a.QDate)
-                            .ToList();
+                weekAlarm = ctx.v_LastestWeekAlarmStatistics.ToList();
             }
             ViewBag.WeekAlarm = JsonHelper.getJsonByObject(weekAlarm);
             return View();

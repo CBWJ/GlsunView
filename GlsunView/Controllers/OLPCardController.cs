@@ -137,5 +137,31 @@ namespace GlsunView.Controllers
             }
             return result;
         }
+
+        [HttpGet]
+        public ActionResult RealTimeStatus(int did, int slot)
+        {
+            JsonResult result = new JsonResult();
+            result.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
+            try
+            {
+                Device d = null;
+                using (var ctx = new GlsunViewEntities())
+                {
+                    d = ctx.Device.Find(did);
+                }
+                OLPInfo olpInfo = new OLPInfo();
+                TcpClientService tcp = new TcpClientService(d.DAddress, d.DPort.Value);
+                OLPCommService service = new OLPCommService(tcp, slot);
+                tcp.Connect();
+                olpInfo.RefreshData(service);
+                result.Data = new { Code = "", Data = olpInfo };
+            }
+            catch (Exception ex)
+            {
+                result.Data = new { Code = "Exception", Data = "" };
+            }
+            return result;
+        }
     }
 }

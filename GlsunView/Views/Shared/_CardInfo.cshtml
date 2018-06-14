@@ -107,17 +107,12 @@
                 $this.addClass("active");
                 var id = $this.children("a").attr("href");
                 $(id).addClass("active");
-                //document.documentElement.scrollTop = document.body.scrollTop = 0;
-                //setTimeout(function () {
-                //    console.log(document.documentElement.scrollTop + "," + document.body.scrollTop);
-                //    document.documentElement.scrollTop = document.body.scrollTop = 0;
-                //}, 50);
-
-                //setTimeout(function () {
-                //    if ($(document).scrollTop() != 0) {
-                //        $(document).scrollTop(0);
-                //    }
-                //}, 50);
+                if (id == "#tab_1") {
+                    if (enableUpdateStatus && typeof enableUpdateStatus == "function") enableUpdateStatus();
+                }
+                else {
+                    if (disableUpdateStatus && typeof disableUpdateStatus == "function") disableUpdateStatus();
+                }
             });
             $(window).on("resize", function () {
                 console.log('size change');
@@ -185,6 +180,38 @@
                 }
             }
             else return null;
+        }
+        //板卡基本信息更新
+        function updateCardStatus(data) {
+            var value = null;
+            for (var p in data) {
+                //console.log(p + '\t' + data[p]);
+                value = data[p];
+                if (value != null) {
+                    var showVal = value;
+                    var showObj = statusShowObject[p];
+                    if (showObj != null) {
+                        if (showObj.showType == "map") {
+                            var map = showObj.dataMap;
+                            var v = showObj.dataMap[showVal];
+                            if (v != null && v != undefined) {
+                                showVal = v;
+                            }
+                        }
+                        if (showObj.unit != "") {
+                            showVal = showVal + " " + showObj.unit;
+                        }
+                    }
+                    $("#" + p).children(".value").text(showVal);
+                }
+            }
+        }
+        //关闭更新状态
+        function disableUpdateStatus() {
+            if (hTimer != null) {
+                clearInterval(hTimer);
+                hTimer = null;
+            }
         }
     </script>
     @if (IsSectionDefined("AddToEnd"))

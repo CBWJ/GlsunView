@@ -115,4 +115,76 @@
         <div class="tab-pane" id="tab_4">内容4</div>
     </div>
 </div>
-
+@section AddToEnd{
+    <script>
+        var hTimer = null;
+        $(function () {
+            enableUpdateStatus();
+        });
+        function enableUpdateStatus() {
+            hTimer = setInterval(function () {
+                $.get("@Url.Action("RealTimeStatus", "NMUCard", new { did = ViewBag.DID })",
+                    function (data, status) {
+                        if (status == "success") {
+                            if (data.Code == "") {
+                                updateCardStatus(data.Data);
+                            }
+                        }
+                    }, "json");
+            }, 2000);
+        }
+        //板卡基本信息更新
+        /*function updateCardStatus(data) {
+            var value = null;
+            for (var p in data) {
+                //console.log(p + '\t' + data[p]);
+                value = data[p];
+                if (value != null) {
+                    var showVal = value;
+                    var showObj = statusShowObject[p];
+                    if (showObj != null) {
+                        if (showObj.showType == "map") {
+                            var map = showObj.dataMap;
+                            var v = showObj.dataMap[showVal];
+                            if (v != null && v != undefined) {
+                                showVal = v;
+                            }
+                        }
+                        if (showObj.unit != "") {
+                            showVal = showVal + " " + showObj.unit;
+                        }
+                    }
+                    $("#" + p).children(".value").text(showVal);
+                }
+            }
+        }
+        //关闭更新状态
+        function disableUpdateStatus() {
+            if (hTimer != null) {
+                clearInterval(hTimer);
+                hTimer = null;
+            }
+        }*/
+        //数据显示对象
+        var statusShowObject = {
+            IP_Address: { showType: "raw", unit: "", dataMap: {} },
+            Gateway: { showType: "raw", unit: "", dataMap: {} },
+            Subnet_Mask: { showType: "raw", unit: "", dataMap: {} },
+            Trap_IP_1: { showType: "raw", unit: "", dataMap: {} },
+            Trap_IP_2: { showType: "raw", unit: "", dataMap: {} },
+            Trap_IP_3: { showType: "raw", unit: "", dataMap: {} },
+            Power_1_Status: { showType: "map", unit: "", dataMap: {0:'关闭', 1:'开启'} },
+            Power_2_Status: { showType: "map", unit: "", dataMap: { 0: '关闭', 1: '开启' } },
+            FAN_Status: { showType: "map", unit: "", dataMap: {1:'正常', 3:'关闭'} },
+            Community_read: { showType: "raw", unit: "", dataMap: {} },
+            Community_write: { showType: "raw", unit: "", dataMap: {} },
+            Software_version: { showType: "raw", unit: "", dataMap: {} },
+            Hardware_version: { showType: "raw", unit: "", dataMap: {} },
+            Serial_Number: { showType: "raw", unit: "", dataMap: {} },
+            Manufacturing_Date: { showType: "raw", unit: "", dataMap: {} },
+            sysLocation: { showType: "raw", unit: "", dataMap: {} },
+            sysName: { showType: "raw", unit: "", dataMap: {} },
+            sysContact: { showType: "raw", unit: "", dataMap: {} }
+        };
+    </script>
+}

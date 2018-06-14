@@ -122,5 +122,31 @@ namespace GlsunView.Controllers
             }
             return result;
         }
+
+        [HttpGet]
+        public ActionResult RealTimeStatus(int did, int slot)
+        {
+            JsonResult result = new JsonResult();
+            result.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
+            try
+            {
+                Device d = null;
+                using (var ctx = new GlsunViewEntities())
+                {
+                    d = ctx.Device.Find(did);
+                }
+                OEOInfo oeoInfo = new OEOInfo();
+                TcpClientService tcp = new TcpClientService(d.DAddress, d.DPort.Value);
+                OEOCommService service = new OEOCommService(tcp, slot);
+                tcp.Connect();
+                oeoInfo.RefreshData(service);
+                result.Data = new { Code = "", Data = oeoInfo };
+            }
+            catch (Exception ex)
+            {
+                result.Data = new { Code = "Exception", Data = "" };
+            }
+            return result;
+        }
     }
 }

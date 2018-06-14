@@ -304,8 +304,10 @@
 警告 6002: 表/视图“GlsunView.dbo.v_LastestWeekAlarmStatistics”未定义主键。已推断出该键，并将定义创建为只读的表/视图。-->
         <EntityType Name="v_LastestWeekAlarmStatistics">
           <Key>
+            <PropertyRef Name="V_ID" />
             <PropertyRef Name="Cnt" />
           </Key>
+          <Property Name="V_ID" Type="bigint" Nullable="false" />
           <Property Name="QDate" Type="varchar" MaxLength="10" />
           <Property Name="Cnt" Type="int" Nullable="false" />
         </EntityType>
@@ -625,6 +627,7 @@
           </EntitySet>
           <EntitySet Name="v_LastestWeekAlarmStatistics" EntityType="Self.v_LastestWeekAlarmStatistics" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
+    [v_LastestWeekAlarmStatistics].[V_ID] AS [V_ID], 
     [v_LastestWeekAlarmStatistics].[QDate] AS [QDate], 
     [v_LastestWeekAlarmStatistics].[Cnt] AS [Cnt]
     FROM [dbo].[v_LastestWeekAlarmStatistics] AS [v_LastestWeekAlarmStatistics]</DefiningQuery>
@@ -1396,8 +1399,10 @@
         </EntityType>
         <EntityType Name="v_LastestWeekAlarmStatistics">
           <Key>
+            <PropertyRef Name="V_ID" />
             <PropertyRef Name="Cnt" />
           </Key>
+          <Property Name="V_ID" Type="Int64" Nullable="false" />
           <Property Name="QDate" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="Cnt" Type="Int32" Nullable="false" />
         </EntityType>
@@ -1865,6 +1870,7 @@
               <MappingFragment StoreEntitySet="v_LastestWeekAlarmStatistics">
                 <ScalarProperty Name="Cnt" ColumnName="Cnt" />
                 <ScalarProperty Name="QDate" ColumnName="QDate" />
+                <ScalarProperty Name="V_ID" ColumnName="V_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

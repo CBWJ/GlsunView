@@ -91,7 +91,7 @@
                         <td class="value">7</td>
                         <td class="value">8</td>
                     </tr>
-                    <tr id="param">
+                    <tr id="Status">
                         <td class="name">状态</td>
                         @foreach (var e in Model.SFPSet)
                         {
@@ -336,6 +336,7 @@
 </div>
 @section AddToEnd{
     <script>
+        var hTimer = null;
         $(function () {
             $(".form-sfp").ajaxForm({
                 success: onSuccess
@@ -351,12 +352,96 @@
                 param.val(c.name);
                 submitForm($form[0].id);
             });
+            enableUpdateStatus();
         });
         //提交表单
         function submitForm(id) {
             $("#" + id).submit();
         }
-
+        var statusShowObject = {
+            Software_Version: { showType: "raw", unit: "", dataMap: {} },
+            Hardware_Version: { showType: "raw", unit: "", dataMap: {} },
+            Serial_Number: { showType: "raw", unit: "", dataMap: {} },
+            Manufacture_Date: { showType: "raw", unit: "", dataMap: {} }
+        }
+        function enableUpdateStatus(){
+            hTimer = setInterval(function () {
+                var url = "@Url.Action("RealTimeStatus", "OEOCard", new { did = ViewBag.Did, slot = ((string)ViewBag.EndPoint).Split(':')[2]})";
+                $.get(url.replace(/amp;/g, ""),
+                    function (data, status) {
+                        if (status == "success") {
+                            if (data.Code == "") {
+                                var test = {};
+                                $.extend(test, data.Data, { SFPSet: null });
+                                console.log(data.Data.SFPSet);
+                                updateCardStatus(test);
+                                updateSFPModule(data.Data.SFPSet);
+                            }
+                        }
+                    }, "json");
+            }, 2000);
+        }
+        //SFP数据显示对象
+        var sfpShowObject = {
+            Status: { showType: "map", unit: "", dataMap: { 0: 'Off', 1: 'On' } },
+            Work_Mode: { showType: "map", unit: "", dataMap: { 1: '普通', 2: '旁路', 3: '环回' } },
+            Tx_Power_Control: { showType: "map", unit: "", dataMap: {0:'关闭',1:'开启',2:'自动'} },
+            Tx_Power: { showType: "format", unit: "", dataMap: {} },
+            Rx_Power: { showType: "format", unit: "", dataMap: {} },
+            Module_Wave: { showType: "raw", unit: "", dataMap: {} },
+            Transmission_Distance: { showType: "raw", unit: "", dataMap: {} },
+            Transmission_Rate: { showType: "format", unit: "", dataMap: {} },
+            Module_Temperature: { showType: "format", unit: "", dataMap: {} },
+            Tx_Power_State: { showType: "map", unit: "", dataMap: {0:'告警',1:'正常'} },
+            Rx_Power_State: { showType: "map", unit: "", dataMap: { 0: '告警', 1: '正常' } },
+            Module_Temperature_State: { showType: "map", unit: "", dataMap: { 0: '告警', 1: '正常' } }
+        };
+        //更新SFP模块
+        function updateSFPModule(sfps) {
+            var value = null;
+            var sfp = null;
+            for (var i = 0; i < sfps.length; ++i) {
+                var sfp = sfps[i];
+                if (sfp != null) {
+                    for (var p in sfp) {
+                        value = sfp[p];
+                        if (p != "SlotPosition" && value != null) {
+                            var showVal = value;
+                            var showObj = sfpShowObject[p];
+                            if (showObj != null) {
+                                if (showObj.showType == "map") {
+                                    var map = showObj.dataMap;
+                                    var v = showObj.dataMap[showVal];
+                                    if (v != null && v != undefined) {
+                                        showVal = v;
+                                    }
+                                } else if (showObj.showType == "format") {
+                                    if (isRealNum(showVal)) {
+                                        showVal = showVal.toFixed(2);
+                                    }
+                                }
+                                if (showObj.unit != "") {
+                                    showVal = showVal + " " + showObj.unit;
+                                }
+                            }
+                            var className = ".sfp-module-" + sfp["SlotPosition"];
+                            $("#" + p).children(className).text(showVal);
+                        }
+                    }
+                }
+            }
+        }
+        function isRealNum(val) {
+            // isNaN()函数 把空串 空格 以及NUll 按照0来处理 所以先去除
+            if (val === "" || val == null) {
+                return false;
+            }
+            if (!isNaN(val)) {
+                return true;
+            } else {
+                return false;
+            }
+        }
     </script>    
 }
 

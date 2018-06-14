@@ -108,13 +108,13 @@
                             @switch (Model.R1_State)
                             {
                                 case 0:
-                                    @:告警
+                                    @:灭
                                     break;
                                 case 1:
-                                    @:正常
+                                    @:亮
                                     break;
                                 case 2:
-                                    @:警告
+                                    @:闪
                                     break;
                                 default: break;
                             }
@@ -126,13 +126,13 @@
                             @switch (Model.R2_State)
                             {
                                 case 0:
-                                    @:告警
+                                    @:灭
                                     break;
                                 case 1:
-                                    @:正常
+                                    @:亮
                                     break;
                                 case 2:
-                                    @:警告
+                                    @:闪
                                     break;
                                 default: break;
                             }
@@ -144,13 +144,13 @@
                             @switch (Model.TX_State)
                             {
                                 case 0:
-                                    @:告警
+                                    @:灭
                                     break;
                                 case 1:
-                                    @:正常
+                                    @:亮
                                     break;
                                 case 2:
-                                    @:警告
+                                    @:闪
                                     break;
                                 default: break;
                             }
@@ -405,11 +405,41 @@
 
 @section AddToEnd{
     <script>
+        var hTimer;
         $(function () {
             $("#tab_2 button").click(function () {
                 setParam.call(this, "@Url.Action("SetParam", "OLPCard")", "@ViewBag.EndPoint", @ViewBag.Did);
             });
+            enableUpdateStatus();
         });
+        //开启更新状态
+        function enableUpdateStatus(){
+            hTimer = setInterval(function () {
+                var url = "@Url.Action("RealTimeStatus", "OLPCard", new { did = ViewBag.Did, slot = ((string)ViewBag.EndPoint).Split(':')[2]})";
+                $.get(url.replace(/amp;/g, ""),
+                    function (data, status) {
+                        if (status == "success") {
+                            if (data.Code == "") {
+                                updateCardStatus(data.Data);
+                            }
+                        }
+                    }, "json");
+            }, 2000);
+        }
+        var statusShowObject = {
+            Work_Mode: { showType:"map", unit: "", dataMap:{0:'手动',1:'自动'}},
+            Current_Channel: { showType:"map", unit: "", dataMap:{1:'主路',2:'备路'}},
+            R1_Input_Power: { showType:"raw", unit: "dBm", dataMap:{}},
+            R2_Input_Power: { showType:"raw", unit: "dBm", dataMap:{}},
+            TX_Input_Power: { showType:"raw", unit: "dBm", dataMap:{}},
+            R1_State: { showType:"map", unit: "", dataMap:{0:'灭',1:'亮',2:'闪'}},
+            R2_State: { showType:"map", unit: "", dataMap:{0:'灭',1:'亮',2:'闪'}},
+            TX_State: { showType:"map", unit: "", dataMap:{0:'灭',1:'亮',2:'闪'}},
+            Software_Version: { showType:"raw", unit: "", dataMap:{}},
+            hardware_Version: { showType:"raw", unit: "", dataMap:{}},
+            Serial_Number: { showType:"raw", unit: "", dataMap:{}},
+            Manufacture_Date: { showType:"raw", unit: "", dataMap:{}}
+        };
         @*var endPoint = "@ViewBag.EndPoint";
         function setParam() {
             var td = $(this).parent("td").prev();

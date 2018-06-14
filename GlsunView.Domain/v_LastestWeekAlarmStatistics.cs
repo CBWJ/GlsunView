@@ -14,6 +14,7 @@ namespace GlsunView.Domain
     
     public partial class v_LastestWeekAlarmStatistics
     {
+        public long V_ID { get; set; }
         public string QDate { get; set; }
         public int Cnt { get; set; }
     }

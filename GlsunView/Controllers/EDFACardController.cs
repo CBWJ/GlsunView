@@ -44,7 +44,7 @@ namespace GlsunView.Controllers
             ViewBag.EndPoint = d.DAddress + ":" + d.DPort.Value + ":" + slot.ToString();
             return View(edfaInfo);
         }
-
+        [HttpPost]
         public ActionResult SetParam(string endpoint, string name, string value, int did)
         {
             JsonResult result = new JsonResult();
@@ -135,6 +135,31 @@ namespace GlsunView.Controllers
             catch(Exception ex)
             {
                 result.Data = new { Code = "Exception", Data = "设置时发生异常" };
+            }
+            return result;
+        }
+        [HttpGet]
+        public ActionResult RealTimeStatus(int did, int slot)
+        {
+            JsonResult result = new JsonResult();
+            result.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
+            try
+            {
+                Device d = null;
+                using (var ctx = new GlsunViewEntities())
+                {
+                    d = ctx.Device.Find(did);
+                }
+                EDFAInfo edfaInfo = new EDFAInfo();
+                TcpClientService tcp = new TcpClientService(d.DAddress, d.DPort.Value);
+                EDFACommService service = new EDFACommService(tcp, slot);
+                tcp.Connect();
+                edfaInfo.RefreshData(service);
+                result.Data = new { Code = "", Data = edfaInfo };
+            }
+            catch(Exception ex)
+            {
+                result.Data = new { Code = "Exception", Data = "" };
             }
             return result;
         }

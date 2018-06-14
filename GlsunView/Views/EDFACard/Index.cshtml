@@ -56,11 +56,37 @@
                 <tbody>
                     <tr id="Work_Mode">
                         <td class="name">工作模式</td>
-                        <td class="value">@Model.Work_Mode </td>
+                        <td class="value">
+                            @switch (Model.Work_Mode)
+                            {
+                                case 0:
+                                    @:其他
+                                    break;
+                                case 1:
+                                    @:ACC模式
+                                    break;
+                                case 2:
+                                    @:APC模式
+                                    break;
+                                case 3:
+                                    @:AGC模式
+                                    break;
+                            }
+                        </td>
                     </tr>
                     <tr id="PUMP_Switch">
                         <td class="name">泵浦开关</td>
-                        <td class="value">@Model.PUMP_Switch </td>
+                        <td class="value">
+                            @switch (int.Parse(Model.PUMP_Switch.ToString()))
+                            {
+                                case 0:
+                                    @:关
+                                    break;
+                                case 1:
+                                    @:开
+                                    break;
+                            }
+                        </td>
                     </tr>
                     <tr id="Input_Power">
                         <td class="name">输入光功率</td>
@@ -213,10 +239,88 @@
 
 @section AddToEnd{
     <script>
+        var hTimer = null;
         $(function () {
             $("#tab_2 button").click(function () {
                 setParam.call(this, "@Url.Action("SetParam", "EDFACard")", "@ViewBag.EndPoint", @ViewBag.Did);
             });
+            enableUpdateStatus();
         });
+        //开启更新状态
+        function enableUpdateStatus(){
+            hTimer = setInterval(function () {
+                var url = "@Url.Action("RealTimeStatus", "EDFACard", new { did = ViewBag.Did, slot = ((string)ViewBag.EndPoint).Split(':')[2]})";
+                $.get(url.replace(/amp;/g, ""),
+                    function (data, status) {
+                        if (status == "success") {
+                            if (data.Code == "") {
+                                updateCardStatus(data.Data);
+                            }
+                        }
+                    }, "json");
+            }, 2000);
+        }
+        
+        //数据显示对象
+        var statusShowObject = {
+            Work_Mode: { showType:"map", unit: "", dataMap:{0:'其他',1:'ACC模式',2:'APC模式',3:'AGC模式'}},
+            PUMP_Switch: { showType:"map", unit: "", dataMap:{0:'关',1:'开'}},
+            Input_Power: { showType:"raw", unit: "dBm", dataMap:{}},
+            Output_Power: { showType:"raw", unit: "dBm", dataMap:{}},
+            Input_Power_Limit: { showType:"raw", unit: "dBm", dataMap:{}},
+            Output_Power_Limit: { showType:"raw", unit: "dBm", dataMap:{}},
+            Modlue_Temperature_Upper_Limit: { showType:"raw", unit: "℃", dataMap:{}},
+            Modlue_Temperature_Lower_Limit: { showType:"raw", unit: "℃", dataMap:{}},
+            PUMP_Temperature_Upper_Limit: { showType:"raw", unit: "℃", dataMap:{}},
+            PUMP_Temperature_Lower_Limit: { showType:"raw", unit: "℃", dataMap:{}},
+            Input_Power_State: { showType:"map", unit: "", dataMap:{0:'告警',1:'正常'}},
+            Output_Power_State: { showType:"map", unit: "", dataMap:{0:'告警',1:'正常'}},
+            Modlue_Temperature_State: { showType:"map", unit: "", dataMap:{0:'告警',1:'正常'}},
+            PUMP_Temperature_State: { showType:"map", unit: "", dataMap:{0:'告警',1:'正常'}},
+            PUMP_Electric_Current_State: { showType:"map", unit: "", dataMap:{0:'告警',1:'正常'}},
+            Output_Power_Set: { showType:"raw", unit: "dBm", dataMap:{}},
+            Modlue_Temperature: { showType:"raw", unit: "℃", dataMap:{}},
+            Modlue_Voltage: { showType:"raw", unit: "V", dataMap:{}},
+            PUMP_Power: { showType:"raw", unit: "dBm", dataMap:{}},
+            PUMP_Temperature: { showType:"raw", unit: "℃", dataMap:{}},
+            PUMP_Electric_Current: { showType:"raw", unit: "mA", dataMap:{}},
+            TEC_Electric_Current: { showType:"raw", unit: "mA", dataMap:{}},
+            Software_Version: { showType:"raw", unit: "", dataMap:{}},
+            hardware_Version: { showType:"raw", unit: "", dataMap:{}},
+            Serial_Number: { showType:"raw", unit: "", dataMap:{}},
+            Manufacture_Date: { showType:"raw", unit: "", dataMap:{}},
+            Device_Type: { showType:"raw", unit: "", dataMap:{}},
+        };
+        //板卡基本信息更新
+        /*function updateCardStatus(data) {
+            var value = null;
+            for (var p in data) {
+                value = data[p];
+                if (value != null) {
+                    var showVal = value;
+                    var showObj = statusShowObject[p];
+                    if(showObj != null){
+                        if(showObj.showType == "map"){
+                            var map = showObj.dataMap;
+                            var v = showObj.dataMap[showVal];
+                            if(v != null && v != undefined){
+                                showVal = v;
+                            }
+                        }
+                        if(showObj.unit != ""){
+                            showVal = showVal + " " + showObj.unit;
+                        }
+                    }
+                    $("#" + p).children(".value").text(showVal);
+                }
+            }
+        }
+        //关闭更新状态
+        function disableUpdateStatus() {
+            if (hTimer != null) {
+                clearInterval(hTimer);
+                hTimer = null;
+            }
+        }*/
     </script>
 }
