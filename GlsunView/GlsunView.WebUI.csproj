@@ -327,6 +327,7 @@
     <Compile Include="Models\Slot.cs" />
     <Compile Include="Models\TopologyLine.cs" />
     <Compile Include="Models\TopologyNode.cs" />
+    <Compile Include="Models\TopoNodeStatus.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

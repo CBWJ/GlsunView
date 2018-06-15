@@ -353,6 +353,13 @@ namespace GlsunView.Controllers
             }
             return json;
         }
+        /// <summary>
+        /// 坐标改变
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult ChangeCoordinate(int id, int x, int y)
         {
@@ -388,6 +395,43 @@ namespace GlsunView.Controllers
                 _topoLogger.Record(loginUser, "修改子网", "坐标更新", "失败", string.Format("发生异常：{0}", ex.Message), net.ID, net.SName, "子网");
             }
             return json;
+        }
+
+        public ActionResult GetSubnetDeviceStatus(int sId)
+        {
+            var result = new JsonResult();
+            try
+            {
+                IEnumerable<Device> devices = null;
+                using (var ctx = new GlsunViewEntities())
+                {
+                    devices = ctx.Device.Where(d => d.SID == sId).ToList();
+                }
+                List<TopoNodeStatus> nodeStatus = new List<TopoNodeStatus>();
+                string[,] colorTable = new string[6, 2] { { "CRITICAL", "#FF0000" },
+                                                            { "MAJOR", "#FFA500" },
+                                                            { "MINOR", "#FFFF00" },
+                                                            { "WARN", "#00BFFF" },
+                                                            { "NORMAL", "#00FF00" },
+                                                            { "OFFLINE", "#E8E8E8" } };
+                Random r = new Random();
+                foreach(var d in devices)
+                {
+                    var index = r.Next(0, 6);
+                    nodeStatus.Add(new TopoNodeStatus
+                    {
+                        ID = d.ID,
+                        Status = colorTable[index, 0],
+                        BackgroundColor = colorTable[index, 1]
+                    });
+                }
+                result.Data = new { Code = "", Data = nodeStatus };
+            }
+            catch (Exception ex)
+            {
+                result.Data = new { Code = "Exception", Data = ex.Message };
+            }
+            return result;
         }
     }
 }
