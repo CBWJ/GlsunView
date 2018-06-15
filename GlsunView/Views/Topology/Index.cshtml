@@ -652,7 +652,7 @@
             var id;
             if (oldNode) {  //修改
                 id = 100000 + Number.parseInt(oldNode.xData);
-                if (oldNode.text != node.SName) {
+                if (oldNode.text != node.SName || oldNode.imgSrc != '../image/topo/' + node.SIcon) {
                     oldNode.text = node.SName;
                     notice = true;
                 }

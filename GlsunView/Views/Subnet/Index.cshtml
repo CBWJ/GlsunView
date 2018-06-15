@@ -656,8 +656,10 @@
                     oldNode.text = node.Name;
                 }
                 var newImgSrc = '../../image/topo/' + node.Icon;
-                if (oldNode.imgSrc != newImgSrc)
+                if (oldNode.imgSrc != newImgSrc) {
                     oldNode.imgSrc = newImgSrc;
+                    notice = true;
+                }
                 oldNode.setLocation(node.X, node.Y);
             } else {
                 newNode(node.X, node.Y, node.Icon, node.Name, node.ID);
