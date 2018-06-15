@@ -63,7 +63,7 @@ namespace GlsunView.Controllers
                             MParentID = topoModule.ID,
                             MLevel = 1,
                             MIconType = "image",
-                            MIcon = "image/folder.png",
+                            MIcon = "image/topo/" + net.SIcon,
                             MName = net.SName,
                             MUrl = string.Format("Subnet/Index/{0}", net.ID)
                         };
@@ -76,7 +76,7 @@ namespace GlsunView.Controllers
                                 MParentID = m.ID,
                                 MLevel = 2,
                                 MIconType = "image",
-                                MIcon = "image/document_file.png",
+                                MIcon = "image/topo/" + device.DIcon,
                                 MName = device.DName,
                                 MUrl = string.Format("Device/Index/{0}", device.ID)
                             };
