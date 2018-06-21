@@ -38,12 +38,25 @@ namespace GlsunView.CommService
         /// </summary>
         private bool _bStop;
         private object _lock = new object();
+        /// <summary>
+        /// 连接同步事件
+        /// </summary>
+        private ManualResetEvent _eventConnect;
+        /// <summary>
+        /// 连接超时
+        /// </summary>
+        public int ConnectTimeout { get; set; }
+        /// <summary>
+        /// 异步连接是否成功
+        /// </summary>
+        private bool _isConnectionSuccessful;
         public TcpClientService()
         {
             IsBusy = false;
             _tcpClient = new TcpClient();
             _eventRecieve = new ManualResetEvent(false);
             _sbRecv = new StringBuilder();
+            _eventConnect = new ManualResetEvent(false);
         }
 
         public TcpClientService(string ip, int port, int timeout = 100, string pattern = @"^<\S+>$")
@@ -56,6 +69,7 @@ namespace GlsunView.CommService
             _tcpClient = new TcpClient();
             _eventRecieve = new ManualResetEvent(false);
             _sbRecv = new StringBuilder();
+            _eventConnect = new ManualResetEvent(false);
         }
 
         public void Start()
@@ -106,7 +120,43 @@ namespace GlsunView.CommService
             _tcpClient.Connect(IP, Port);
             Start();
         }
-
+        /// <summary>
+        /// 超时连接
+        /// </summary>
+        /// <returns>true:超时时间内连接成功</returns>
+        public bool ConnectWithTimeout()
+        {
+            try
+            {
+                //事件信号重置
+                _eventConnect.Reset();
+                //异步连接
+                _tcpClient.BeginConnect(IP, Port, new AsyncCallback(requestCallback), _tcpClient);
+                //超时时间内收到信号
+                if (_eventConnect.WaitOne(ConnectTimeout))
+                {
+                    if (_isConnectionSuccessful)
+                    {
+                        //连接成功，开启接收线程
+                        Start();
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    _tcpClient.Close();
+                    return false;
+                }
+            }
+            catch
+            {
+                return false;
+            }
+            return true;
+        }
         public void Close()
         {
             Stop();
@@ -213,7 +263,32 @@ namespace GlsunView.CommService
                     new AsynState { Buffer = state.Buffer, Stream = state.Stream });
             }
         }
-
+        /// <summary>
+        /// 异步连接回调
+        /// </summary>
+        /// <param name="ar"></param>
+        public void requestCallback(IAsyncResult ar)
+        {
+            try
+            {
+                _isConnectionSuccessful = false;
+                var tcpClient = ar.AsyncState as TcpClient;
+                //套接字不为空
+                if (tcpClient.Client != null)
+                {
+                    tcpClient.EndConnect(ar);
+                    _isConnectionSuccessful = true;
+                }
+            }
+            catch
+            {
+                _isConnectionSuccessful = false;
+            }
+            finally
+            {
+                _eventConnect.Set();
+            }
+        }
         public void Dispose()
         {
             Close();

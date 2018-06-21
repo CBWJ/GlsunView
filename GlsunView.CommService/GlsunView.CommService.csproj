@@ -50,6 +50,7 @@
     <Compile Include="CoreService\OLPCommService.cs" />
     <Compile Include="CoreService\TcpClientService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TcpClientDetectTool.cs" />
     <Compile Include="TcpClientServiceTool.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

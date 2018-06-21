@@ -9,6 +9,7 @@ using System.IO;
 using GlsunView.Infrastructure.Util;
 using GlsunView.Infrastructure.Concrete;
 using System.Web.Script.Serialization;
+using GlsunView.Common;
 
 namespace GlsunView.Controllers
 {
@@ -408,22 +409,11 @@ namespace GlsunView.Controllers
                     devices = ctx.Device.Where(d => d.SID == sId).ToList();
                 }
                 List<TopoNodeStatus> nodeStatus = new List<TopoNodeStatus>();
-                string[,] colorTable = new string[6, 2] { { "CRITICAL", "#FF0000" },
-                                                            { "MAJOR", "#FFA500" },
-                                                            { "MINOR", "#FFFF00" },
-                                                            { "WARN", "#00BFFF" },
-                                                            { "NORMAL", "#00FF00" },
-                                                            { "OFFLINE", "#E8E8E8" } };
+                
                 Random r = new Random();
                 foreach(var d in devices)
                 {
-                    var index = r.Next(0, 6);
-                    nodeStatus.Add(new TopoNodeStatus
-                    {
-                        ID = d.ID,
-                        Status = colorTable[index, 0],
-                        BackgroundColor = colorTable[index, 1]
-                    });
+                    nodeStatus.Add(DeviceStatusGetter.GetDeviceStatus(d));
                 }
                 result.Data = new { Code = "", Data = nodeStatus };
             }
@@ -433,5 +423,7 @@ namespace GlsunView.Controllers
             }
             return result;
         }
+
+        
     }
 }

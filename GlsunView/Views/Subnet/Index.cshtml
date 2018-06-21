@@ -177,7 +177,7 @@
             var node = new JTopo.Node(name);
             var w = 32, h = 32;
             node.xData = xdata;
-            node.backgroudColor = "#f00";
+            node.backgroudColor = "#ccc";
             node.borderWidth = 1;
             node.borderColor = "192,192,192";
             node.font = '13px 微软雅黑'; // 字体
@@ -568,6 +568,7 @@
         window.newNode = newNode;
         window.getNodeByDataId = getNodeByDataId;
         window.saveSceneLocation = saveSceneLocation;
+        window.getAllNode = getAllNode;
         //加载已存在节点
         if (nodes) {
             for (var i = 0; i < nodes.length; ++i) {
@@ -594,20 +595,23 @@
             //newNode(Math.random() * 500, Math.random() * 500, "", "Hello", 2);
             console.log(scene.toJson());
         });
-
-        var allNodes = getAllNode();
-        $.post("@Url.Action("GetSubnetDeviceStatus", "Subnet")", { sId: @ViewBag.SubnetId }, function (data, status) {
-            if (status == "success" && data && data.Code == "") {
-                for(var i = 0; i < data.Data.length; ++i){
-                    var status = data.Data[i];
-                    var node = getNodeByDataId(status.ID);
-                    if(node != null){
-                        node.backgroudColor = status.BackgroundColor;
+        updateDeviceStatus();
+        setInterval(updateDeviceStatus, 2000);
+    });//$(function)
+        function updateDeviceStatus(){
+            var allNodes = getAllNode();
+            $.post("@Url.Action("GetSubnetDeviceStatus", "Subnet")", { sId: @ViewBag.SubnetId }, function (data, status) {
+                if (status == "success" && data && data.Code == "") {
+                    for(var i = 0; i < data.Data.length; ++i){
+                        var status = data.Data[i];
+                        var node = getNodeByDataId(status.ID);
+                        if(node != null){
+                            node.backgroudColor = status.BackgroundColor;
+                        }
                     }
                 }
-            }
-        }, "json");
-    });//$(function)
+            }, "json");
+        }
     function getX(e) {
         e = e || window.event;
         return e.pageX || e.clientX + document.body.scroolLeft;
