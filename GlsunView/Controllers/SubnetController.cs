@@ -424,6 +424,30 @@ namespace GlsunView.Controllers
             return result;
         }
 
-        
+        public ActionResult GetSubnetStatus()
+        {
+            var result = new JsonResult();
+            try
+            {
+                IEnumerable<Subnet> nets = null;
+                using (var ctx = new GlsunViewEntities())
+                {
+                    nets = ctx.Subnet.ToList();
+                }
+                List<TopoNodeStatus> nodeStatus = new List<TopoNodeStatus>();
+
+                Random r = new Random();
+                foreach (var n in nets)
+                {
+                    nodeStatus.Add(DeviceStatusGetter.GetSubnetStatus(n));
+                }
+                result.Data = new { Code = "", Data = nodeStatus };
+            }
+            catch (Exception ex)
+            {
+                result.Data = new { Code = "Exception", Data = ex.Message };
+            }
+            return result;
+        }
     }
 }

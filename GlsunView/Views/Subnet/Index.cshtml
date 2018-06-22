@@ -598,20 +598,20 @@
         updateDeviceStatus();
         setInterval(updateDeviceStatus, 2000);
     });//$(function)
-        function updateDeviceStatus(){
-            var allNodes = getAllNode();
-            $.post("@Url.Action("GetSubnetDeviceStatus", "Subnet")", { sId: @ViewBag.SubnetId }, function (data, status) {
-                if (status == "success" && data && data.Code == "") {
-                    for(var i = 0; i < data.Data.length; ++i){
-                        var status = data.Data[i];
-                        var node = getNodeByDataId(status.ID);
-                        if(node != null){
-                            node.backgroudColor = status.BackgroundColor;
-                        }
+    function updateDeviceStatus(){
+        var allNodes = getAllNode();
+        $.post("@Url.Action("GetSubnetDeviceStatus", "Subnet")", { sId: @ViewBag.SubnetId }, function (data, status) {
+            if (status == "success" && data && data.Code == "") {
+                for(var i = 0; i < data.Data.length; ++i){
+                    var status = data.Data[i];
+                    var node = getNodeByDataId(status.ID);
+                    if(node != null){
+                        node.backgroudColor = status.BackgroundColor;
                     }
                 }
-            }, "json");
-        }
+            }
+        }, "json");
+    }
     function getX(e) {
         e = e || window.event;
         return e.pageX || e.clientX + document.body.scroolLeft;

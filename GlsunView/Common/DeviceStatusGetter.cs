@@ -27,6 +27,11 @@ namespace GlsunView.Common
             }
             _dicSubnetDeviceStatusSet = new Dictionary<int, List<TopoNodeStatus>>();
         }
+        /// <summary>
+        /// 获取某个设备的状态
+        /// </summary>
+        /// <param name="d"></param>
+        /// <returns></returns>
         public static TopoNodeStatus GetDeviceStatus(Device d)
         {
             TopoNodeStatus status = new TopoNodeStatus();
@@ -41,7 +46,7 @@ namespace GlsunView.Common
                     using(var ctx = new GlsunViewEntities())
                     {
                         alarms = (from a in ctx.AlarmInformation
-                                  where a.AIConfirm.Value == false
+                                  where a.AIConfirm.Value == false && a.DID == d.ID
                                   group a by a.AILevel into r
                                   select r.Key).ToList();
                     }
@@ -71,8 +76,86 @@ namespace GlsunView.Common
                     status.Status = "OFFLINE";
                 }
                 status.BackgroundColor = _dicColor[status.Status];
+                
             }
             return status;
+        }
+        //获取某个子网的状态
+        public static TopoNodeStatus GetSubnetStatus(Subnet net)
+        {
+            TopoNodeStatus status = new TopoNodeStatus();
+            status.ID = net.ID;
+            status.Status = "OFFLINE";
+            //确保该子网状态下的设备都取到状态
+            IEnumerable<Device> devices = null;
+            using (var ctx = new GlsunViewEntities())
+            {
+                devices = ctx.Device.Where(d => d.SID == net.ID).ToList();
+            }
+            foreach(var d in devices)
+            {
+                SetStatusToSubnet(net.ID, GetDeviceStatus(d));
+            }
+            if (_dicSubnetDeviceStatusSet.ContainsKey(net.ID))
+            {
+                var list = _dicSubnetDeviceStatusSet[net.ID];
+                var alarms = (from s in list
+                              group s by s.Status into r
+                              select r.Key).ToList();
+                if (alarms.Contains("CRITICAL"))
+                {
+                    status.Status = "CRITICAL";
+                }
+                else if (alarms.Contains("MAJOR"))
+                {
+                    status.Status = "MAJOR";
+                }
+                else if (alarms.Contains("MINOR"))
+                {
+                    status.Status = "MINOR";
+                }
+                else if (alarms.Contains("WARN"))
+                {
+                    status.Status = "WARN";
+                }
+                else if(alarms.Contains("NORMAL"))
+                {
+                    status.Status = "NORMAL";
+                }
+            }
+            status.BackgroundColor = _dicColor[status.Status];
+            return status;
+        }
+        /// <summary>
+        /// 设置设备状态到子网状态集合
+        /// </summary>
+        /// <param name="sid"></param>
+        /// <param name="status"></param>
+        static void SetStatusToSubnet(int sid, TopoNodeStatus status)
+        {
+            if (_dicSubnetDeviceStatusSet.ContainsKey(sid))
+            {//存在该子网
+                var list = _dicSubnetDeviceStatusSet[sid];
+                var oldStatus = (from s in list
+                              where s.ID == status.ID
+                              select s).FirstOrDefault();
+                //存在该设备则更新
+                if(oldStatus != null)
+                {
+                    oldStatus.Status = status.Status;
+                    oldStatus.BackgroundColor = status.BackgroundColor;
+                }
+                else
+                {
+                    list.Add(status);
+                }
+            }
+            else
+            {//不存在该子网的状态数据
+                List<TopoNodeStatus> list = new List<TopoNodeStatus>();
+                list.Add(status);
+                _dicSubnetDeviceStatusSet.Add(sid, list);
+            }
         }
     }
 }

@@ -16,7 +16,6 @@
                 <button type="button" class="btn btn-default btn-sm" id="zoomOutButton">放 大</button>
                 @*<button type="button" class="btn btn-default" id="zoomNormalButton">正 常</button>*@
                 <button type="button" class="btn btn-default btn-sm" id="zoomInButton">缩 小</button>
-                <button type="button" class="btn btn-default btn-sm" id="btnTest">Test</button>
             </div>
             <div class="checkbox" style="display:inline-block;margin-left:5px;">
                 <label>
@@ -88,7 +87,7 @@
         }
         var canvas = document.getElementById('canvas');
         var stage = new JTopo.Stage(canvas);
-        
+
         //stage.frames = -24;
         //显示工具栏
         //showJTopoToobar(stage);
@@ -271,7 +270,7 @@
                         return;
                     }
                 });
-                
+
             }
             if (e.button == 2) {
                 beginNode = null;
@@ -386,6 +385,12 @@
             if (nodes.length == 1)
                 return nodes[0];
             return null;
+        }
+        //获取所有节点
+        function getAllNode() {
+            return scene.childs.filter(function (e) {
+                return e.elementType == "node";
+            });
         }
         //生成新子网名称
         function getNewNodeName() {
@@ -571,6 +576,7 @@
         window.newNode = newNode;
         window.getNodeByDataId = getNodeByDataId;
         window.saveSceneLocation = saveSceneLocation;
+        window.getAllNode = getAllNode;
         //加载已存在节点
         for (var i = 0; i < nodes.length; ++i) {
             var node = nodes[i];
@@ -585,13 +591,24 @@
                 newLink(nodeA, nodeZ, line.ID);
             }
         }
-
-        $("#btnTest").click(function () {
-            if (currentNode != null) {
-                currentNode.backgroudColor = "#ffff00";
-            }
-        });
+        updateSubnetStatus();
+        setInterval(updateSubnetStatus, 2000);
     });
+    //更新子网状态
+    function updateSubnetStatus(){
+        var allNodes = getAllNode();
+        $.post("@Url.Action("GetSubnetStatus", "Subnet")", {}, function (data, status) {
+            if (status == "success" && data && data.Code == "") {
+                for(var i = 0; i < data.Data.length; ++i){
+                    var status = data.Data[i];
+                    var node = getNodeByDataId(status.ID);
+                    if(node != null){
+                        node.backgroudColor = status.BackgroundColor;
+                    }
+                }
+            }
+        }, "json");
+    }
     function getX(e) {
         e = e || window.event;
         return e.pageX || e.clientX + document.body.scroolLeft;
@@ -659,7 +676,7 @@
                 //oldNode.setImage('../image/topo/' + node.SIcon, false);
                 oldNode.imgSrc = '../image/topo/' + node.SIcon;
                 oldNode.setLocation(node.CoordinateX, node.CoordinateY);
-                
+
             } else {    //新增
                 id = 100000 + Number.parseInt(node.ID);
                 newNode(node.CoordinateX, node.CoordinateY, node.SIcon, node.SName, node.ID);
