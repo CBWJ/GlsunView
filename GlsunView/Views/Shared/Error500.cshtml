@@ -1,0 +1,20 @@
+﻿@model string
+@{
+    ViewBag.Title = "Error500";
+    Layout = "~/Views/Shared/_Error.cshtml";
+}
+
+<div class="error-page">
+    <h2 class="headline text-red">500</h2>
+
+    <div class="error-content">
+        <h3><i class="fa fa-warning text-red"></i> 糟糕! 程序出错了！</h3>
+        <p>
+            异常：@Model
+        </p>
+        <p>
+            你可以刷新本页或稍后重试，如果问题一直存在，请联系管理员。
+        </p>
+    </div>
+</div>
+
