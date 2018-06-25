@@ -34,9 +34,17 @@ namespace GlsunView.Controllers
             deviceView.Port = d.DPort.Value;
             try
             {
-                tcp.Connect();
-                deviceView.RefreshStatus(nmu);
-                TcpClientServiceTool.SetServiceFree(tcp);
+                //tcp.Connect();
+                tcp.ConnectTimeout = 3000;
+                if (tcp.ConnectWithTimeout())
+                {
+                    deviceView.RefreshStatus(nmu);
+                    //TcpClientServiceTool.SetServiceFree(tcp);
+                }
+                else
+                {
+                    throw new TimeoutException("设备连接超时");
+                }
             }
             catch(Exception ex)
             {

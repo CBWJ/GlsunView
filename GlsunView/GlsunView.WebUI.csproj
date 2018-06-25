@@ -186,6 +186,7 @@
     <Content Include="Content\font-awesome.min.css" />
     <Content Include="image\attention.png" />
     <Content Include="image\authority.png" />
+    <Content Include="image\banner.gif" />
     <Content Include="image\bonus.png" />
     <Content Include="image\device\1U-FAN.jpg" />
     <Content Include="image\device\2U-FAN.jpg" />
