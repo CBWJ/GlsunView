@@ -92,7 +92,8 @@ namespace GlsunView.Common
             {
                 devices = ctx.Device.Where(d => d.SID == net.ID).ToList();
             }
-            foreach(var d in devices)
+            _dicSubnetDeviceStatusSet.Clear();
+            foreach (var d in devices)
             {
                 SetStatusToSubnet(net.ID, GetDeviceStatus(d));
             }

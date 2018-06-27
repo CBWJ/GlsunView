@@ -423,7 +423,10 @@ namespace GlsunView.Controllers
             }
             return result;
         }
-
+        /// <summary>
+        /// 获取子网状态
+        /// </summary>
+        /// <returns></returns>
         public ActionResult GetSubnetStatus()
         {
             var result = new JsonResult();
