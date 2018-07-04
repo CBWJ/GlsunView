@@ -19,6 +19,7 @@ namespace GlsunView
             StringBuilder result = new StringBuilder();
             TagBuilder tagUL = new TagBuilder("ul");
             tagUL.AddCssClass("pagination");
+            tagUL.AddCssClass("pagination-sm");
             TagBuilder tagPreviousLI = new TagBuilder("li");
             TagBuilder tagFirstLI = new TagBuilder("li");
             TagBuilder tagA = new TagBuilder("a");
