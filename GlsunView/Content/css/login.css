@@ -5,6 +5,7 @@ html,body{
 body{
     background-color: #eee;
     background-image: url("../../image/timg.jpg");
+    background-size: cover;
 }
 .main-box{
     position: absolute;
