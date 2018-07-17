@@ -155,11 +155,19 @@ namespace GlsunView.Controllers
         {
             JsonResult json = new JsonResult();
             IEnumerable<v_AlarmInfo> alarmInfo = null;
-            //数据库取数据
-            using (var ctx = new GlsunViewEntities())
-            {
-                alarmInfo = ctx.v_AlarmInfo.Where(a => a.AIConfirm == false).ToList();
-            }
+            alarmInfo = MemoryCacheHelper.GetCacheItem<IEnumerable<v_AlarmInfo>>("curr_alarm",
+                () => 
+                {
+                    IEnumerable<v_AlarmInfo> infos = null;
+                    //数据库取数据
+                    using (var ctx = new GlsunViewEntities())
+                    {
+                        infos = ctx.v_AlarmInfo.Where(a => a.AIConfirm == false).ToList();
+                    }
+                    return infos;
+                },
+                null, DateTime.Now.AddSeconds(2));
+            List<int> ids = alarmInfo.Select(a => a.ID).ToList();
             //排除已显示的项
             if (!string.IsNullOrWhiteSpace(exceptIds))
             {
@@ -171,7 +179,8 @@ namespace GlsunView.Controllers
                     alarmInfo = alarmInfo.Where(a => !Ids.Contains(a.ID)).OrderBy(a => a.AITime);
                 }
             }
-            json.Data = alarmInfo;
+            
+            json.Data = new { Alarm = alarmInfo, IDSet = ids};
             return json;
             //return JsonHelper.ObjectToJson(alarmInfo);
         }

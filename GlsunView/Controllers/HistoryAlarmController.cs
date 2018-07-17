@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using GlsunView.Domain;
 using GlsunView.Models;
+using GlsunView.Infrastructure.Util;
 
 namespace GlsunView.Controllers
 {
@@ -94,11 +95,19 @@ namespace GlsunView.Controllers
         {
             JsonResult json = new JsonResult();
             IEnumerable<v_AlarmInfo> alarmInfo = null;
-            //数据库取数据
-            using (var ctx = new GlsunViewEntities())
-            {
-                alarmInfo = ctx.v_AlarmInfo.Where(a => a.AIConfirm == true).ToList();
-            }
+            alarmInfo = MemoryCacheHelper.GetCacheItem<IEnumerable<v_AlarmInfo>>("hist_alarm",
+                () =>
+                {
+                    IEnumerable<v_AlarmInfo> infos = null;
+                    //数据库取数据
+                    using (var ctx = new GlsunViewEntities())
+                    {
+                        infos = ctx.v_AlarmInfo.Where(a => a.AIConfirm == true).OrderByDescending(a => a.AITime).Take(1000).ToList();
+                    }
+                    return infos;
+                },
+                null, DateTime.Now.AddSeconds(2));
+
             //排除已显示的项
             if (!string.IsNullOrWhiteSpace(exceptIds))
             {

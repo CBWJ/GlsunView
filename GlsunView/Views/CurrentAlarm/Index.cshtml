@@ -192,10 +192,10 @@
                     function (data, status, jqXHR) {
                         if (status == "success" && data) {
                             //console.log("ok:" + data.length);
-                            if (data.length > 0) {
-                                for (var i = 0; i < data.length; ++i) {
-                                    var item = data[i];
-                                    var time = data[i].AITime;
+                            if (data.Alarm.length > 0) {
+                                for (var i = 0; i < data.Alarm.length; ++i) {
+                                    var item = data.Alarm[i];
+                                    var time = data.Alarm[i].AITime;
                                     //console.log(time);
                                     //console.log(formatNumToDate(time));
                                     var tr = '<tr class="' + item.AILevel.toLowerCase() + '" data-data-id="' + item.ID + '">';
@@ -221,6 +221,14 @@
                                     });
                                 }
                             }
+                            //保持数据状态
+                            $(".table-data tbody tr").each(function (index, element) {
+                                var dataid = $(element).data("data-id");
+                                //没有该ID则移除
+                                if (data.IDSet.indexOf(dataid, 0) == -1) {
+                                    $(element).remove();
+                                }
+                            });
                         }
                     }, "json");
             }

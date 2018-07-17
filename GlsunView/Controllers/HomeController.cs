@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using GlsunView.Domain;
 using System.Text;
+using GlsunView.Infrastructure.Util;
 
 namespace GlsunView.Controllers
 {
@@ -92,7 +93,7 @@ namespace GlsunView.Controllers
         {
             JsonResult json = new JsonResult();
             json.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
-            int criticalCount = 0;
+            /*int criticalCount = 0;
             int majorCount = 0;
             int minorCount = 0;
             int warnCount = 0;
@@ -113,7 +114,35 @@ namespace GlsunView.Controllers
                 minor = minorCount,
                 warn = warnCount,
                 normal = normalCount
-            };
+            };*/
+            var data = MemoryCacheHelper.GetCacheItem<object>("alarm_statistics",
+                () =>
+                {
+                    int criticalCount = 0;
+                    int majorCount = 0;
+                    int minorCount = 0;
+                    int warnCount = 0;
+                    int normalCount = 0;
+                    //统计未确认告警
+                    using (var ctx = new GlsunViewEntities())
+                    {
+                        criticalCount = ctx.AlarmInformation.Where(a => a.AIConfirm == false && a.AILevel == "CRITICAL").Count();
+                        majorCount = ctx.AlarmInformation.Where(a => a.AIConfirm == false && a.AILevel == "MAJOR").Count();
+                        minorCount = ctx.AlarmInformation.Where(a => a.AIConfirm == false && a.AILevel == "MINOR").Count();
+                        warnCount = ctx.AlarmInformation.Where(a => a.AIConfirm == false && a.AILevel == "WARN").Count();
+                        normalCount = ctx.AlarmInformation.Where(a => a.AIConfirm == false && a.AILevel == "NORMAL").Count();
+                    }
+                    return new
+                    {
+                        critical = criticalCount,
+                        major = majorCount,
+                        minor = minorCount,
+                        warn = warnCount,
+                        normal = normalCount
+                    };
+                },
+                null, DateTime.Now.AddSeconds(5));
+            json.Data = data;
             return json;
         }
 

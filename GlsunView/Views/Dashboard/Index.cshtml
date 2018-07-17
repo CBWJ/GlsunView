@@ -48,8 +48,8 @@
             updateWeekAlarm();
 
             $(window).on("resize", function () {
-                updateAlarm();
-                updateWeekAlarm();
+                chartAlarm.resize();
+                chartAlarmWeek.resize();
             })
         });
         function updateAlarm() {
