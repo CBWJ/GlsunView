@@ -26,8 +26,9 @@ namespace GlsunView.Controllers
                 d = ctx.Device.Find(id);
             }
             //IP地址->连接服务->实例化一个状态类->填充状态
-            TcpClientService tcp = new TcpClientService(d.DAddress, d.DPort.Value);
+            //TcpClientService tcp = new TcpClientService(d.DAddress, d.DPort.Value);
             //var tcp = TcpClientServiceTool.GetService(d.DAddress, d.DPort.Value);
+            var tcp = TcpClientServicePool.GetService(d.DAddress, d.DPort.Value);
             NMUCommService nmu = new NMUCommService(tcp);
             DeviceOverview deviceView = new DeviceOverview();
             deviceView.IP = d.DAddress;
@@ -35,11 +36,12 @@ namespace GlsunView.Controllers
             try
             {
                 //tcp.Connect();
-                tcp.ConnectTimeout = 3000;
-                if (tcp.ConnectWithTimeout())
+                //tcp.ConnectTimeout = 3000;
+                if (tcp != null)
                 {
                     deviceView.RefreshStatus(nmu);
                     //TcpClientServiceTool.SetServiceFree(tcp);
+                    tcp.IsBusy = false;
                 }
                 else
                 {
@@ -69,9 +71,11 @@ namespace GlsunView.Controllers
                     () =>
                     {
                         DeviceStatusSet set = new DeviceStatusSet();
-                        using (TcpClientService tcp = new TcpClientService(ip, port))
+                        //using (TcpClientService tcp = new TcpClientService(ip, port))
                         {
-                            tcp.Connect();
+                            //tcp.Connect();
+                            var tcp = TcpClientServicePool.GetService(ip, port);
+                            if (tcp == null) throw new Exception("null object");
                             NMUCommService nmu = new NMUCommService(tcp);
                             DeviceOverview deviceView = new DeviceOverview();
                             CardCommService cardService = null;
@@ -109,7 +113,8 @@ namespace GlsunView.Controllers
                                     }
                                 }
                             }
-                            tcp.Dispose();
+                            //tcp.Dispose();
+                            tcp.IsBusy = false;
                         }
                         return set;
                     },

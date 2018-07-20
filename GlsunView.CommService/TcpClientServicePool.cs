@@ -40,7 +40,7 @@ namespace GlsunView.CommService
                     {
                         var span = DateTime.Now - tcp.LastUseTime;
                         //10秒内没使用过释放
-                        if (tcp.IsBusy == false && span.Seconds >= 30)
+                        if (tcp.IsBusy == false && span.Seconds >= 60)
                         {
                             tcp.Close();
                             list.Remove(tcp);

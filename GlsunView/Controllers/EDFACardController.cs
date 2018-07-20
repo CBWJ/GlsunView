@@ -156,10 +156,12 @@ namespace GlsunView.Controllers
                             d = ctx.Device.Find(did);
                         }
                         EDFAInfo edfaInfo = new EDFAInfo();
-                        TcpClientService tcp = new TcpClientService(d.DAddress, d.DPort.Value);
+                        //TcpClientService tcp = new TcpClientService(d.DAddress, d.DPort.Value);
+                        var tcp = TcpClientServicePool.GetService(d.DAddress, d.DPort.Value);
+                        if (tcp == null) throw new NullReferenceException();
                         EDFACommService service = new EDFACommService(tcp, slot);
-                        tcp.Connect();
                         edfaInfo.RefreshData(service);
+                        tcp.IsBusy = false;
                         return edfaInfo;
                     },
                     null, DateTime.Now.AddSeconds(2));

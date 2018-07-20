@@ -169,7 +169,6 @@ namespace GlsunView.CommService
             //此时对会该对象的字段进行读写，保证在同一时刻，只有个线程使用该方法
             lock (_lock)
             {
-                IsBusy = true;
                 string ret = "";
                 if (_tcpClient.Connected)
                 {
@@ -193,7 +192,6 @@ namespace GlsunView.CommService
                         }
                     }
                 }
-                IsBusy = false;
                 return ret;
             }
         }

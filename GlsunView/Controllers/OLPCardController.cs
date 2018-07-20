@@ -156,10 +156,12 @@ namespace GlsunView.Controllers
                             d = ctx.Device.Find(did);
                         }
                         OLPInfo olpInfo = new OLPInfo();
-                        TcpClientService tcp = new TcpClientService(d.DAddress, d.DPort.Value);
+                        //TcpClientService tcp = new TcpClientService(d.DAddress, d.DPort.Value);
+                        var tcp = TcpClientServicePool.GetService(d.DAddress, d.DPort.Value);
+                        if (tcp == null) throw new NullReferenceException();
                         OLPCommService service = new OLPCommService(tcp, slot);
-                        tcp.Connect();
                         olpInfo.RefreshData(service);
+                        tcp.IsBusy = false;
                         return olpInfo;
                     },
                     null, DateTime.Now.AddSeconds(2));

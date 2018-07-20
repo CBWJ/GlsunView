@@ -141,11 +141,12 @@ namespace GlsunView.Controllers
                             d = ctx.Device.Find(did);
                         }
                         OEOInfo oeoInfo = new OEOInfo();
-                        TcpClientService tcp = new TcpClientService(d.DAddress, d.DPort.Value);
+                        //TcpClientService tcp = new TcpClientService(d.DAddress, d.DPort.Value);
+                        var tcp = TcpClientServicePool.GetService(d.DAddress, d.DPort.Value);
+                        if (tcp == null) throw new NullReferenceException();
                         OEOCommService service = new OEOCommService(tcp, slot);
-                        tcp.Connect();
                         oeoInfo.RefreshData(service);
-                        tcp.Close();
+                        tcp.IsBusy = false;
                         return oeoInfo;
                     },
                     null, DateTime.Now.AddSeconds(2));
