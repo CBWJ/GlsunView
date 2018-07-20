@@ -403,18 +403,23 @@ namespace GlsunView.Controllers
             var result = new JsonResult();
             try
             {
-                IEnumerable<Device> devices = null;
-                using (var ctx = new GlsunViewEntities())
-                {
-                    devices = ctx.Device.Where(d => d.SID == sId).ToList();
-                }
-                List<TopoNodeStatus> nodeStatus = new List<TopoNodeStatus>();
-                
-                Random r = new Random();
-                foreach(var d in devices)
-                {
-                    nodeStatus.Add(DeviceStatusGetter.GetDeviceStatus(d));
-                }
+                string key = string.Format("subnet_device_status_{0}", sId);
+                var nodeStatus = MemoryCacheHelper.GetCacheItem<List<TopoNodeStatus>>(key,
+                    () =>
+                    {
+                        IEnumerable<Device> devices = null;
+                        using (var ctx = new GlsunViewEntities())
+                        {
+                            devices = ctx.Device.Where(d => d.SID == sId).ToList();
+                        }
+                        List<TopoNodeStatus> status = new List<TopoNodeStatus>();
+                        foreach (var d in devices)
+                        {
+                            status.Add(DeviceStatusGetter.GetDeviceStatus(d));
+                        }
+                        return status;
+                    },
+                    null, DateTime.Now.AddSeconds(5));
                 result.Data = new { Code = "", Data = nodeStatus };
             }
             catch (Exception ex)
@@ -432,18 +437,23 @@ namespace GlsunView.Controllers
             var result = new JsonResult();
             try
             {
-                IEnumerable<Subnet> nets = null;
-                using (var ctx = new GlsunViewEntities())
-                {
-                    nets = ctx.Subnet.ToList();
-                }
-                List<TopoNodeStatus> nodeStatus = new List<TopoNodeStatus>();
+                var nodeStatus = MemoryCacheHelper.GetCacheItem<List<TopoNodeStatus>>("subnet_status",
+                    () =>
+                    {
+                        IEnumerable<Subnet> nets = null;
+                        using (var ctx = new GlsunViewEntities())
+                        {
+                            nets = ctx.Subnet.ToList();
+                        }
+                        List<TopoNodeStatus> status = new List<TopoNodeStatus>();
 
-                Random r = new Random();
-                foreach (var n in nets)
-                {
-                    nodeStatus.Add(DeviceStatusGetter.GetSubnetStatus(n));
-                }
+                        foreach (var n in nets)
+                        {
+                            status.Add(DeviceStatusGetter.GetSubnetStatus(n));
+                        }
+                        return status;
+                    },
+                    null, DateTime.Now.AddSeconds(10));
                 result.Data = new { Code = "", Data = nodeStatus };
             }
             catch (Exception ex)

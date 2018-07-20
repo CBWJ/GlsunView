@@ -9,6 +9,7 @@ using GlsunView.Models;
 using System.Web.Script.Serialization;
 using System.Reflection;
 using System.ComponentModel;
+using GlsunView.Infrastructure.Util;
 
 namespace GlsunView.Controllers
 {
@@ -145,17 +146,24 @@ namespace GlsunView.Controllers
             result.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
             try
             {
-                Device d = null;
-                using (var ctx = new GlsunViewEntities())
-                {
-                    d = ctx.Device.Find(did);
-                }
-                OLPInfo olpInfo = new OLPInfo();
-                TcpClientService tcp = new TcpClientService(d.DAddress, d.DPort.Value);
-                OLPCommService service = new OLPCommService(tcp, slot);
-                tcp.Connect();
-                olpInfo.RefreshData(service);
-                result.Data = new { Code = "", Data = olpInfo };
+                string key = string.Format("olp_info_{0}", did);
+                var info = MemoryCacheHelper.GetCacheItem<OLPInfo>(key,
+                    () =>
+                    {
+                        Device d = null;
+                        using (var ctx = new GlsunViewEntities())
+                        {
+                            d = ctx.Device.Find(did);
+                        }
+                        OLPInfo olpInfo = new OLPInfo();
+                        TcpClientService tcp = new TcpClientService(d.DAddress, d.DPort.Value);
+                        OLPCommService service = new OLPCommService(tcp, slot);
+                        tcp.Connect();
+                        olpInfo.RefreshData(service);
+                        return olpInfo;
+                    },
+                    null, DateTime.Now.AddSeconds(2));
+                result.Data = new { Code = "", Data = info };
             }
             catch (Exception ex)
             {

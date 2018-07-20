@@ -64,52 +64,57 @@ namespace GlsunView.Controllers
             var ret = new JsonResult();
             try
             {
-                DeviceStatusSet set = new DeviceStatusSet();
-                using (TcpClientService tcp = new TcpClientService(ip, port))
-                {
-                    tcp.Connect();
-                    //var tcp = TcpClientServiceTool.GetService(ip, port);
-                    NMUCommService nmu = new NMUCommService(tcp);
-                    DeviceOverview deviceView = new DeviceOverview();
-                    CardCommService cardService = null;
-                    deviceView.RefreshStatus(nmu);
-                    set.Overview = deviceView;
-                    NMUInfo numInfo = new NMUInfo();
-                    NMUCommService nmuService = new NMUCommService(tcp);
-                    numInfo.RefreshStatus(nmuService);
-                    set.NMUInfo = numInfo;
-                    set.CardsInfo = new List<object>();
-                    foreach (var e in deviceView.Slots)
+                string key = string.Format("card_info_{0}:{1}", ip, port);
+                var info = MemoryCacheHelper.GetCacheItem<DeviceStatusSet>(key,
+                    () =>
                     {
-                        if (e.IsInsert)
+                        DeviceStatusSet set = new DeviceStatusSet();
+                        using (TcpClientService tcp = new TcpClientService(ip, port))
                         {
-                            if (e.CardType == "EDFA")
+                            tcp.Connect();
+                            NMUCommService nmu = new NMUCommService(tcp);
+                            DeviceOverview deviceView = new DeviceOverview();
+                            CardCommService cardService = null;
+                            deviceView.RefreshStatus(nmu);
+                            set.Overview = deviceView;
+                            NMUInfo numInfo = new NMUInfo();
+                            NMUCommService nmuService = new NMUCommService(tcp);
+                            numInfo.RefreshStatus(nmuService);
+                            set.NMUInfo = numInfo;
+                            set.CardsInfo = new List<object>();
+                            foreach (var e in deviceView.Slots)
                             {
-                                cardService = new EDFACommService(tcp, e.SlotNumber);
-                                EDFAInfo edfaInfo = new EDFAInfo();
-                                edfaInfo.RefreshData(cardService);
-                                e.CardInfo = edfaInfo;
+                                if (e.IsInsert)
+                                {
+                                    if (e.CardType == "EDFA")
+                                    {
+                                        cardService = new EDFACommService(tcp, e.SlotNumber);
+                                        EDFAInfo edfaInfo = new EDFAInfo();
+                                        edfaInfo.RefreshData(cardService);
+                                        e.CardInfo = edfaInfo;
+                                    }
+                                    else if (e.CardType == "OEO")
+                                    {
+                                        cardService = new OEOCommService(tcp, e.SlotNumber);
+                                        OEOInfo oeoInfo = new OEOInfo();
+                                        oeoInfo.RefreshData(cardService);
+                                        e.CardInfo = oeoInfo;
+                                    }
+                                    else if (e.CardType == "OLP")
+                                    {
+                                        cardService = new OLPCommService(tcp, e.SlotNumber);
+                                        OLPInfo olpInfo = new OLPInfo();
+                                        olpInfo.RefreshData(cardService);
+                                        e.CardInfo = olpInfo;
+                                    }
+                                }
                             }
-                            else if (e.CardType == "OEO")
-                            {
-                                cardService = new OEOCommService(tcp, e.SlotNumber);
-                                OEOInfo oeoInfo = new OEOInfo();
-                                oeoInfo.RefreshData(cardService);
-                                e.CardInfo = oeoInfo;
-                            }
-                            else if (e.CardType == "OLP")
-                            {
-                                cardService = new OLPCommService(tcp, e.SlotNumber);
-                                OLPInfo olpInfo = new OLPInfo();
-                                olpInfo.RefreshData(cardService);
-                                e.CardInfo = olpInfo;
-                            }
+                            tcp.Dispose();
                         }
-                    }
-                    //TcpClientServiceTool.SetServiceFree(tcp);
-                    tcp.Dispose();
-                }
-                ret.Data = new { Code = "", Data = set };
+                        return set;
+                    },
+                    null, DateTime.Now.AddSeconds(2));
+                ret.Data = new { Code = "", Data = info };
             }
             catch(Exception ex)
             {

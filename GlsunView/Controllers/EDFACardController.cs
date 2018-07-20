@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using GlsunView.Domain;
 using GlsunView.CommService;
 using GlsunView.Models;
+using GlsunView.Infrastructure.Util;
 using System.Web.Script.Serialization;
 using System.ComponentModel;
 
@@ -145,17 +146,24 @@ namespace GlsunView.Controllers
             result.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
             try
             {
-                Device d = null;
-                using (var ctx = new GlsunViewEntities())
-                {
-                    d = ctx.Device.Find(did);
-                }
-                EDFAInfo edfaInfo = new EDFAInfo();
-                TcpClientService tcp = new TcpClientService(d.DAddress, d.DPort.Value);
-                EDFACommService service = new EDFACommService(tcp, slot);
-                tcp.Connect();
-                edfaInfo.RefreshData(service);
-                result.Data = new { Code = "", Data = edfaInfo };
+                string key = string.Format("edfa_info_{0}", did);
+                var info = MemoryCacheHelper.GetCacheItem<EDFAInfo>(key,
+                    () =>
+                    {
+                        Device d = null;
+                        using (var ctx = new GlsunViewEntities())
+                        {
+                            d = ctx.Device.Find(did);
+                        }
+                        EDFAInfo edfaInfo = new EDFAInfo();
+                        TcpClientService tcp = new TcpClientService(d.DAddress, d.DPort.Value);
+                        EDFACommService service = new EDFACommService(tcp, slot);
+                        tcp.Connect();
+                        edfaInfo.RefreshData(service);
+                        return edfaInfo;
+                    },
+                    null, DateTime.Now.AddSeconds(2));
+                result.Data = new { Code = "", Data = info };
             }
             catch(Exception ex)
             {

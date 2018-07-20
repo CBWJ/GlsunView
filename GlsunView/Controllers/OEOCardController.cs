@@ -7,6 +7,7 @@ using GlsunView.Domain;
 using GlsunView.CommService;
 using GlsunView.Models;
 using System.Web.Script.Serialization;
+using GlsunView.Infrastructure.Util;
 
 namespace GlsunView.Controllers
 {
@@ -130,17 +131,25 @@ namespace GlsunView.Controllers
             result.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
             try
             {
-                Device d = null;
-                using (var ctx = new GlsunViewEntities())
-                {
-                    d = ctx.Device.Find(did);
-                }
-                OEOInfo oeoInfo = new OEOInfo();
-                TcpClientService tcp = new TcpClientService(d.DAddress, d.DPort.Value);
-                OEOCommService service = new OEOCommService(tcp, slot);
-                tcp.Connect();
-                oeoInfo.RefreshData(service);
-                result.Data = new { Code = "", Data = oeoInfo };
+                string key = string.Format("oeo_info_{0}", did);
+                var info =  MemoryCacheHelper.GetCacheItem<OEOInfo>(key,
+                    () =>
+                    {
+                        Device d = null;
+                        using (var ctx = new GlsunViewEntities())
+                        {
+                            d = ctx.Device.Find(did);
+                        }
+                        OEOInfo oeoInfo = new OEOInfo();
+                        TcpClientService tcp = new TcpClientService(d.DAddress, d.DPort.Value);
+                        OEOCommService service = new OEOCommService(tcp, slot);
+                        tcp.Connect();
+                        oeoInfo.RefreshData(service);
+                        tcp.Close();
+                        return oeoInfo;
+                    },
+                    null, DateTime.Now.AddSeconds(2));
+                result.Data = new { Code = "", Data = info };
             }
             catch (Exception ex)
             {
