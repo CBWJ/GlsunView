@@ -1,0 +1,50 @@
+﻿@model IEnumerable<GlsunView.Models.TcpPoolInfo>
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+    <style>
+        table{
+            border-collapse:collapse;
+            border:1px solid #ccc;
+            margin:10px auto;
+        }
+        table th{
+            background-color:#eee;
+        }
+        table th,table td{
+            padding:5px 10px;
+            border:1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+    <table>
+        <thead>
+            <tr>
+                <th>客户端</th>
+                <th>连接总数</th>
+                <th>空闲</th>
+                <th>忙碌</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var item in Model)
+            {
+                <tr>
+                    <td>@item.Client</td>
+                    <td>@item.Count</td>
+                    <td>@item.FreeCount</td>
+                    <td>@item.BusyCount</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</body>
+</html>

@@ -310,6 +310,7 @@
     <Compile Include="Controllers\ShareListController.cs" />
     <Compile Include="Controllers\SubnetController.cs" />
     <Compile Include="Controllers\SubnetLineController.cs" />
+    <Compile Include="Controllers\TcpPoolController.cs" />
     <Compile Include="Controllers\TopologyController.cs" />
     <Compile Include="Controllers\TopologyLogController.cs" />
     <Compile Include="Controllers\UserController.cs" />
@@ -334,6 +335,7 @@
     <Compile Include="Models\RoleAuthrizeInfo.cs" />
     <Compile Include="Models\SFPModule.cs" />
     <Compile Include="Models\Slot.cs" />
+    <Compile Include="Models\TcpPoolInfo.cs" />
     <Compile Include="Models\TopologyLine.cs" />
     <Compile Include="Models\TopologyNode.cs" />
     <Compile Include="Models\TopoNodeStatus.cs" />
@@ -388,6 +390,7 @@
     <Content Include="Views\Shared\_Error.cshtml" />
     <Content Include="Views\Shared\Error500.cshtml" />
     <Content Include="Views\Error\Error404.cshtml" />
+    <Content Include="Views\TcpPool\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

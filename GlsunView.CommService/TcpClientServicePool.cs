@@ -13,11 +13,18 @@ namespace GlsunView.CommService
         private static System.Timers.Timer _timer;
         private static Dictionary<string, List<TcpClientService>> _dicServices;
         private static object _locker;
+        public static Dictionary<string, List<TcpClientService>> ServiceSet
+        {
+            get
+            {
+                return _dicServices;
+            }
+        }
         static TcpClientServicePool()
         {
             _timer = new System.Timers.Timer();
             //1分钟处理一次
-            _timer.Interval = 30000;
+            _timer.Interval = 1000;
             _timer.Elapsed += _timer_Elapsed;
             _timer.Start();
             //服务
@@ -40,7 +47,7 @@ namespace GlsunView.CommService
                     {
                         var span = DateTime.Now - tcp.LastUseTime;
                         //10秒内没使用过释放
-                        if (tcp.IsBusy == false && span.Seconds >= 60)
+                        if (tcp.IsBusy == false && span.Seconds >= 10)
                         {
                             tcp.Close();
                             list.Remove(tcp);
@@ -76,8 +83,11 @@ namespace GlsunView.CommService
                         //取空闲
                         if (tcp.IsBusy == false)
                         {
-                            ret = tcp;
-                            break;
+                            if (tcp.IsConnected())
+                            {
+                                ret = tcp;
+                                break;
+                            }
                         }
                     }
                     //无空闲
@@ -122,5 +132,6 @@ namespace GlsunView.CommService
             }
             return null;
         }
+        
     }
 }

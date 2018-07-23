@@ -291,5 +291,10 @@ namespace GlsunView.CommService
         {
             Close();
         }
+
+        public bool IsConnected()
+        {
+            return _tcpClient.Connected;
+        }
     }
 }
