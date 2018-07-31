@@ -302,6 +302,7 @@
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HistoryAlarmController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\MachineRoomController.cs" />
     <Compile Include="Controllers\ModuleController.cs" />
     <Compile Include="Controllers\NMUCardController.cs" />
     <Compile Include="Controllers\OEOCardController.cs" />
@@ -391,6 +392,8 @@
     <Content Include="Views\Shared\Error500.cshtml" />
     <Content Include="Views\Error\Error404.cshtml" />
     <Content Include="Views\TcpPool\Index.cshtml" />
+    <Content Include="Views\MachineRoom\List.cshtml" />
+    <Content Include="Views\MachineRoom\Create.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

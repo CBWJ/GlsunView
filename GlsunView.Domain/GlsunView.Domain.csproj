@@ -81,6 +81,15 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>GlsunViewModel.edmx</DependentUpon>
     </Compile>
+    <Compile Include="MachineFrame.cs">
+      <DependentUpon>GlsunViewModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="MachineRoom.cs">
+      <DependentUpon>GlsunViewModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="MachineShelf.cs">
+      <DependentUpon>GlsunViewModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Module.cs">
       <DependentUpon>GlsunViewModel.tt</DependentUpon>
     </Compile>
@@ -122,6 +131,9 @@
       <DependentUpon>GlsunViewModel.tt</DependentUpon>
     </Compile>
     <Compile Include="v_LastestWeekAlarmStatistics.cs">
+      <DependentUpon>GlsunViewModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="v_MachineRoom.cs">
       <DependentUpon>GlsunViewModel.tt</DependentUpon>
     </Compile>
     <Compile Include="v_ModuleAuthority.cs">

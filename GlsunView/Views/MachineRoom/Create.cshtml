@@ -1,0 +1,105 @@
+﻿@model GlsunView.Domain.MachineRoom
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_EditLayout.cshtml";
+    string action = (string)@ViewBag.Action;
+}
+
+@using (Html.BeginForm(action, "MachineRoom", FormMethod.Post, new { id = "dataForm", @class = "form-horizontal" }))
+{
+    @Html.HiddenFor(m => m.ID)
+    <div class="form-group">
+        <label class="col-xs-3 control-label">机房名</label>
+        <div class="col-xs-9">
+            @Html.TextBoxFor(m => m.MRName, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-xs-3 control-label">机房地址</label>
+        <div class="col-xs-9">
+            @Html.TextBoxFor(m => m.MRAddress, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-xs-3 control-label">描述</label>
+        <div class="col-xs-9">
+            @Html.TextBoxFor(m => m.MRDescription, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-xs-3 control-label">图标</label>
+        <div class="col-xs-9">
+            @Html.TextBoxFor(m => m.MRIcon, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-xs-3 control-label">备注</label>
+        <div class="col-xs-9">
+            @Html.TextAreaFor(m => m.Remark, new { @class = "form-control" })
+        </div>
+    </div>
+}
+
+<script>
+    $(function () {
+        //注册表单提交方式为ajaxForm
+        $("#dataForm").ajaxForm({
+            success: onSuccess
+        });
+        //开启验证
+        $("#dataForm").validate({
+            rules: {
+                MRName: {
+                    required: true,
+                    maxlength: 50
+                },
+                MRAddress: {
+                    required: true,
+                    maxlength: 128
+                },
+                MRDescription: {
+                    required: false,
+                    maxlength: 50
+                },
+                MRIcon: {
+                    required: false,
+                    maxlength: 20
+                },
+                Remark: {
+                    required: false,
+                    maxlength: 50
+                }
+            }
+        });
+    });
+    //提交表单
+    function submitForm() {
+        if (!$("#dataForm").valid()) {
+            return;
+        };
+        $('#dataForm').submit();
+    }
+    //  提交后
+    function onSuccess(data, statusText, xhr) {
+        if (data) {
+            parent.window.childCallback(data);
+        }
+    }
+</script>
+@{
+            if (action == "Details")
+            {
+        <script>
+            (function ($) {
+                if (!$) return;
+                $(".form-group div input").attr("disabled", "disabled");
+                $(".form-group div select").attr("disabled", "disabled");
+                $(".form-group div button").attr("disabled", "disabled");
+                $(".form-group div a").attr("disabled", "disabled");
+                $(".form-group div textarea").attr("disabled", "disabled");
+            }(jQuery));
+        </script>
+    }
+}
+
