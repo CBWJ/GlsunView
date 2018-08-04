@@ -133,7 +133,13 @@
     <Compile Include="v_LastestWeekAlarmStatistics.cs">
       <DependentUpon>GlsunViewModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="v_MachineFrame.cs">
+      <DependentUpon>GlsunViewModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="v_MachineRoom.cs">
+      <DependentUpon>GlsunViewModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="v_MachineShelf.cs">
       <DependentUpon>GlsunViewModel.tt</DependentUpon>
     </Compile>
     <Compile Include="v_ModuleAuthority.cs">

@@ -104,6 +104,7 @@ namespace GlsunView.Controllers
                     {
                         infos = ctx.v_AlarmInfo.Where(a => a.AIConfirm == true).OrderByDescending(a => a.AITime).Take(1000).ToList();
                     }
+
                     return infos;
                 },
                 null, DateTime.Now.AddSeconds(2));

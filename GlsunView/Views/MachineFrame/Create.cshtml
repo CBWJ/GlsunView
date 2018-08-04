@@ -1,0 +1,147 @@
+﻿@model GlsunView.Domain.MachineFrame
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_EditLayout.cshtml";
+    string action = (string)@ViewBag.Action;
+}
+
+@using (Html.BeginForm(action, "MachineFrame", FormMethod.Post, new { id = "dataForm", @class = "form-horizontal" }))
+{
+    @Html.HiddenFor(m => m.ID)
+    @Html.HiddenFor(m => m.MSID)
+    <div class="form-group">
+        <label class="col-xs-2 control-label">机框名</label>
+        <div class="col-xs-4">
+            @Html.TextBoxFor(m => m.MFName, new { @class = "form-control" })
+        </div>
+        <label class="col-xs-2 control-label">IP地址</label>
+        <div class="col-xs-4">
+            @Html.TextBoxFor(m => m.MFIP, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-xs-2 control-label">通信端口</label>
+        <div class="col-xs-4">
+            @Html.TextBoxFor(m => m.MFPort, new { @class = "form-control" })
+        </div>        
+        <label class="col-xs-2 control-label">图标</label>
+        <div class="col-xs-4">
+            @Html.TextBoxFor(m => m.MFIcon, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-xs-2 control-label">机房</label>
+        <div class="col-xs-10">
+            <select class="form-control" id="roomList"></select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-xs-2 control-label">机架</label>
+        <div class="col-xs-4">
+            <select class="form-control" id="shelfList"></select>
+        </div>
+        <label class="col-xs-2 control-label">所在层数</label>
+        <div class="col-xs-4">
+            <select class="form-control" id="MSLayer" name="MSLayer"></select>
+        </div>
+    </div>
+    <div class="form-group">        
+        <label class="col-xs-2 control-label">备注</label>
+        <div class="col-xs-10">
+            @Html.TextAreaFor(m => m.Remark, new { @class = "form-control" })
+        </div>
+    </div>
+}
+
+<script>
+    $(function () {
+        //注册表单提交方式为ajaxForm
+        $("#dataForm").ajaxForm({
+            success: onSuccess
+        });
+        //开启验证
+        $("#dataForm").validate({
+            rules: {
+            }
+        });
+        var action = "@action";
+        var roomData = @Html.Raw(ViewBag.RoomData);
+        var roomShelfData = @Html.Raw(ViewBag.RoomShelfData);
+        var shelfLayerData = @Html.Raw(ViewBag.ShelfLayerData);
+        var $shelfList = $("#shelfList");
+        $("#roomList").select2({
+            language: "zh-CN", //设置 提示语言
+            width: "100%", //设置下拉框的宽度
+            tags: false,  //设置必须存在的选项 才能选中，设置不存在的值则为null,如果 placeholder: {id: '', text: "请选择"} 则为 ''
+            multiple: false,    //单选
+            data: roomData  //候选数组
+        }).on("change", function(e) {
+            $shelfList.select2('destroy').empty();
+            initShelfList();
+        });
+
+        initShelfList();
+        if(action != "Create"){
+            //选中机房
+            $("#roomList").val([@ViewBag.RoomID]).trigger("change")
+            //机架
+            $("#shelfList").val([@Model.MSID]).trigger("change")
+            //层数
+            $("#MSLayer").val(@Model.MSLayer);
+        }
+        function initShelfList(){
+            $shelfList.select2({
+                language: "zh-CN", //设置 提示语言
+                width: "100%", //设置下拉框的宽度
+                tags: false,  //设置必须存在的选项 才能选中，设置不存在的值则为null,如果 placeholder: {id: '', text: "请选择"} 则为 ''
+                multiple: false,    //单选
+                data: roomShelfData[$("#roomList").select2("val")]  //候选数组
+            }).on("change", function(e) {
+                initLayer();
+            });
+            initLayer();
+        }
+        function initLayer(){
+            var layers = +shelfLayerData[$shelfList.select2("val")];
+            var $layer = $("#MSLayer");
+            $layer.empty();
+            var html = '';
+            for(var i = 1; i <= layers; ++i){
+                html += '<option value="'+i+'">'+i+'</option>';
+            }
+            $layer.append(html);
+        }
+    });
+    //提交表单
+    function submitForm() {
+        $("#MSID").val($("#shelfList").select2("val"));
+        if (!$("#dataForm").valid()) {
+            return;
+        };
+        $('#dataForm').submit();
+    }
+    //  提交后
+    function onSuccess(data, statusText, xhr) {
+        if (data) {
+            parent.window.childCallback(data);
+        }
+    }
+</script>
+@{
+    if (action == "Details")
+    {
+        <script>
+            (function ($) {
+                if (!$) return;
+                $(".form-group div input").attr("disabled", "disabled");
+                $(".form-group div select").attr("disabled", "disabled");
+                $(".form-group div button").attr("disabled", "disabled");
+                $(".form-group div a").attr("disabled", "disabled");
+                $(".form-group div textarea").attr("disabled", "disabled");
+            }(jQuery));
+        </script>
+    }
+    if (action != "Create")
+    {
+    }
+}

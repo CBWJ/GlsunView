@@ -103,7 +103,7 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="MFName" Type="nvarchar" MaxLength="50" />
           <Property Name="MFIP" Type="varchar" MaxLength="20" />
           <Property Name="MFPort" Type="smallint" />
@@ -135,7 +135,7 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="MSName" Type="nvarchar" MaxLength="50" />
           <Property Name="MSNumber" Type="nvarchar" MaxLength="30" />
           <Property Name="MSLayers" Type="smallint" />
@@ -360,6 +360,29 @@
           <Property Name="Cnt" Type="int" Nullable="false" />
         </EntityType>
         <!--生成过程中发现错误:
+警告 6002: 表/视图“GlsunView.dbo.v_MachineFrame”未定义主键。已推断出该键，并将定义创建为只读的表/视图。-->
+        <EntityType Name="v_MachineFrame">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="MFName" Type="nvarchar" MaxLength="50" />
+          <Property Name="MFIP" Type="varchar" MaxLength="20" />
+          <Property Name="MFPort" Type="smallint" />
+          <Property Name="MSID" Type="int" />
+          <Property Name="MSLayer" Type="smallint" />
+          <Property Name="MFIcon" Type="nvarchar" MaxLength="20" />
+          <Property Name="Remark" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatorID" Type="int" />
+          <Property Name="CreationTime" Type="datetime" />
+          <Property Name="EditorID" Type="int" />
+          <Property Name="EditingTime" Type="datetime" />
+          <Property Name="MSName" Type="nvarchar" MaxLength="50" />
+          <Property Name="MRName" Type="nvarchar" MaxLength="50" />
+          <Property Name="Creator" Type="nvarchar" MaxLength="20" />
+          <Property Name="Editor" Type="nvarchar" MaxLength="20" />
+        </EntityType>
+        <!--生成过程中发现错误:
 警告 6002: 表/视图“GlsunView.dbo.v_MachineRoom”未定义主键。已推断出该键，并将定义创建为只读的表/视图。-->
         <EntityType Name="v_MachineRoom">
           <Key>
@@ -375,6 +398,27 @@
           <Property Name="CreationTime" Type="datetime" />
           <Property Name="EditorID" Type="int" />
           <Property Name="EditingTime" Type="datetime" />
+          <Property Name="Creator" Type="nvarchar" MaxLength="20" />
+          <Property Name="Editor" Type="nvarchar" MaxLength="20" />
+        </EntityType>
+        <!--生成过程中发现错误:
+警告 6002: 表/视图“GlsunView.dbo.v_MachineShelf”未定义主键。已推断出该键，并将定义创建为只读的表/视图。-->
+        <EntityType Name="v_MachineShelf">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="MSName" Type="nvarchar" MaxLength="50" />
+          <Property Name="MSNumber" Type="nvarchar" MaxLength="30" />
+          <Property Name="MSLayers" Type="smallint" />
+          <Property Name="MSIcon" Type="nvarchar" MaxLength="20" />
+          <Property Name="MRID" Type="int" />
+          <Property Name="Remark" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatorID" Type="int" />
+          <Property Name="CreationTime" Type="datetime" />
+          <Property Name="EditorID" Type="int" />
+          <Property Name="EditingTime" Type="datetime" />
+          <Property Name="MRName" Type="nvarchar" MaxLength="50" />
           <Property Name="Creator" Type="nvarchar" MaxLength="20" />
           <Property Name="Editor" Type="nvarchar" MaxLength="20" />
         </EntityType>
@@ -726,6 +770,26 @@
     [v_LastestWeekAlarmStatistics].[Cnt] AS [Cnt]
     FROM [dbo].[v_LastestWeekAlarmStatistics] AS [v_LastestWeekAlarmStatistics]</DefiningQuery>
           </EntitySet>
+          <EntitySet Name="v_MachineFrame" EntityType="Self.v_MachineFrame" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [v_MachineFrame].[ID] AS [ID], 
+    [v_MachineFrame].[MFName] AS [MFName], 
+    [v_MachineFrame].[MFIP] AS [MFIP], 
+    [v_MachineFrame].[MFPort] AS [MFPort], 
+    [v_MachineFrame].[MSID] AS [MSID], 
+    [v_MachineFrame].[MSLayer] AS [MSLayer], 
+    [v_MachineFrame].[MFIcon] AS [MFIcon], 
+    [v_MachineFrame].[Remark] AS [Remark], 
+    [v_MachineFrame].[CreatorID] AS [CreatorID], 
+    [v_MachineFrame].[CreationTime] AS [CreationTime], 
+    [v_MachineFrame].[EditorID] AS [EditorID], 
+    [v_MachineFrame].[EditingTime] AS [EditingTime], 
+    [v_MachineFrame].[MSName] AS [MSName], 
+    [v_MachineFrame].[MRName] AS [MRName], 
+    [v_MachineFrame].[Creator] AS [Creator], 
+    [v_MachineFrame].[Editor] AS [Editor]
+    FROM [dbo].[v_MachineFrame] AS [v_MachineFrame]</DefiningQuery>
+          </EntitySet>
           <EntitySet Name="v_MachineRoom" EntityType="Self.v_MachineRoom" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
     [v_MachineRoom].[ID] AS [ID], 
@@ -741,6 +805,24 @@
     [v_MachineRoom].[Creator] AS [Creator], 
     [v_MachineRoom].[Editor] AS [Editor]
     FROM [dbo].[v_MachineRoom] AS [v_MachineRoom]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="v_MachineShelf" EntityType="Self.v_MachineShelf" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [v_MachineShelf].[ID] AS [ID], 
+    [v_MachineShelf].[MSName] AS [MSName], 
+    [v_MachineShelf].[MSNumber] AS [MSNumber], 
+    [v_MachineShelf].[MSLayers] AS [MSLayers], 
+    [v_MachineShelf].[MSIcon] AS [MSIcon], 
+    [v_MachineShelf].[MRID] AS [MRID], 
+    [v_MachineShelf].[Remark] AS [Remark], 
+    [v_MachineShelf].[CreatorID] AS [CreatorID], 
+    [v_MachineShelf].[CreationTime] AS [CreationTime], 
+    [v_MachineShelf].[EditorID] AS [EditorID], 
+    [v_MachineShelf].[EditingTime] AS [EditingTime], 
+    [v_MachineShelf].[MRName] AS [MRName], 
+    [v_MachineShelf].[Creator] AS [Creator], 
+    [v_MachineShelf].[Editor] AS [Editor]
+    FROM [dbo].[v_MachineShelf] AS [v_MachineShelf]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="v_ModuleAuthority" EntityType="Self.v_ModuleAuthority" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
@@ -1124,6 +1206,8 @@
           <EntitySet Name="AlarmInformation" EntityType="GlsunViewModel.AlarmInformation" />
           <EntitySet Name="v_AlarmInfo" EntityType="GlsunViewModel.v_AlarmInfo" />
           <EntitySet Name="v_LastestWeekAlarmStatistics" EntityType="GlsunViewModel.v_LastestWeekAlarmStatistics" />
+          <EntitySet Name="v_MachineRoom" EntityType="GlsunViewModel.v_MachineRoom" />
+          <EntitySet Name="v_MachineShelf" EntityType="GlsunViewModel.v_MachineShelf" />
           <EntitySet Name="MachineFrame" EntityType="GlsunViewModel.MachineFrame" />
           <EntitySet Name="MachineRoom" EntityType="GlsunViewModel.MachineRoom" />
           <EntitySet Name="MachineShelf" EntityType="GlsunViewModel.MachineShelf" />
@@ -1135,7 +1219,7 @@
             <End Role="MachineRoom" EntitySet="MachineRoom" />
             <End Role="MachineShelf" EntitySet="MachineShelf" />
           </AssociationSet>
-          <EntitySet Name="v_MachineRoom" EntityType="GlsunViewModel.v_MachineRoom" />
+          <EntitySet Name="v_MachineFrame" EntityType="GlsunViewModel.v_MachineFrame" />
           </EntityContainer>
         <EntityType Name="v_ModuleUser">
           <Key>
@@ -1536,11 +1620,47 @@
           <Property Name="QDate" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="Cnt" Type="Int32" Nullable="false" />
         </EntityType>
-        <EntityType Name="MachineFrame">
+        <EntityType Name="v_MachineRoom">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="MRName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MRAddress" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="MRDescription" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MRIcon" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Remark" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatorID" Type="Int32" />
+          <Property Name="CreationTime" Type="DateTime" Precision="3" />
+          <Property Name="EditorID" Type="Int32" />
+          <Property Name="EditingTime" Type="DateTime" Precision="3" />
+          <Property Name="Creator" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Editor" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="v_MachineShelf">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="MSName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MSNumber" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="MSLayers" Type="Int16" />
+          <Property Name="MSIcon" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="MRID" Type="Int32" />
+          <Property Name="Remark" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatorID" Type="Int32" />
+          <Property Name="CreationTime" Type="DateTime" Precision="3" />
+          <Property Name="EditorID" Type="Int32" />
+          <Property Name="EditingTime" Type="DateTime" Precision="3" />
+          <Property Name="MRName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Creator" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Editor" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="MachineFrame">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="MFName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="MFIP" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="MFPort" Type="Int16" />
@@ -1574,7 +1694,7 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="MSName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="MSNumber" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="MSLayers" Type="Int16" />
@@ -1612,20 +1732,24 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="v_MachineRoom">
+        <EntityType Name="v_MachineFrame">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" />
-          <Property Name="MRName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="MRAddress" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
-          <Property Name="MRDescription" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="MRIcon" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="MFName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MFIP" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="MFPort" Type="Int16" />
+          <Property Name="MSID" Type="Int32" />
+          <Property Name="MSLayer" Type="Int16" />
+          <Property Name="MFIcon" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Remark" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CreatorID" Type="Int32" />
           <Property Name="CreationTime" Type="DateTime" Precision="3" />
           <Property Name="EditorID" Type="Int32" />
           <Property Name="EditingTime" Type="DateTime" Precision="3" />
+          <Property Name="MSName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MRName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Creator" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Editor" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
         </EntityType>
@@ -2097,6 +2221,44 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="v_MachineRoom">
+            <EntityTypeMapping TypeName="GlsunViewModel.v_MachineRoom">
+              <MappingFragment StoreEntitySet="v_MachineRoom">
+                <ScalarProperty Name="Editor" ColumnName="Editor" />
+                <ScalarProperty Name="Creator" ColumnName="Creator" />
+                <ScalarProperty Name="EditingTime" ColumnName="EditingTime" />
+                <ScalarProperty Name="EditorID" ColumnName="EditorID" />
+                <ScalarProperty Name="CreationTime" ColumnName="CreationTime" />
+                <ScalarProperty Name="CreatorID" ColumnName="CreatorID" />
+                <ScalarProperty Name="Remark" ColumnName="Remark" />
+                <ScalarProperty Name="MRIcon" ColumnName="MRIcon" />
+                <ScalarProperty Name="MRDescription" ColumnName="MRDescription" />
+                <ScalarProperty Name="MRAddress" ColumnName="MRAddress" />
+                <ScalarProperty Name="MRName" ColumnName="MRName" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="v_MachineShelf">
+            <EntityTypeMapping TypeName="GlsunViewModel.v_MachineShelf">
+              <MappingFragment StoreEntitySet="v_MachineShelf">
+                <ScalarProperty Name="Editor" ColumnName="Editor" />
+                <ScalarProperty Name="Creator" ColumnName="Creator" />
+                <ScalarProperty Name="MRName" ColumnName="MRName" />
+                <ScalarProperty Name="EditingTime" ColumnName="EditingTime" />
+                <ScalarProperty Name="EditorID" ColumnName="EditorID" />
+                <ScalarProperty Name="CreationTime" ColumnName="CreationTime" />
+                <ScalarProperty Name="CreatorID" ColumnName="CreatorID" />
+                <ScalarProperty Name="Remark" ColumnName="Remark" />
+                <ScalarProperty Name="MRID" ColumnName="MRID" />
+                <ScalarProperty Name="MSIcon" ColumnName="MSIcon" />
+                <ScalarProperty Name="MSLayers" ColumnName="MSLayers" />
+                <ScalarProperty Name="MSNumber" ColumnName="MSNumber" />
+                <ScalarProperty Name="MSName" ColumnName="MSName" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="MachineFrame">
             <EntityTypeMapping TypeName="GlsunViewModel.MachineFrame">
               <MappingFragment StoreEntitySet="MachineFrame">
@@ -2148,25 +2310,29 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="v_MachineRoom">
-            <EntityTypeMapping TypeName="GlsunViewModel.v_MachineRoom">
-              <MappingFragment StoreEntitySet="v_MachineRoom">
+          <EntitySetMapping Name="v_MachineFrame">
+            <EntityTypeMapping TypeName="GlsunViewModel.v_MachineFrame">
+              <MappingFragment StoreEntitySet="v_MachineFrame">
                 <ScalarProperty Name="Editor" ColumnName="Editor" />
                 <ScalarProperty Name="Creator" ColumnName="Creator" />
+                <ScalarProperty Name="MRName" ColumnName="MRName" />
+                <ScalarProperty Name="MSName" ColumnName="MSName" />
                 <ScalarProperty Name="EditingTime" ColumnName="EditingTime" />
                 <ScalarProperty Name="EditorID" ColumnName="EditorID" />
                 <ScalarProperty Name="CreationTime" ColumnName="CreationTime" />
                 <ScalarProperty Name="CreatorID" ColumnName="CreatorID" />
                 <ScalarProperty Name="Remark" ColumnName="Remark" />
-                <ScalarProperty Name="MRIcon" ColumnName="MRIcon" />
-                <ScalarProperty Name="MRDescription" ColumnName="MRDescription" />
-                <ScalarProperty Name="MRAddress" ColumnName="MRAddress" />
-                <ScalarProperty Name="MRName" ColumnName="MRName" />
+                <ScalarProperty Name="MFIcon" ColumnName="MFIcon" />
+                <ScalarProperty Name="MSLayer" ColumnName="MSLayer" />
+                <ScalarProperty Name="MSID" ColumnName="MSID" />
+                <ScalarProperty Name="MFPort" ColumnName="MFPort" />
+                <ScalarProperty Name="MFIP" ColumnName="MFIP" />
+                <ScalarProperty Name="MFName" ColumnName="MFName" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-        </EntityContainerMapping>
+          </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
   </edmx:Runtime>

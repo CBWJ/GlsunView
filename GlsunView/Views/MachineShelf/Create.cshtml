@@ -1,0 +1,126 @@
+﻿@model GlsunView.Domain.MachineShelf
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_EditLayout.cshtml";
+    string action = (string)@ViewBag.Action;
+}
+
+@using (Html.BeginForm(action, "MachineShelf", FormMethod.Post, new { id = "dataForm", @class = "form-horizontal" }))
+{
+    @Html.HiddenFor(m => m.ID)
+    @Html.HiddenFor(m => m.MRID)
+    <div class="form-group">
+        <label class="col-xs-2 control-label">机架名</label>
+        <div class="col-xs-4">
+            @Html.TextBoxFor(m => m.MSName, new { @class = "form-control" })
+        </div>
+        <label class="col-xs-2 control-label">机架号</label>
+        <div class="col-xs-4">
+            @Html.TextBoxFor(m => m.MSNumber, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-xs-2 control-label">层数</label>
+        <div class="col-xs-4">
+            @Html.TextBoxFor(m => m.MSLayers, new { @class = "form-control" })
+        </div>
+        <label class="col-xs-2 control-label">图标</label>
+        <div class="col-xs-4">
+            @Html.TextBoxFor(m => m.MSIcon, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-xs-2 control-label">所属机房</label>
+        <div class="col-xs-10">
+            @*@Html.TextBoxFor(m => m.MRID, new { @class = "form-control" })*@
+            <select class="form-control" id="roomList"></select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-xs-2 control-label">备注</label>
+        <div class="col-xs-10">
+            @Html.TextAreaFor(m => m.Remark, new { @class = "form-control" })
+        </div>
+    </div>
+}
+
+<script>
+    $(function () {
+        //注册表单提交方式为ajaxForm
+        $("#dataForm").ajaxForm({
+            success: onSuccess
+        });
+        //开启验证
+        $("#dataForm").validate({
+            rules: {
+                MSName: {
+                    required: true,
+                    maxlength: 50
+                },
+                MSNumber: {
+                    required: true,
+                    maxlength: 30
+                },
+                MSLayers: {
+                    required: true,
+                    digits:true
+                    }
+            }
+        });
+        var data = @Html.Raw(ViewBag.RoomData);
+        $("#roomList").select2({
+            language: "zh-CN", //设置 提示语言
+            width: "100%", //设置下拉框的宽度
+            tags: false,  //设置必须存在的选项 才能选中，设置不存在的值则为null,如果 placeholder: {id: '', text: "请选择"} 则为 ''
+            multiple: false,    //单选
+            data: data  //候选数组
+        }).on("change", function(e) {
+            //console.log($("#roomList").select2("val"));
+            //var selectedVal = $("#roomList").select2("val");
+            //$("#MRID").val(selectedVal);
+        });
+    });
+    //提交表单
+    function submitForm() {
+        $("#MRID").val($("#roomList").select2("val"));
+        if (!$("#dataForm").valid()) {
+            return;
+        };
+        $('#dataForm').submit();
+    }
+    //  提交后
+    function onSuccess(data, statusText, xhr) {
+        if (data) {
+            parent.window.childCallback(data);
+        }
+    }
+</script>
+@{
+    if (action == "Details")
+    {
+        <script>
+            (function ($) {
+                if (!$) return;
+                $(".form-group div input").attr("disabled", "disabled");
+                $(".form-group div select").attr("disabled", "disabled");
+                $(".form-group div button").attr("disabled", "disabled");
+                $(".form-group div a").attr("disabled", "disabled");
+                $(".form-group div textarea").attr("disabled", "disabled");
+            }(jQuery));
+        </script>
+    }
+    if (action != "Create")
+    {
+        <script>
+            $(function () {
+                //选中机房
+                var arrSelected = new Array();
+                arrSelected.push(@Model.MRID);
+                $("#roomList").val(arrSelected).trigger("change")
+            });
+        </script>
+    }
+}
+
+
+

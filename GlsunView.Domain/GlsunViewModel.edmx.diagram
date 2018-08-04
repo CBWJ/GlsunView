@@ -40,12 +40,14 @@
         <EntityTypeShape EntityType="GlsunViewModel.AlarmInformation" Width="1.5" PointX="14.625" PointY="9.25" />
         <EntityTypeShape EntityType="GlsunViewModel.v_AlarmInfo" Width="1.5" PointX="16.375" PointY="9.25" />
         <EntityTypeShape EntityType="GlsunViewModel.v_LastestWeekAlarmStatistics" Width="1.5" PointX="18.125" PointY="9.25" />
-        <EntityTypeShape EntityType="GlsunViewModel.MachineFrame" Width="1.5" PointX="5.25" PointY="18" />
-        <EntityTypeShape EntityType="GlsunViewModel.MachineRoom" Width="1.5" PointX="0.75" PointY="18.125" />
-        <EntityTypeShape EntityType="GlsunViewModel.MachineShelf" Width="1.5" PointX="3" PointY="18" />
+        <EntityTypeShape EntityType="GlsunViewModel.v_MachineRoom" Width="1.5" PointX="0.75" PointY="21.625" />
+        <EntityTypeShape EntityType="GlsunViewModel.v_MachineShelf" Width="1.5" PointX="3" PointY="21.625" />
+        <EntityTypeShape EntityType="GlsunViewModel.MachineFrame" Width="1.5" PointX="5.25" PointY="17.625" />
+        <EntityTypeShape EntityType="GlsunViewModel.MachineRoom" Width="1.5" PointX="0.75" PointY="17.75" />
+        <EntityTypeShape EntityType="GlsunViewModel.MachineShelf" Width="1.5" PointX="3" PointY="17.625" />
         <AssociationConnector Association="GlsunViewModel.FK_MACHINEF_REFERENCE_MACHINES" />
         <AssociationConnector Association="GlsunViewModel.FK_MACHINES_REFERENCE_MACHINER" />
-        <EntityTypeShape EntityType="GlsunViewModel.v_MachineRoom" Width="1.5" PointX="0.75" PointY="21.5" />
+        <EntityTypeShape EntityType="GlsunViewModel.v_MachineFrame" Width="1.5" PointX="5.25" PointY="21.625" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
