@@ -1,0 +1,233 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <script src="~/scripts/jquery-1.9.1.min.js"></script>
+    <script src="~/scripts/lib/jquery.ztree.core.js"></script>
+    <script src="~/scripts/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" href="~/Content/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/Content/css/zTreeStyle.css" />
+    <title>Index</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        html,body{
+            height: 100%;
+            font-family: Arial, Microsoft YaHei, SimSun , Tahoma, Helvetica, "\5b8b\4f53", sans-serif;
+        }
+        /*布局*/
+        .container {
+            height: 100%;
+        }
+        .container-left {
+            width: 200px;
+            position: absolute;
+            left: 0;
+            top:0;
+            bottom:0;
+            border: 1px solid #ccc;
+            border-bottom-left-radius: 5px;
+            border-top-left-radius: 5px;
+        }
+        .container-right {
+            margin-left: 200px;
+            position: absolute;
+            top:0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border: 1px solid #ccc;
+            border-bottom-right-radius: 5px;
+            border-top-right-radius: 5px;
+            border-left: 0;
+        }
+        .content_title{
+            height: 30px;
+            background-color:#ecf0f5;
+            border-bottom: 1px solid #ccc;
+        }
+        .content_body{
+            position:absolute;
+            left: 0;
+            top: 30px;
+            right: 0;
+            bottom: 0;
+            overflow-y:hidden;
+        }
+        #frameContent{
+            height:100%;
+            width:100%;
+            border:0;
+        }
+        /*树*/
+        .ztree li a span.button{
+            background-size:100% 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="container-left">
+            <ul id="treeMachine" class="ztree"></ul>
+        </div>
+        <div class="container-right">
+            <div class="content_title">
+                <ol id="navPath" class="breadcrumb">
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Library</a></li>
+                    <li class="active">Data</li>
+                </ol>
+            </div>
+            <div class="content_body">
+                <iframe id="frameContent" src=""></iframe>
+            </div>
+        </div>
+    </div>
+    <script>
+        var navData = {};
+        var setting = {
+            view: {
+                fontCss : {"font-size": "1.5em"}
+            },
+            data: {
+                simpleData: {
+                    enable: true
+                }
+            },
+            callback: {
+                onNodeCreated: zTreeOnNodeCreated,
+                onClick: onClick
+            }
+        };
+        var zTreeNodes = @Html.Raw(ViewBag.TreeNodes);
+        $(document).ready(function(){
+            $.fn.zTree.init($("#treeMachine"), setting, zTreeNodes);
+        });
+        //设置zTree节点图标大小
+        function zTreeOnNodeCreated(event, treeId, treeNode) {
+                $('#'+treeNode.tId+'_ico').css("background", "url("+treeNode.icon+") center center/16px 16px no-repeat");
+        }
+        //节点点击
+        function onClick(event, treeId, treeNode, clickFlag) {
+            var pathNodes = treeNode.getPath();
+            var path = "";
+            for(var i = 0; i < pathNodes.length; ++i){
+                path += pathNodes[i].name + "/";
+            }
+            console.log("name:" + treeNode.name +" dataId:"+treeNode.dataId + " levle:" + treeNode.level + " path:" + path);
+            setPath(pathNodes);
+            var $frameContent = $("#frameContent");
+            switch(treeNode.level){
+                case 0:
+                    $frameContent.attr("src","/MachineRoom/Details/" + treeNode.dataId);
+                    $frameContent.css("width", "500px");
+                    $frameContent.css("margin", "10px");
+                    break;
+                case 1:
+                    $frameContent.attr("src","/MachineShelf/Details/" + treeNode.dataId);
+                    $frameContent.css("width", "500px");
+                    $frameContent.css("margin", "10px");
+                    break;
+                case 2:
+                    $frameContent.attr("src","/MachineFrame/Index/" + treeNode.dataId);
+                    $frameContent.css("width", "100%");
+                    $frameContent.css("margin", "0");
+                    break;
+                default:break;
+            }            
+        }
+        function setPath(pathNodes){
+            navData.endLevel = 0;
+            for(var i = 0; i < pathNodes.length; ++i){
+                var elem = { name: pathNodes[i].name,
+                    level: pathNodes[i].level };
+                var level = pathNodes[i].level;
+                if(level == 0){
+                    elem.url = "/MachineRoom/Details/" + pathNodes[i].dataId;
+                }else if(level == 1){
+                    elem.url = "/MachineShelf/Details/" + pathNodes[i].dataId;
+                }else if(level == 2){
+                    elem.url = "/MachineFrame/Index/" + pathNodes[i].dataId;
+                }
+                navData[level] = elem;
+                navData.endLevel = i + 1;
+            }
+            updatePath();
+        }
+        //更新导航路径
+        function updatePath(){
+            var $navPath = $("#navPath");
+            $navPath.html('');
+            var html = '';
+            for(var i = 0; i < navData.endLevel; ++i){
+                if(i == navData.endLevel - 1){
+                    html += '<li class="active">' + navData[i].name + '</li>';
+                }else{
+                    html += '<li data-level='+navData[i].level+'><a href="#">' + navData[i].name + '</a></li>';
+                }
+            }
+            $navPath.append(html);
+
+            $navPath.children("li").click(function(){
+                var $this = $(this);
+                var level = $this.data("level");
+                if(!isNaN(level)){
+                    var $frameContent = $("#frameContent");
+                    var url = navData[level].url;
+                    switch(level){
+                        case 0:
+                            $frameContent.attr("src", url);
+                            $frameContent.css("width", "500px");
+                            $frameContent.css("margin", "10px");
+                            break;
+                        case 1:
+                            $frameContent.attr("src", url);
+                            $frameContent.css("width", "500px");
+                            $frameContent.css("margin", "10px");
+                            break;
+                        case 2:
+                            $frameContent.attr("src", url);
+                            $frameContent.css("width", "100%");
+                            $frameContent.css("margin", "0");
+                            break;
+                        default:break;
+                    }
+                }
+                //当前级别小于最大的级别，删除后面的
+                if(level < navData.endLevel - 1){
+                    for(var i = level + 1; i < navData.endLevel; ++i){
+                        delete navData[i];
+                    }
+                    //更新终止级别
+                    navData.endLevel = level + 1;
+                }
+                updatePath();
+            });
+        }
+        //添加导航数据
+        function addNavigatorData(elem){
+            navData[elem.level] = elem;
+            navData.endLevel += 1;
+            updatePath();
+            var $frameContent = $("#frameContent");
+            $frameContent.attr("src", elem.url);
+        }
+        function getTime() {
+            var now= new Date(),
+			h=now.getHours(),
+			m=now.getMinutes(),
+			s=now.getSeconds();
+            return (h+":"+m+":"+s);
+        }
+    </script>
+</body>
+</html>

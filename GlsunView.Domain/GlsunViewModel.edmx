@@ -107,6 +107,7 @@
           <Property Name="MFName" Type="nvarchar" MaxLength="50" />
           <Property Name="MFIP" Type="varchar" MaxLength="20" />
           <Property Name="MFPort" Type="smallint" />
+          <Property Name="MFMCUType" Type="varchar" MaxLength="20" />
           <Property Name="MSID" Type="int" />
           <Property Name="MSLayer" Type="smallint" />
           <Property Name="MFIcon" Type="nvarchar" MaxLength="20" />
@@ -369,6 +370,7 @@
           <Property Name="MFName" Type="nvarchar" MaxLength="50" />
           <Property Name="MFIP" Type="varchar" MaxLength="20" />
           <Property Name="MFPort" Type="smallint" />
+          <Property Name="MFMCUType" Type="varchar" MaxLength="20" />
           <Property Name="MSID" Type="int" />
           <Property Name="MSLayer" Type="smallint" />
           <Property Name="MFIcon" Type="nvarchar" MaxLength="20" />
@@ -776,6 +778,7 @@
     [v_MachineFrame].[MFName] AS [MFName], 
     [v_MachineFrame].[MFIP] AS [MFIP], 
     [v_MachineFrame].[MFPort] AS [MFPort], 
+    [v_MachineFrame].[MFMCUType] AS [MFMCUType], 
     [v_MachineFrame].[MSID] AS [MSID], 
     [v_MachineFrame].[MSLayer] AS [MSLayer], 
     [v_MachineFrame].[MFIcon] AS [MFIcon], 
@@ -1208,16 +1211,16 @@
           <EntitySet Name="v_LastestWeekAlarmStatistics" EntityType="GlsunViewModel.v_LastestWeekAlarmStatistics" />
           <EntitySet Name="v_MachineRoom" EntityType="GlsunViewModel.v_MachineRoom" />
           <EntitySet Name="v_MachineShelf" EntityType="GlsunViewModel.v_MachineShelf" />
-          <EntitySet Name="MachineFrame" EntityType="GlsunViewModel.MachineFrame" />
           <EntitySet Name="MachineRoom" EntityType="GlsunViewModel.MachineRoom" />
           <EntitySet Name="MachineShelf" EntityType="GlsunViewModel.MachineShelf" />
-          <AssociationSet Name="FK_MACHINEF_REFERENCE_MACHINES" Association="GlsunViewModel.FK_MACHINEF_REFERENCE_MACHINES">
-            <End Role="MachineShelf" EntitySet="MachineShelf" />
-            <End Role="MachineFrame" EntitySet="MachineFrame" />
-          </AssociationSet>
           <AssociationSet Name="FK_MACHINES_REFERENCE_MACHINER" Association="GlsunViewModel.FK_MACHINES_REFERENCE_MACHINER">
             <End Role="MachineRoom" EntitySet="MachineRoom" />
             <End Role="MachineShelf" EntitySet="MachineShelf" />
+          </AssociationSet>
+          <EntitySet Name="MachineFrame" EntityType="GlsunViewModel.MachineFrame" />
+          <AssociationSet Name="FK_MACHINEF_REFERENCE_MACHINES" Association="GlsunViewModel.FK_MACHINEF_REFERENCE_MACHINES">
+            <End Role="MachineShelf" EntitySet="MachineShelf" />
+            <End Role="MachineFrame" EntitySet="MachineFrame" />
           </AssociationSet>
           <EntitySet Name="v_MachineFrame" EntityType="GlsunViewModel.v_MachineFrame" />
           </EntityContainer>
@@ -1656,24 +1659,6 @@
           <Property Name="Creator" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Editor" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
         </EntityType>
-        <EntityType Name="MachineFrame">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="MFName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="MFIP" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="MFPort" Type="Int16" />
-          <Property Name="MSID" Type="Int32" />
-          <Property Name="MSLayer" Type="Int16" />
-          <Property Name="MFIcon" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="Remark" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="CreatorID" Type="Int32" />
-          <Property Name="CreationTime" Type="DateTime" Precision="3" />
-          <Property Name="EditorID" Type="Int32" />
-          <Property Name="EditingTime" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="MachineShelf" Relationship="GlsunViewModel.FK_MACHINEF_REFERENCE_MACHINES" FromRole="MachineFrame" ToRole="MachineShelf" />
-        </EntityType>
         <EntityType Name="MachineRoom">
           <Key>
             <PropertyRef Name="ID" />
@@ -1705,8 +1690,39 @@
           <Property Name="CreationTime" Type="DateTime" Precision="3" />
           <Property Name="EditorID" Type="Int32" />
           <Property Name="EditingTime" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="MachineFrame" Relationship="GlsunViewModel.FK_MACHINEF_REFERENCE_MACHINES" FromRole="MachineShelf" ToRole="MachineFrame" />
           <NavigationProperty Name="MachineRoom" Relationship="GlsunViewModel.FK_MACHINES_REFERENCE_MACHINER" FromRole="MachineShelf" ToRole="MachineRoom" />
+          <NavigationProperty Name="MachineFrame" Relationship="GlsunViewModel.FK_MACHINEF_REFERENCE_MACHINES" FromRole="MachineShelf" ToRole="MachineFrame" />
+        </EntityType>
+        <Association Name="FK_MACHINES_REFERENCE_MACHINER">
+          <End Type="GlsunViewModel.MachineRoom" Role="MachineRoom" Multiplicity="0..1" />
+          <End Type="GlsunViewModel.MachineShelf" Role="MachineShelf" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MachineRoom">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="MachineShelf">
+              <PropertyRef Name="MRID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="MachineFrame">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MFName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MFIP" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="MFPort" Type="Int16" />
+          <Property Name="MFMCUType" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="MSID" Type="Int32" />
+          <Property Name="MSLayer" Type="Int16" />
+          <Property Name="MFIcon" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Remark" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatorID" Type="Int32" />
+          <Property Name="CreationTime" Type="DateTime" Precision="3" />
+          <Property Name="EditorID" Type="Int32" />
+          <Property Name="EditingTime" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="MachineShelf" Relationship="GlsunViewModel.FK_MACHINEF_REFERENCE_MACHINES" FromRole="MachineFrame" ToRole="MachineShelf" />
         </EntityType>
         <Association Name="FK_MACHINEF_REFERENCE_MACHINES">
           <End Type="GlsunViewModel.MachineShelf" Role="MachineShelf" Multiplicity="0..1" />
@@ -1720,18 +1736,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_MACHINES_REFERENCE_MACHINER">
-          <End Type="GlsunViewModel.MachineRoom" Role="MachineRoom" Multiplicity="0..1" />
-          <End Type="GlsunViewModel.MachineShelf" Role="MachineShelf" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="MachineRoom">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="MachineShelf">
-              <PropertyRef Name="MRID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="v_MachineFrame">
           <Key>
             <PropertyRef Name="ID" />
@@ -1740,6 +1744,7 @@
           <Property Name="MFName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="MFIP" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="MFPort" Type="Int16" />
+          <Property Name="MFMCUType" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="MSID" Type="Int32" />
           <Property Name="MSLayer" Type="Int16" />
           <Property Name="MFIcon" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
@@ -2259,24 +2264,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="MachineFrame">
-            <EntityTypeMapping TypeName="GlsunViewModel.MachineFrame">
-              <MappingFragment StoreEntitySet="MachineFrame">
-                <ScalarProperty Name="EditingTime" ColumnName="EditingTime" />
-                <ScalarProperty Name="EditorID" ColumnName="EditorID" />
-                <ScalarProperty Name="CreationTime" ColumnName="CreationTime" />
-                <ScalarProperty Name="CreatorID" ColumnName="CreatorID" />
-                <ScalarProperty Name="Remark" ColumnName="Remark" />
-                <ScalarProperty Name="MFIcon" ColumnName="MFIcon" />
-                <ScalarProperty Name="MSLayer" ColumnName="MSLayer" />
-                <ScalarProperty Name="MSID" ColumnName="MSID" />
-                <ScalarProperty Name="MFPort" ColumnName="MFPort" />
-                <ScalarProperty Name="MFIP" ColumnName="MFIP" />
-                <ScalarProperty Name="MFName" ColumnName="MFName" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="MachineRoom">
             <EntityTypeMapping TypeName="GlsunViewModel.MachineRoom">
               <MappingFragment StoreEntitySet="MachineRoom">
@@ -2310,6 +2297,25 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="MachineFrame">
+            <EntityTypeMapping TypeName="GlsunViewModel.MachineFrame">
+              <MappingFragment StoreEntitySet="MachineFrame">
+                <ScalarProperty Name="EditingTime" ColumnName="EditingTime" />
+                <ScalarProperty Name="EditorID" ColumnName="EditorID" />
+                <ScalarProperty Name="CreationTime" ColumnName="CreationTime" />
+                <ScalarProperty Name="CreatorID" ColumnName="CreatorID" />
+                <ScalarProperty Name="Remark" ColumnName="Remark" />
+                <ScalarProperty Name="MFIcon" ColumnName="MFIcon" />
+                <ScalarProperty Name="MSLayer" ColumnName="MSLayer" />
+                <ScalarProperty Name="MSID" ColumnName="MSID" />
+                <ScalarProperty Name="MFMCUType" ColumnName="MFMCUType" />
+                <ScalarProperty Name="MFPort" ColumnName="MFPort" />
+                <ScalarProperty Name="MFIP" ColumnName="MFIP" />
+                <ScalarProperty Name="MFName" ColumnName="MFName" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="v_MachineFrame">
             <EntityTypeMapping TypeName="GlsunViewModel.v_MachineFrame">
               <MappingFragment StoreEntitySet="v_MachineFrame">
@@ -2325,6 +2331,7 @@
                 <ScalarProperty Name="MFIcon" ColumnName="MFIcon" />
                 <ScalarProperty Name="MSLayer" ColumnName="MSLayer" />
                 <ScalarProperty Name="MSID" ColumnName="MSID" />
+                <ScalarProperty Name="MFMCUType" ColumnName="MFMCUType" />
                 <ScalarProperty Name="MFPort" ColumnName="MFPort" />
                 <ScalarProperty Name="MFIP" ColumnName="MFIP" />
                 <ScalarProperty Name="MFName" ColumnName="MFName" />

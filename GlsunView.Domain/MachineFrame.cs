@@ -18,6 +18,7 @@ namespace GlsunView.Domain
         public string MFName { get; set; }
         public string MFIP { get; set; }
         public Nullable<short> MFPort { get; set; }
+        public string MFMCUType { get; set; }
         public Nullable<int> MSID { get; set; }
         public Nullable<short> MSLayer { get; set; }
         public string MFIcon { get; set; }

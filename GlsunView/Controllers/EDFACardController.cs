@@ -9,6 +9,7 @@ using GlsunView.Models;
 using GlsunView.Infrastructure.Util;
 using System.Web.Script.Serialization;
 using System.ComponentModel;
+using System.Text;
 
 namespace GlsunView.Controllers
 {
@@ -44,6 +45,115 @@ namespace GlsunView.Controllers
             ViewBag.Did = d.ID;
             ViewBag.EndPoint = d.DAddress + ":" + d.DPort.Value + ":" + slot.ToString();
             return View(edfaInfo);
+        }
+        /// <summary>
+        /// 设备视图
+        /// </summary>
+        /// <param name="ip"></param>
+        /// <param name="port"></param>
+        /// <param name="slot"></param>
+        /// <returns></returns>
+        public ActionResult Details(string ip, int port, int slot)
+        {
+            EDFAInfo edfaInfo = new EDFAInfo();
+            var tcp = TcpClientServicePool.GetService(ip, port);
+            if (tcp != null)
+            {
+                EDFACommService service = new EDFACommService(tcp, slot);
+                edfaInfo.RefreshData(service);
+                tcp.IsBusy = false;
+            }
+            EDFAViewModel edfa = new EDFAViewModel
+            {
+                IP = ip,
+                Port = port,
+                Slot = slot,
+                Type = edfaInfo.Device_Type,
+                WorkMode = edfaInfo.Work_Mode,
+                Status = "正常",
+                MaxOutput = edfaInfo.PUMP_Power,
+                MaxGain = edfaInfo.Current_Gain,
+                ProductModel = "OTS-"+ edfaInfo.Device_Type,
+                SerialNumber = edfaInfo.Serial_Number,
+                HardwareVersion = edfaInfo.Hardware_Version,
+                SoftwareVersion = edfaInfo.Software_Version
+            };
+            return View(edfa);
+        }
+        /// <summary>
+        /// 设备视图更新配置信息
+        /// </summary>
+        /// <param name="ip"></param>
+        /// <param name="port"></param>
+        /// <param name="slot"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult UpdateConfig(string ip, int port, int slot)
+        {
+            JsonResult result = new JsonResult();
+            //result.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
+            try
+            {
+                EDFAInfo edfaInfo = new EDFAInfo();
+                var tcp = TcpClientServicePool.GetService(ip, port);
+                if (tcp == null) throw new NullReferenceException();
+                EDFACommService service = new EDFACommService(tcp, slot);
+                edfaInfo.RefreshData(service);
+                tcp.IsBusy = false;
+                result.Data = new { Code = "", Data = edfaInfo };
+            }
+            catch (Exception ex)
+            {
+                result.Data = new { Code = "Exception", Data = "" };
+            }
+            return result;
+        }
+        public ActionResult SetConfiguration(EDFAInfo edfaInfo, string ip, int port, int slot)
+        {
+            JsonResult result = new JsonResult();
+            var tcp = TcpClientServicePool.GetService(ip, port);
+            if(tcp != null)
+            {
+                try
+                {
+                    EDFACommService service = new EDFACommService(tcp, slot);
+                    List<string> listException = new List<string>();
+                    if (!service.SetWorkMode(edfaInfo.Work_Mode))
+                    {
+                        listException.Add("工作模式");
+                    }
+                    if (!service.SetGainSetting(edfaInfo.Gain_Setting))
+                    {
+                        listException.Add("增益");
+                    }
+                    if(listException.Count == 0)
+                    {
+                        result.Data = new { Code = "", Data = "设置成功" };
+                    }
+                    else
+                    {
+                        string data = "设置失败：";
+                        foreach(var e in listException)
+                        {
+                            data += e + " ";
+                        }
+                        result.Data = new { Code = "Exception", Data = data };
+                    }
+                }
+                catch(Exception ex)
+                {
+                    result.Data = new { Code = "Exception", Data = ex.Message };
+                }
+                finally
+                {
+                    tcp.IsBusy = false;
+                }
+            }
+            else
+            {
+                result.Data = new { Code = "Exception", Data = "获取TCP连接失败" };
+            }
+            return result;
         }
         [HttpPost]
         public ActionResult SetParam(string endpoint, string name, string value, int did)

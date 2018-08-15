@@ -56,9 +56,9 @@ namespace GlsunView.Domain
         public virtual DbSet<v_LastestWeekAlarmStatistics> v_LastestWeekAlarmStatistics { get; set; }
         public virtual DbSet<v_MachineRoom> v_MachineRoom { get; set; }
         public virtual DbSet<v_MachineShelf> v_MachineShelf { get; set; }
-        public virtual DbSet<MachineFrame> MachineFrame { get; set; }
         public virtual DbSet<MachineRoom> MachineRoom { get; set; }
         public virtual DbSet<MachineShelf> MachineShelf { get; set; }
+        public virtual DbSet<MachineFrame> MachineFrame { get; set; }
         public virtual DbSet<v_MachineFrame> v_MachineFrame { get; set; }
     
         [DbFunction("GlsunViewEntities", "F_GetTreeModuleID")]

@@ -7,11 +7,25 @@ using GlsunView.CommService;
 
 namespace GlsunView.Models
 {
+    /// <summary>
+    /// 设备示意图显示类
+    /// </summary>
     public class DeviceOverview 
     {
         public string IP { get; set; }
         public int Port { get; set; }
+        /// <summary>
+        /// 型号
+        /// </summary>
         public string Type { get; set; }
+        /// <summary>
+        /// 主控卡类型
+        /// </summary>
+        public string MCUType { get; set; }
+        /// <summary>
+        /// MAC地址
+        /// </summary>
+        public string MACAddr { get; set; }
         public string CardStatus { get; set; }
         public int Unit { get; set; }
         public int SlotCount { get; set; }
@@ -20,6 +34,7 @@ namespace GlsunView.Models
         {
             Type = InstructionHelper.ExtractData(service.GetDeviceModel(), "DTP");
             CardStatus = InstructionHelper.ExtractData(service.GetBusinessCardStatus(), "CS");
+            MACAddr = InstructionHelper.ExtractData(service.GetMACAddress(), "MAC");
             if (Type.Length > 0)
             {
                 Unit = Convert.ToInt32(Type.Substring(Type.Length - 1));

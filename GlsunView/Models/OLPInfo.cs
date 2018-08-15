@@ -56,7 +56,7 @@ namespace GlsunView.Models
         /// <summary>
         /// 硬件版本号
         /// </summary>
-        public string hardware_Version { get; set; }
+        public string Hardware_Version { get; set; }
         /// <summary>
         /// 生产序列号
         /// </summary>
@@ -132,7 +132,7 @@ namespace GlsunView.Models
             R2_Input_Power = double.Parse(InstructionHelper.ExtractDataFromSet(data, "R2_P"));
             TX_Input_Power = double.Parse(InstructionHelper.ExtractDataFromSet(data, "TX_P"));
             Software_Version = InstructionHelper.ExtractDataFromSet(data, "SV");
-            hardware_Version = InstructionHelper.ExtractDataFromSet(data, "HV");
+            Hardware_Version = InstructionHelper.ExtractDataFromSet(data, "HV");
             Serial_Number = InstructionHelper.ExtractDataFromSet(data, "SN");
             Manufacture_Date = InstructionHelper.ExtractDataFromSet(data, "MD");
             R1_Wave = int.Parse(InstructionHelper.ExtractDataFromSet(data, "R1_W"));

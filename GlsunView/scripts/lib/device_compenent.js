@@ -11,12 +11,18 @@
     //实例方法
     OEOCard.prototype.init = function(options){
         this.setting = $.extend({},{
-            oeoClick: null
+            oeoClick: null,
+            oeoDbClick: null
         },options);
         var self = this;
         this.$oeo.click(function(){
             if(self.setting.oeoClick && typeof self.setting.oeoClick  == "function"){
                 self.setting.oeoClick.call(this);
+            }
+        });
+        this.$oeo.dblclick(function(){
+            if(self.setting.oeoDbClick && typeof self.setting.oeoDbClick  == "function"){
+                self.setting.oeoDbClick.call(this);
             }
         });
     }
@@ -89,12 +95,18 @@
     }
     EDFACard.prototype.init = function(options){
         this.setting = $.extend({},{
-            edfaClick: null
+            edfaClick: null,
+            edfaDbClick: null
         }, options);
         var self = this;
         this.$edfa.click(function(){
             if(self.setting.edfaClick && typeof self.setting.edfaClick  == "function"){
                 self.setting.edfaClick.call(this);
+            }
+        });
+        this.$edfa.dblclick(function(){
+            if(self.setting.edfaDbClick && typeof self.setting.edfaDbClick  == "function"){
+                self.setting.edfaDbClick.call(this);
             }
         });
         return this;
@@ -194,12 +206,18 @@
     }
     OLPCard.prototype.init = function(options){
         this.setting = $.extend({},{
-            olpClick: null
+            olpClick: null,
+            olpDbClick: null
         }, options);
         var self = this;
         this.$olp.click(function(){
             if(self.setting.olpClick && typeof self.setting.olpClick  == "function"){
                 self.setting.olpClick.call(this);
+            }
+        });
+        this.$olp.dblclick(function(){
+            if(self.setting.olpDbClick && typeof self.setting.olpDbClick  == "function"){
+                self.setting.olpDbClick.call(this);
             }
         });
         return this;
@@ -429,9 +447,10 @@
         return this;
     }
 
-    function Device(){
+    function Device(selector){
         var imgPath = "../../image/device/";
-        this.$tableBody = $("table tbody");
+        if (!selector || selector == "") selector = "table tbody";
+        this.$tableBody = $(selector);
         //静态内容
         this.imgPath = imgPath;
         this.emptyMCU = '<td rowspan="2"><div id="mcu" class="module"><img src="' + imgPath + 'mcu-frame.jpg"></div></td>';
@@ -464,6 +483,11 @@
                 self.setting.click.call(this);
             }
         };
+        this.moduleDbClick = function(){
+            if(self.setting.dblclick && typeof self.setting.dblclick  == "function"){
+                self.setting.dblclick.call(this);
+            }
+        };
     }
     //空卡HTML内容
     Device.prototype.getemptyCard = function(slot) {  
@@ -472,7 +496,9 @@
     //初始化
     Device.prototype.init = function(mcu_type, u, options){
         this.setting = $.extend({},{
-            click: function(){}
+            click: function(){},
+            dblclick: function(){},
+            afterInit: function(){}
         },options);
         this.mcu_type = mcu_type;
         this.u = u;
@@ -511,6 +537,9 @@
         });
         if(mcu_type != ""){
             this.insertMCU(mcu_type);
+        }
+        if(this.setting.afterInit && typeof this.setting.afterInit == "function"){
+            this.setting.afterInit.call();
         }
         return this;
     };
@@ -553,21 +582,24 @@
             card.append(this.oeoContent);
             ctrl = new OEOCard(selector);
             ctrl.init({
-                oeoClick: this.moduleClick
+                oeoClick: this.moduleClick,
+                oeoDbClick: this.moduleDbClick
             });
         }
         else if(type == "olp"){
             card.append(this.olpContent);
             ctrl = new OLPCard(selector);
             ctrl.init({
-                olpClick: this.moduleClick
+                olpClick: this.moduleClick,
+                olpDbClick: this.moduleDbClick
             });
         }
         else if(type == "edfa"){
             card.append(this.edfaContent);
             ctrl = new EDFACard(selector);
             ctrl.init({
-                edfaClick: this.moduleClick
+                edfaClick: this.moduleClick,
+                edfaDbClick: this.moduleDbClick
             });
         }
         this.cards[selector.substring(1)] = {

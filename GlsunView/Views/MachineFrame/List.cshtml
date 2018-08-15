@@ -29,6 +29,7 @@
                         <th>机框名</th>
                         <th>IP地址</th>
                         <th>通信端口</th>
+                        <th>主控类型</th>
                         <th>机房</th>
                         <th>机架</th>
                         <th>所在层数</th>
@@ -48,6 +49,19 @@
                             <td>@e.MFName</td>
                             <td>@e.MFIP</td>
                             <td>@e.MFPort</td>
+                            <td>
+                                @{
+                                    switch (e.MFMCUType)
+                                    {
+                                        case "electronic":
+                                            @:电口主控
+                                            break;
+                                        case "optics":
+                                            @:光口主控
+                                            break;
+                                    }
+                                }
+                            </td>
                             <td>@e.MRName</td>
                             <td>@e.MSName</td>
                             <td>@e.MSLayer</td>
@@ -58,8 +72,8 @@
                             <td>@e.Editor</td>
                             <td>@e.EditingTime</td>
                         </tr>
-                        dataRowNum++;
-                    }
+                                        dataRowNum++;
+                                    }
                 </tbody>
             </table>
         </div>
@@ -88,4 +102,3 @@
         </div>
     </div>
 </div>
-

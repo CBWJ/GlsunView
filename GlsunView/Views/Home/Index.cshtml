@@ -31,14 +31,14 @@
         <div class="main_body_top">
             <div class="nav-bar">
                 <div class="nav-bar-left">
-                    <a id="menu" href="#">
+                    @*<a id="menu" href="#">
                         <i class="fa fa-list-ul fa-fw"></i>
                     </a>
                     <a id="status" href="#">
                         <i class="fa fa-bar-chart fa-fw"></i>
-                    </a>
+                    </a>*@
                     <a>
-                        Glsun View 网管系统
+                        Glsun View 网管平台
                     </a>
                 </div>
                 <div class="nav-bar-middle">
@@ -95,6 +95,8 @@
                 </div>
             </div>
         </div>
+        <div id="menuTrigger" class="menu_trigger"></div>
+        <div id="statusTrigger" class="status_trigger"></div>
     </div>
     <script>
         var hTimer;
@@ -120,6 +122,31 @@
                             function () {
                                 $(this).hide();
                             });
+                    $(".main_body_content").animate({ bottom: 0 }, { duration: interval });
+                }
+                else {
+                    $(".main_body_bottom").show().animate({ height: 150 }, { duration: interval });
+                    $(".main_body_content").animate({ bottom: 150 }, { duration: interval });
+                }
+            });
+            $("#menuTrigger").click(function () {
+                var interval = 200;
+                if ($(".content_menu").css("marginLeft") != "0px") {
+                    $(".content_menu").animate({ marginLeft: 0 }, { duration: interval });
+                    $(".content_container").animate({ marginLeft: 200 }, { duration: interval });
+                }
+                else {
+                    $(".content_menu").animate({ marginLeft: -200 }, { duration: interval });
+                    $(".content_container").animate({ marginLeft: 0 }, { duration: interval });
+                }
+            });
+            $("#statusTrigger").click(function () {
+                var interval = 200;
+                if ($(".main_body_bottom").css("height") != "0px") {
+                    $(".main_body_bottom").animate({ height: 0 }, interval, null,
+                        function () {
+                            $(this).hide();
+                        });
                     $(".main_body_content").animate({ bottom: 0 }, { duration: interval });
                 }
                 else {

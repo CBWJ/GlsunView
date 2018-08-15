@@ -298,6 +298,7 @@
     <Compile Include="Controllers\DeviceController.cs" />
     <Compile Include="Controllers\DeviceLineController.cs" />
     <Compile Include="Controllers\DeviceLogController.cs" />
+    <Compile Include="Controllers\DeviceViewController.cs" />
     <Compile Include="Controllers\EDFACardController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HistoryAlarmController.cs" />
@@ -325,10 +326,14 @@
     <Compile Include="HtmlHelpers\PagingHelper.cs" />
     <Compile Include="Models\AlarmQueryCondition.cs" />
     <Compile Include="Models\AuthorityTreeNode.cs" />
+    <Compile Include="Models\CardSlotInfo.cs" />
     <Compile Include="Models\DevcieStatusSet.cs" />
+    <Compile Include="Models\DeviceInfo.cs" />
     <Compile Include="Models\DeviceOverview.cs" />
     <Compile Include="Models\EDFAInfo.cs" />
+    <Compile Include="Models\EDFAViewModel.cs" />
     <Compile Include="Models\LogSearchConditions.cs" />
+    <Compile Include="Models\MachineTreeNode.cs" />
     <Compile Include="Models\ModuleAuth.cs" />
     <Compile Include="Models\ModuleAuthItem.cs" />
     <Compile Include="Models\NMUInfo.cs" />
@@ -400,6 +405,9 @@
     <Content Include="Views\MachineShelf\Create.cshtml" />
     <Content Include="Views\MachineFrame\List.cshtml" />
     <Content Include="Views\MachineFrame\Create.cshtml" />
+    <Content Include="Views\DeviceView\Index.cshtml" />
+    <Content Include="Views\MachineFrame\Index.cshtml" />
+    <Content Include="Views\EDFACard\Details.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -104,7 +104,7 @@ namespace GlsunView.Models
         /// <summary>
         /// 硬件版本
         /// </summary>
-        public string hardware_Version { get; set; }
+        public string Hardware_Version { get; set; }
         /// <summary>
         /// 生产序列号
         /// </summary>
@@ -116,15 +116,36 @@ namespace GlsunView.Models
         /// <summary>
         /// 设备类型描述
         /// </summary>
-        public string Device_Type { get; set; }
-        /// <summary>
-        /// 设置增益
-        /// </summary>
-        public double Set_Gain { get; set; }
+        public string Device_Type { get; set; }        
         /// <summary>
         /// 当前增益
         /// </summary>
         public double Current_Gain { get; set; }
+        
+        /// <summary>
+        /// 增益设置值
+        /// </summary>
+        public double Gain_Setting { get; set; }
+        /// <summary>
+        /// 电流设置值
+        /// </summary>
+        public double Current_Setting { get; set; }
+        /// <summary>
+        /// 输出功率设置值
+        /// </summary>
+        public double Output_Power_Setting { get; set; }
+        /// <summary>
+        /// 关泵阈值
+        /// </summary>
+        public double Pump_Threshold { get; set; }
+        /// <summary>
+        /// 输入低阈值
+        /// </summary>
+        public double Input_Low_Threshold { get; set; }
+        /// <summary>
+        /// 输入高阈值
+        /// </summary>
+        public double Input_high_Threshold { get; set; }
 
         public void RefreshData(CardCommService service)
         {
@@ -153,7 +174,7 @@ namespace GlsunView.Models
             //PUMP_Electric_Current = double.Parse(InstructionHelper.ExtractDataFromSet(data, ""));
             TEC_Electric_Current = double.Parse(InstructionHelper.ExtractDataFromSet(data, "TEC"));
             Software_Version = InstructionHelper.ExtractDataFromSet(data, "SV");
-            hardware_Version = InstructionHelper.ExtractDataFromSet(data, "HV");
+            Hardware_Version = InstructionHelper.ExtractDataFromSet(data, "HV");
             Serial_Number = InstructionHelper.ExtractDataFromSet(data, "SN");
             Manufacture_Date = InstructionHelper.ExtractDataFromSet(data, "MD");
             Device_Type = InstructionHelper.ExtractDataFromSet(data, "DT");

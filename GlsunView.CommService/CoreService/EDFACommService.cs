@@ -68,7 +68,7 @@ namespace GlsunView.CommService
         /// <param name="value"></param>
         /// <returns></returns>
         [Description("设置增益")]
-        public bool SetGain(double value)
+        public bool SetGainSetting(double value)
         {
             var arrNum = value.ToString("F2").Split('.');
             string cmd = string.Format("<C{0}_[PGV_+{1}.{2}]>", CardNumber.ToString("00"), arrNum[0].PadLeft(2, '0'), arrNum[1]);

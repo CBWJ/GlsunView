@@ -24,14 +24,21 @@
         <div class="col-xs-4">
             @Html.TextBoxFor(m => m.MFPort, new { @class = "form-control" })
         </div>        
+        <label class="col-xs-2 control-label">主控类型</label>
+        <div class="col-xs-4">
+            <select class="form-control" name="MFMCUType">
+                <option value="electronic" @(Model.MFMCUType == "electronic" ? "selected" : "")>电口主控</option>
+                <option value="optics" @(Model.MFMCUType == "optics" ? "selected" : "")>光口主控</option>
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
         <label class="col-xs-2 control-label">图标</label>
         <div class="col-xs-4">
             @Html.TextBoxFor(m => m.MFIcon, new { @class = "form-control" })
         </div>
-    </div>
-    <div class="form-group">
         <label class="col-xs-2 control-label">机房</label>
-        <div class="col-xs-10">
+        <div class="col-xs-4">
             <select class="form-control" id="roomList"></select>
         </div>
     </div>

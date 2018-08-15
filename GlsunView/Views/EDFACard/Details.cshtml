@@ -1,0 +1,430 @@
+﻿@model GlsunView.Models.EDFAViewModel
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <link rel="stylesheet" href="~/Content/css/device.css" />
+    <title>Details</title>
+    <style>
+        .module {
+            zoom: 0.5;
+            margin: 10px;
+        }
+
+        .box {
+            border: 1px solid;
+            display: table;
+            font-size: 1em;
+        }
+
+            .box fieldset {
+                border-color: #1bbd1b;
+                margin: 0 10px;
+                margin-bottom: 10px;
+            }
+
+                .box fieldset legend {
+                    background-color: #008cd6;
+                }
+
+            .box .card_info td {
+                background-color: #eee;
+            }
+
+                .box .card_info td.lable {
+                    width: 100px;
+                    text-align: right;
+                }
+
+                .box .card_info td.value {
+                    width: 300px;
+                }
+
+                .box .card_info td.separator {
+                    width: 50px;
+                    background: transparent;
+                }
+
+            .box .card_info, .card_config {
+                border-spacing: 5px 10px;
+            }
+            /*状态与配置*/
+            .box .card_config td.lable1 {
+                width: 80px;
+                background-color: #eee;
+                text-align: center;
+            }
+
+            .box .card_config td.lable2 {
+                width: 100px;
+                background-color: #eee;
+                text-align: center;
+            }
+
+            .box .card_config td.lable3 {
+                width: 150px;
+                background-color: #eee;
+                text-align: right;
+            }
+
+            .box .card_config td.value2 {
+                width: 100px;
+            }
+
+            .box .card_config td.value1 input {
+                width: 100px;
+                height: 1.8em;
+                background-color: #8dce47;
+                border-style: none;
+            }
+
+            .box .card_config td.value2 input, .box .card_config td.value2 select {
+                width: 135px;
+                background-color: #8dce47;
+                border-style: none;
+                height: 1.8em;
+            }
+
+            .box .card_config td.blank {
+                background: transparent;
+            }
+
+        /*设置*/
+        .config_menu {
+            display: table;
+            margin-right: 20px;
+            float: right;
+        }
+
+        .config_menu button {
+            margin-left: 10px;
+        }
+        /*提示框*/
+        .alertBox{
+            position:absolute;  
+            top:50%;            
+            left:50%; 
+            margin:-100px 0 0 -150px;     
+            width:300px;                             
+            z-index:99; 
+            text-align:center;
+            display:none;
+            padding:15px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+        }
+        .alert-failure{
+            color: #a94442;
+            background-color: #f2dede;
+            border-color: #ebccd1;
+        }
+        .alert-success{
+            color: #3c763d;
+            background-color: #dff0d8;
+            border-color: #d6e9c6;
+        }
+    </style>
+</head>
+<body>
+    <div class="alertBox" id="alert"></div>
+    <div class="box">
+        <div class="module edfa">
+            <img src="../image/device/EDFA.jpg">
+            <div class="light-circle pwr"></div>
+            <div class="light-circle run"></div>
+            <div class="light-circle in"></div>
+            <div class="light-circle out"></div>
+            <div class="light-circle mt"></div>
+            <div class="light-circle pt"></div>
+        </div>
+        <fieldset>
+            <legend>板卡信息</legend>
+            <table class="card_info">
+                <tbody>
+                    <tr>
+                        <td class="lable">槽位：</td>
+                        <td class="value">@Model.Slot</td>
+                        <td class="separator"></td>
+                        <td class="lable">类型：</td>
+                        <td class="value">@Model.Type</td>
+                    </tr>
+                    <tr>
+                        <td class="lable">工作模式：</td>
+                        <td class="value">
+                            @switch (Model.WorkMode)
+                            {
+                                case 0:
+                                    @:其他
+                                    break;
+                                case 1:
+                                    @:电流模式
+                                    break;
+                                case 2:
+                                    @:功率模式
+                                    break;
+                                case 3:
+                                    @:增益模式
+                                    break;
+                            }
+                        </td>
+                        <td class="separator"></td>
+                        <td class="lable">状态：</td>
+                        <td class="value">@Model.Status</td>
+                    </tr>
+                    <tr>
+                        <td class="lable">最大输出：</td>
+                        <td class="value">@Model.MaxOutput.ToString("3") dBm</td>
+                        <td class="separator"></td>
+                        <td class="lable">最大增益：</td>
+                        <td class="value">@Model.MaxGain.ToString("3") dB</td>
+                    </tr>
+                    <tr>
+                        <td class="lable">产品型号：</td>
+                        <td class="value">@Model.ProductModel</td>
+                        <td class="separator"></td>
+                        <td class="lable">系列号：</td>
+                        <td class="value">@Model.SerialNumber</td>
+                    </tr>
+                    <tr>
+                        <td class="lable">硬件版本：</td>
+                        <td class="value">@Model.HardwareVersion</td>
+                        <td class="separator"></td>
+                        <td class="lable">软件版本：</td>
+                        <td class="value">@Model.SoftwareVersion</td>
+                    </tr>
+                </tbody>
+            </table>
+        </fieldset>
+        <fieldset>
+            <legend>状态及配置</legend>
+            <form id="dataForm" action="@Url.Action("SetConfiguration", "EDFACard")" method="post">
+                <input type="hidden" name="ip" value="@Model.IP" />
+                <input type="hidden" name="port" value="@Model.Port" />
+                <input type="hidden" name="slot" value="@Model.Slot" />
+                <table class="card_config">
+                    <tr>
+                        <td class="lable3">工作模式：</td>
+                        <td class="value2">
+                            <select id="Work_Mode" name="Work_Mode">
+                                <option value="0">电流模式</option>
+                                <option value="1">增益模式</option>
+                                <option value="2">功率模式</option>
+                            </select>
+                        </td>
+                        <td class="lable3">关泵阈值：</td>
+                        <td class="value2">
+                            <input id="Pump_Threshold" name="Pump_Threshold" type="text" value="-40.0" />
+                        </td>
+                        <td class="lable1">端口</td>
+                        <td class="lable1">当前值</td>
+                        <td class="lable2">告警阈值</td>
+                    </tr>
+                    <tr>
+                        <td class="lable3">电流设置mA：</td>
+                        <td class="value2">
+                            <input id="Current_Setting" name="Current_Setting" type="text" value="--" />
+                        </td>
+                        <td class="lable3">温度低阈值℃：</td>
+                        <td class="value2">
+                            <input id="Modlue_Temperature_Lower_Limit" name="Modlue_Temperature_Lower_Limit" type="text" value="0.0" />
+                        </td>
+                        <td class="lable1">IN</td>
+                        <td class="lable1">
+                            <label id="Input_Power" name="Input_Power">-11.4</label>
+                        </td>
+                        <td class="value1">
+                            <input id="Input_Power_Limit" name="Input_Power_Limit" type="text" value="-30.0" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="lable3">增益设置dB：</td>
+                        <td class="value2">
+                            <input id="Gain_Setting" name="Gain_Setting" type="text" value="--" />
+                        </td>
+                        <td class="lable3">温度高阈值℃：</td>
+                        <td class="value2">
+                            <input id="Modlue_Temperature_Upper_Limit" name="Modlue_Temperature_Upper_Limit" type="text" value="0.0" />
+                        </td>
+                        <td class="lable1">OUT</td>
+                        <td class="lable1">
+                            <label id="Output_Power" name="Output_Power">+4.9</label>
+                        </td>
+                        <td class="value1">
+                            <input id="Output_Power_Limit" name="Output_Power_Limit" type="text" value="-30.0" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="lable3">输出功率设置dBm：</td>
+                        <td class="value2">
+                            <input id="Output_Power_Setting" name="Output_Power_Setting" type="text" value="+5.0" />
+                        </td>
+                        <td class="lable3">输入低阈值dBm：</td>
+                        <td class="value2">
+                            <input id="Input_Low_Threshold" name="Input_Low_Threshold" type="text" value="-32.0" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="lable3 blank"></td>
+                        <td class="value2"></td>
+                        <td class="lable3">输入高阈值dBm：</td>
+                        <td class="value2">
+                            <input id="Input_high_Threshold" name="Input_high_Threshold" type="text" value="--8.0" />
+                        </td>
+                    </tr>
+                </table>
+                <div class="config_menu">
+                    <button id="btnReset" type="button">恢复出厂设置</button>
+                    <button id="btnConfig" type="button">配置</button>
+                    <button id="btnRefresh" type="button">刷新</button>
+                </div>
+            </form>
+        </fieldset>
+    </div>
+    <script src="~/scripts/jquery-1.9.1.min.js"></script>
+    <script src="~/scripts/jquery.form.min.js"></script>
+    <script src="~/scripts/lib/device_compenent.js"></script>
+    <script>
+        $(function(){
+            //注册表单提交方式为ajaxForm
+            $("#dataForm").ajaxForm({
+                success: function (data, statusText, xhr) {
+                    var divAlert = $("#alert");
+                    var showText = "";
+                    if (statusText == "success" && data) {                        
+                        if (data.Code == "") {
+                            divAlert.removeClass("alert-failure").addClass("alert-success");
+                        }
+                        else {
+                            divAlert.removeClass("alert-success").addClass("alert-failure");
+                        }
+                        showText = data.Data;
+                    }
+                    else{
+                        showText = "请求失败";
+                    }
+                    divAlert.text(showText);
+                    divAlert.show();
+                    setTimeout(function () {
+                        divAlert.fadeOut();
+                    }, 1500);
+                }
+            });
+            $("#btnConfig").click(function(){
+                $('#dataForm').submit();
+            });
+            $("#btnRefresh").click(function(){
+                bUpdateConfig = true;
+                updateRequest();
+            });
+            $("#btnReset").click(function(){
+            });
+
+            //闪灯处理
+            setInterval(function () {
+                for (var i = 0; i < arrBinkObject.length; ++i) {
+                    //obj = {ctrl, lights}第一个控件，第二个闪烁灯名称
+                    var obj = arrBinkObject[i].ctrl;
+                    var lights = arrBinkObject[i].lights;
+                    if (obj) {
+                        if (obj instanceof glsun.ElectricMCU) {
+                            obj.runningLightBlinking();
+                        }
+                        else if (obj instanceof glsun.EDFACard ||
+                            obj instanceof glsun.OEOCard ||
+                            obj instanceof glsun.OLPCard) {
+                            for (var k = 0; k < lights.length; ++k) {
+                                obj.ligthBlink(lights[k], "normal");
+                            }
+                        }
+                        else if (obj instanceof glsun.FAN) {
+                            obj.lightBlink("state", "normal");
+                        }
+                    }
+                }
+            }, 500);
+            setInterval(updateRequest, 2000);
+            bUpdateConfig = true;
+            updateRequest();
+        });
+        //更新请求
+        function updateRequest() {
+            $.post("@Url.Action("UpdateConfig", "EDFACard")", { ip: "@Model.IP", port: @Model.Port, slot: @Model.Slot },
+            function (data, status, jqXHR) {
+                if (data) {
+                    if (data.Code == "") {
+                        if(bUpdateConfig)
+                            updateConfig(data.Data);
+                        updateCardStatus(data.Data);
+                    }
+                    else if(data.Code == "Exception"){
+                        console.log("Exception");
+                    }
+                }
+            }, "json");
+        }
+        var bUpdateConfig = false;
+        //更新配置信息
+        function updateConfig(edfaInfo){
+            for(var p in edfaInfo){
+                var prop = $("#" + p);
+                if(prop.length == 1){
+                    console.log(p + "\t" + edfaInfo[p] + "\t" + prop[0].nodeName);
+                    var value = +edfaInfo[p];
+                    if(prop[0].nodeName != "SELECT")
+                        value = value.toFixed(2);
+                    if(prop[0].nodeName == "LABEL"){
+                        prop.text(value);
+                    }else{
+                        prop.val(value);
+                    }
+                }
+            }
+            bUpdateConfig = false;
+        }
+        //闪灯对象
+        var arrBinkObject = new Array();
+        var edfaCard = new window.glsun.EDFACard(".edfa");
+        //更新板卡状态
+        function updateCardStatus(edfaInfo) {
+            //更新插卡信息
+            arrBinkObject = [];
+            var edfa = edfaCard;
+            arrBinkObject.push({
+                ctrl: edfa,
+                lights: ["run"]
+            });
+            edfa.setNormal_pwr();
+            //输入光状态
+            if (edfaInfo.Input_Power_State == 1) {
+                edfa.resetLight_in();
+            } else if (edfaInfo.Input_Power_State == 0) {
+                edfa.setError_in();
+            }
+            //输出光状态
+            if (edfaInfo.Output_Power_State == 1) {
+                edfa.resetLight_out();
+            } else if (edfaInfo.Output_Power_State == 0) {
+                edfa.setError_out();
+            }
+            //模块温度状态
+            if (edfaInfo.Modlue_Temperature_State == 1) {
+                edfa.resetLight_mt();
+            } else if (edfaInfo.Modlue_Temperature_State == 0) {
+                edfa.setError_mt();
+            }
+            //泵浦温度状态
+            if (edfaInfo.PUMP_Temperature_State == 1) {
+                edfa.resetLight_pt();
+            } else if (edfaInfo.PUMP_Temperature_State == 0) {
+                edfa.setError_pt();
+            }
+        }
+    </script>
+</body>
+</html>

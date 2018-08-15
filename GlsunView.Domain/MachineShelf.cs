@@ -32,8 +32,8 @@ namespace GlsunView.Domain
         public Nullable<int> EditorID { get; set; }
         public Nullable<System.DateTime> EditingTime { get; set; }
     
+        public virtual MachineRoom MachineRoom { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<MachineFrame> MachineFrame { get; set; }
-        public virtual MachineRoom MachineRoom { get; set; }
     }
 }
