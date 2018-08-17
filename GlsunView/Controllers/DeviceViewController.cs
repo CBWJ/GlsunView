@@ -86,5 +86,18 @@ namespace GlsunView.Controllers
             ViewBag.TreeNodes = sbText.ToString();
             return View();
         }
+        /// <summary>
+        /// 机房列表
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult RoomList()
+        {
+            List<MachineRoom> rooms = null;
+            using(var ctx = new GlsunViewEntities())
+            {
+                rooms = ctx.MachineRoom.OrderBy(r => r.ID).ToList();
+            }
+            return View(rooms);
+        }
     }
 }

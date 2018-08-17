@@ -60,5 +60,18 @@ namespace GlsunView.Models
         /// 模块温度状态
         /// </summary>
         public int Module_Temperature_State { get; set; }
+        /// <summary>
+        /// 类型
+        /// </summary>
+        public string Type { get; set; }
+        /// <summary>
+        /// 波道号
+        /// </summary>
+        public int Wave_Channel_Number { get; set; }
+        /// <summary>
+        /// 告警
+        /// </summary>
+        public string Alarm { get; set; }
+
     }
 }

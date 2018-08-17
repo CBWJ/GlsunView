@@ -61,6 +61,8 @@ namespace GlsunView.Models
                 sfp.Tx_Power_State = int.Parse(InstructionHelper.ExtractDataFromSet(data, string.Format("M{0:D2}_{1}", sfp.SlotPosition, "TXPA")));
                 sfp.Rx_Power_State = int.Parse(InstructionHelper.ExtractDataFromSet(data, string.Format("M{0:D2}_{1}", sfp.SlotPosition, "RXPA")));
                 sfp.Module_Temperature_State = int.Parse(InstructionHelper.ExtractDataFromSet(data, string.Format("M{0:D2}_{1}", sfp.SlotPosition, "TA")));
+                sfp.Type = "SFP+";
+                sfp.Alarm = "";
             }
         }
     }

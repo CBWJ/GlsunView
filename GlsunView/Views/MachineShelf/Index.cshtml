@@ -1,0 +1,22 @@
+﻿@model IEnumerable<GlsunView.Domain.MachineFrame>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_ListView.cshtml";
+}
+@foreach (var frame in Model)
+{
+    <li data-id="@frame.ID">
+        <img src="~/image/wacom.png" />
+        <div class="title">
+            @frame.MFName
+        </div>
+    </li>
+}
+@section AddToEnd{
+    <script>
+        function itemDblClick(id) {
+            parent.childCallback(2, id);
+        }
+    </script>
+}
+

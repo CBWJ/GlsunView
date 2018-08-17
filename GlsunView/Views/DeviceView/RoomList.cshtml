@@ -1,0 +1,22 @@
+﻿@model List<GlsunView.Domain.MachineRoom>
+@{
+    ViewBag.Title = "RoomList";
+    Layout = "~/Views/Shared/_ListView.cshtml";
+}
+
+@foreach (var room in Model)
+{
+    <li data-id="@room.ID">
+        <img src="~/image/structural.png" />
+        <div class="title">
+            @room.MRName
+        </div>
+    </li>
+}
+@section AddToEnd{
+    <script>
+        function itemDblClick(id) {
+            parent.childCallback(0, id);
+        }
+    </script>    
+}

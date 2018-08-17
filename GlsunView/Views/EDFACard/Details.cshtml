@@ -10,6 +10,7 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <link rel="stylesheet" href="~/Content/css/device.css" />
+    <link rel="stylesheet" href="~/Content/css/alertBox.css" />
     <title>Details</title>
     <style>
         .module {
@@ -30,7 +31,7 @@
             }
 
                 .box fieldset legend {
-                    background-color: #008cd6;
+                    background-color: #53bbf3;
                 }
 
             .box .card_info td {
@@ -105,30 +106,7 @@
         .config_menu button {
             margin-left: 10px;
         }
-        /*提示框*/
-        .alertBox{
-            position:absolute;  
-            top:50%;            
-            left:50%; 
-            margin:-100px 0 0 -150px;     
-            width:300px;                             
-            z-index:99; 
-            text-align:center;
-            display:none;
-            padding:15px;
-            border: 1px solid transparent;
-            border-radius: 4px;
-        }
-        .alert-failure{
-            color: #a94442;
-            background-color: #f2dede;
-            border-color: #ebccd1;
-        }
-        .alert-success{
-            color: #3c763d;
-            background-color: #dff0d8;
-            border-color: #d6e9c6;
-        }
+        
     </style>
 </head>
 <body>

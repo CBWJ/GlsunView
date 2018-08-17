@@ -44,7 +44,153 @@ namespace GlsunView.Controllers
             ViewBag.EndPoint = d.DAddress + ":" + d.DPort.Value + ":" + slot.ToString();
             return View(oeoInfo);
         }
+        /// <summary>
+        /// 设备视图
+        /// </summary>
+        /// <param name="ip"></param>
+        /// <param name="port"></param>
+        /// <param name="slot"></param>
+        /// <returns></returns>
+        public ActionResult Details(string ip, int port, int slot)
+        {
+            OEOInfo oeoInfo = new OEOInfo();
+            OEOViewModel model = new OEOViewModel()
+            {
+                IP = ip,
+                Port = port,
+                Slot = slot
+            };
+            var tcp = TcpClientServicePool.GetService(ip, port);
+            if (tcp != null)
+            {
+                OEOCommService service = new OEOCommService(tcp, slot);
+                oeoInfo.RefreshData(service);
+                tcp.IsBusy = false;
+                model.Type = "OEO";                
+                model.Status = "正常";
+                model.ProductModel = "OTS-OEO";
+                model.SerialNumber = oeoInfo.Serial_Number;
+                model.HardwareVersion = oeoInfo.Hardware_Version;
+                model.SoftwareVersion = oeoInfo.Software_Version;
 
+                //设置OEO卡的工作模式
+                List<int> workModeSet = new List<int>();
+                foreach(var sfp in oeoInfo.SFPSet)
+                {
+                    if(sfp.Status == 1)
+                    {
+                        if (!workModeSet.Contains(sfp.Work_Mode))
+                            workModeSet.Add(sfp.Work_Mode);
+                    }
+                }
+                string workMode = "";
+                foreach(var mode in workModeSet)
+                {
+                    string text = "";
+                    switch (mode)
+                    {
+                        case 1:
+                            text = "转发";
+                            break;
+                        case 3:
+                            text = "交叉";
+                            break;
+                    }
+                    if (!string.IsNullOrWhiteSpace(workMode))
+                    {
+                        workMode += "+" + text;
+                    }
+                    else workMode = text;
+                }
+                model.WorkMode = workMode;
+            }
+            return View(model);
+        }
+        /// <summary>
+        /// 设备视图更新配置信息
+        /// </summary>
+        /// <param name="ip"></param>
+        /// <param name="port"></param>
+        /// <param name="slot"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult UpdateConfig(string ip, int port, int slot)
+        {
+            JsonResult result = new JsonResult();
+            try
+            {
+                OEOInfo oeoInfo = new OEOInfo();
+                var tcp = TcpClientServicePool.GetService(ip, port);
+                if (tcp == null) throw new NullReferenceException();
+                OEOCommService service = new OEOCommService(tcp, slot);
+                oeoInfo.RefreshData(service);
+                tcp.IsBusy = false;
+                result.Data = new { Code = "", Data = oeoInfo.SFPSet };
+            }
+            catch (Exception ex)
+            {
+                result.Data = new { Code = "Exception", Data = "" };
+            }
+            return result;
+        }
+        /// <summary>
+        /// OEO配置
+        /// </summary>
+        /// <param name="modules"></param>
+        /// <param name="ip"></param>
+        /// <param name="port"></param>
+        /// <param name="slot"></param>
+        /// <returns></returns>
+        public ActionResult SetConfiguration(List<SFPModule> modules, string ip, int port, int slot)
+        {
+            JsonResult result = new JsonResult();
+            var tcp = TcpClientServicePool.GetService(ip, port);
+            if (tcp != null)
+            {
+                try
+                {
+                    List<string> listException = new List<string>();
+                    OEOCommService service = new OEOCommService(tcp, slot);
+                    foreach(var sfp in modules)
+                    {
+                        if(!service.SetWorkMode(sfp.SlotPosition, sfp.Work_Mode))
+                        {
+                            listException.Add(string.Format("SFP模块{0}工作模式", sfp.SlotPosition));
+                        }
+                        if(!service.SetTxPowerControl(sfp.SlotPosition, sfp.Tx_Power_Control))
+                        {
+                            listException.Add(string.Format("SFP模块{0}发功率控制", sfp.SlotPosition));
+                        }
+                    }
+                    if (listException.Count == 0)
+                    {
+                        result.Data = new { Code = "", Data = "设置成功" };
+                    }
+                    else
+                    {
+                        string data = "设置失败：";
+                        foreach (var e in listException)
+                        {
+                            data += e + " ";
+                        }
+                        result.Data = new { Code = "Exception", Data = data };
+                    }
+                }
+                catch (Exception ex)
+                {
+                    result.Data = new { Code = "Exception", Data = ex.Message };
+                }
+                finally
+                {
+                    tcp.IsBusy = false;
+                }
+            }
+            else
+            {
+                result.Data = new { Code = "Exception", Data = "获取TCP连接失败" };
+            }
+            return result;
+        }
         public ActionResult SetParam(string endpoint, SFPModule sfp, string paramName, int did)
         {
             JsonResult result = new JsonResult();

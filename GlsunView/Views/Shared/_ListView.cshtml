@@ -1,0 +1,78 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>_ListView</title>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+        .list-view li {
+            list-style: none;
+            width: 96px;
+            height: 96px;
+            border: 1px solid #ccc;
+            float: left;
+            margin: 5px;
+        }
+
+        .list-view li:hover {
+            cursor: pointer;
+            background-color: #eee;
+        }
+
+        .list-view li img {
+            width: 64px;
+            margin: 0 16px;
+        }
+
+        .list-view li div.title {
+            width: 100%;
+            height: 32px;
+            line-height: 32px;
+            text-align: center;
+        }
+
+        .selected {
+            background-color: #eee;
+            color: #123;
+        }
+
+        li.selected {
+            border-style: dashed;
+        }
+    </style>
+</head>
+<body>
+    <ul class="list-view">
+        @RenderBody()
+    </ul>
+    <script src="~/scripts/jquery-1.9.1.min.js"></script>
+    <script>
+        $(function () {
+            $(".list-view li").click(function () {
+                var $this = $(this);
+                if ($this.hasClass("selected")) return;
+                $(".list-view li.selected").removeClass("selected");
+                $this.addClass("selected");
+            });
+            $(".list-view li").dblclick(function () {
+                var $this = $(this);
+                var id = +$this.data("id");
+                itemDblClick(id);
+            });
+        });
+    </script>
+    @if (IsSectionDefined("AddToEnd"))
+    {
+        @RenderSection("AddToEnd", required: false)
+    }
+</body>
+</html>

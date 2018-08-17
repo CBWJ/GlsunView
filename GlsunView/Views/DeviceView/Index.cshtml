@@ -20,28 +20,31 @@
             margin: 0;
             padding: 0;
         }
-        html,body{
+
+        html, body {
             height: 100%;
-            font-family: Arial, Microsoft YaHei, SimSun , Tahoma, Helvetica, "\5b8b\4f53", sans-serif;
+            font-family: Arial, Microsoft YaHei, SimSun, Tahoma, Helvetica, "\5b8b\4f53", sans-serif;
         }
         /*布局*/
         .container {
             height: 100%;
         }
+
         .container-left {
             width: 200px;
             position: absolute;
             left: 0;
-            top:0;
-            bottom:0;
+            top: 0;
+            bottom: 0;
             border: 1px solid #ccc;
             border-bottom-left-radius: 5px;
             border-top-left-radius: 5px;
         }
+
         .container-right {
             margin-left: 200px;
             position: absolute;
-            top:0;
+            top: 0;
             left: 0;
             right: 0;
             bottom: 0;
@@ -50,27 +53,30 @@
             border-top-right-radius: 5px;
             border-left: 0;
         }
-        .content_title{
-            height: 30px;
-            background-color:#ecf0f5;
+
+        .content_title {
+            height: 36px;
+            background-color: #ecf0f5;
             border-bottom: 1px solid #ccc;
         }
-        .content_body{
-            position:absolute;
+
+        .content_body {
+            position: absolute;
             left: 0;
-            top: 30px;
+            top: 36px;
             right: 0;
             bottom: 0;
-            overflow-y:hidden;
+            overflow-y: hidden;
         }
-        #frameContent{
-            height:100%;
-            width:100%;
-            border:0;
+
+        #frameContent {
+            height: 100%;
+            width: 100%;
+            border: 0;
         }
         /*树*/
-        .ztree li a span.button{
-            background-size:100% 100%;
+        .ztree li a span.button {
+            background-size: 100% 100%;
         }
     </style>
 </head>
@@ -81,14 +87,10 @@
         </div>
         <div class="container-right">
             <div class="content_title">
-                <ol id="navPath" class="breadcrumb">
-                    <li><a href="#">Home</a></li>
-                    <li><a href="#">Library</a></li>
-                    <li class="active">Data</li>
-                </ol>
+                <ol id="navPath" class="breadcrumb"></ol>
             </div>
             <div class="content_body">
-                <iframe id="frameContent" src=""></iframe>
+                <iframe id="frameContent" src="@Url.Action("RoomList", "DeviceView")"></iframe>
             </div>
         </div>
     </div>
@@ -109,15 +111,19 @@
             }
         };
         var zTreeNodes = @Html.Raw(ViewBag.TreeNodes);
+        var treeObj = null;
         $(document).ready(function(){
-            $.fn.zTree.init($("#treeMachine"), setting, zTreeNodes);
+            treeObj = $.fn.zTree.init($("#treeMachine"), setting, zTreeNodes);
         });
         //设置zTree节点图标大小
         function zTreeOnNodeCreated(event, treeId, treeNode) {
-                $('#'+treeNode.tId+'_ico').css("background", "url("+treeNode.icon+") center center/16px 16px no-repeat");
+            $('#'+treeNode.tId+'_ico').css("background", "url("+treeNode.icon+") center center/16px 16px no-repeat");
         }
         //节点点击
         function onClick(event, treeId, treeNode, clickFlag) {
+            treeClickAction(treeNode);
+        }
+        function treeClickAction(treeNode){
             var pathNodes = treeNode.getPath();
             var path = "";
             for(var i = 0; i < pathNodes.length; ++i){
@@ -128,23 +134,18 @@
             var $frameContent = $("#frameContent");
             switch(treeNode.level){
                 case 0:
-                    $frameContent.attr("src","/MachineRoom/Details/" + treeNode.dataId);
-                    $frameContent.css("width", "500px");
-                    $frameContent.css("margin", "10px");
+                    $frameContent.attr("src","/MachineRoom/Index/" + treeNode.dataId);
                     break;
                 case 1:
-                    $frameContent.attr("src","/MachineShelf/Details/" + treeNode.dataId);
-                    $frameContent.css("width", "500px");
-                    $frameContent.css("margin", "10px");
+                    $frameContent.attr("src","/MachineShelf/Index/" + treeNode.dataId);
                     break;
                 case 2:
                     $frameContent.attr("src","/MachineFrame/Index/" + treeNode.dataId);
-                    $frameContent.css("width", "100%");
-                    $frameContent.css("margin", "0");
                     break;
                 default:break;
-            }            
+            }
         }
+        //根据路径结点设置导航数据
         function setPath(pathNodes){
             navData.endLevel = 0;
             for(var i = 0; i < pathNodes.length; ++i){
@@ -152,9 +153,9 @@
                     level: pathNodes[i].level };
                 var level = pathNodes[i].level;
                 if(level == 0){
-                    elem.url = "/MachineRoom/Details/" + pathNodes[i].dataId;
+                    elem.url = "/MachineRoom/Index/" + pathNodes[i].dataId;
                 }else if(level == 1){
-                    elem.url = "/MachineShelf/Details/" + pathNodes[i].dataId;
+                    elem.url = "/MachineShelf/Index/" + pathNodes[i].dataId;
                 }else if(level == 2){
                     elem.url = "/MachineFrame/Index/" + pathNodes[i].dataId;
                 }
@@ -186,18 +187,12 @@
                     switch(level){
                         case 0:
                             $frameContent.attr("src", url);
-                            $frameContent.css("width", "500px");
-                            $frameContent.css("margin", "10px");
                             break;
                         case 1:
                             $frameContent.attr("src", url);
-                            $frameContent.css("width", "500px");
-                            $frameContent.css("margin", "10px");
                             break;
                         case 2:
                             $frameContent.attr("src", url);
-                            $frameContent.css("width", "100%");
-                            $frameContent.css("margin", "0");
                             break;
                         default:break;
                     }
@@ -220,6 +215,16 @@
             updatePath();
             var $frameContent = $("#frameContent");
             $frameContent.attr("src", elem.url);
+        }
+        //子页面回调，双击节点级别和数据id
+        function childCallback(level, id){
+            var theNode = treeObj.getNodesByFilter(
+                function(node){
+                return (node.level == level && node.dataId == id);
+                });
+            if(theNode && theNode.length == 1){
+                treeClickAction(theNode[0]);
+            }
         }
         function getTime() {
             var now= new Date(),

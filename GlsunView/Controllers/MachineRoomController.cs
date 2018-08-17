@@ -11,9 +11,14 @@ namespace GlsunView.Controllers
     public class MachineRoomController : ShareListController
     {
         // GET: MachineRoom
-        public ActionResult Index()
+        public ActionResult Index(int id)
         {
-            return View();
+            List<MachineShelf> shelfs = null;
+            using (var ctx = new GlsunViewEntities())
+            {
+                shelfs = ctx.MachineShelf.Where(s => s.MRID == id).OrderBy(s => s.ID).ToList();
+            }
+            return View(shelfs);
         }
 
         public ActionResult List(int page = 1, int pageSize = 10)

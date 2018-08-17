@@ -1,0 +1,564 @@
+﻿@model GlsunView.Models.OEOViewModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <link rel="stylesheet" href="~/Content/css/device.css" />
+    <link rel="stylesheet" href="~/Content/css/alertBox.css" />
+    <title>Details</title>
+        <style>
+        .module{
+            zoom: 0.5;
+            margin: 10px;
+        }
+        .box{
+            border: 1px solid;
+            display: table;
+            font-size: 1em;
+        }
+        .box fieldset{
+            border-color: #1bbd1b;
+            margin: 0 10px;
+            margin-bottom: 10px;
+        }
+        .box fieldset legend{
+            background-color: #53bbf3;
+        }
+        .box .card_info td{
+            background-color: #eee;
+        }
+        .box .card_info td.lable{
+            width: 100px;
+            text-align: right;
+        }
+        .box .card_info td.value{
+            width: 300px;
+        }
+        .box .card_info td.separator{
+            width: 50px;
+            background: transparent;
+        }
+        .box .card_info{
+            border-spacing: 5px 5px;
+        }
+        /*状态与配置*/
+        .box .card_config{
+            border-spacing: 5px 2px;
+        }
+        .box .card_config th{
+            background-color: #eee;
+        }
+        .box .card_config td.lable1{
+            width: 50px;
+            background-color: #eee;
+            text-align: center;
+        }
+        .box .card_config td.lable2{
+            width: 80px;
+            background-color: #eee;
+            text-align: center;
+        }
+        .box .card_config td.value1 select{
+            width: 80px;
+            height: 1.8em;
+            background-color: #8dce47;
+            border-style: none;
+        }
+        .box .card_config td.blank{
+            background: transparent;
+        }
+
+        /*设置*/
+        .config_menu{
+            display: table;
+            margin-right: 20px;
+            float: right;
+        }
+        .config_menu button {
+            margin-top: 8px;
+            margin-left: 10px;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="alertBox" id="alert"></div>
+    <div class="box">
+        <div class="module oeo">
+            <img class="oeo-frame" src="../image/device/OEO.jpg">
+            <div class="light-circle pwr"></div>
+            <div class="light-circle run"></div>
+            <img class="sfp-module module-1 module-exist" src="../image/device/SFP-module.jpg">
+            <img class="sfp-module module-2 module-exist" src="../image/device/SFP-module.jpg">
+            <img class="sfp-module module-3 module-exist" src="../image/device/SFP-module.jpg">
+            <img class="sfp-module module-4 module-exist" src="../image/device/SFP-module.jpg">
+            <img class="sfp-module module-5 module-exist" src="../image/device/SFP-module.jpg">
+            <img class="sfp-module module-6 module-exist" src="../image/device/SFP-module.jpg">
+            <img class="sfp-module module-7 module-exist" src="../image/device/SFP-module.jpg">
+            <img class="sfp-module module-8 module-exist" src="../image/device/SFP-module.jpg">
+            <div class="light-rectangle module-light-1"></div>
+            <div class="light-rectangle module-light-2"></div>
+            <div class="light-rectangle module-light-3"></div>
+            <div class="light-rectangle module-light-4"></div>
+            <div class="light-rectangle module-light-5"></div>
+            <div class="light-rectangle module-light-6"></div>
+            <div class="light-rectangle module-light-7"></div>
+            <div class="light-rectangle module-light-8"></div>
+        </div>
+        <fieldset>
+            <legend>板卡信息</legend>
+            <table class="card_info">
+                <tbody>
+                    <tr>
+                        <td class="lable">槽位：</td>
+                        <td class="value">@Model.Slot</td>
+                        <td class="separator"></td>
+                        <td class="lable">类型：</td>
+                        <td class="value">@Model.Type</td>
+                    </tr>
+                    <tr>
+                        <td class="lable">工作方式：</td>
+                        <td class="value">@Model.WorkMode</td>
+                        <td class="separator"></td>
+                        <td class="lable">状态：</td>
+                        <td class="value">@Model.Status</td>
+                    </tr>
+                    <tr>
+                        <td class="lable">产品型号：</td>
+                        <td class="value">@Model.ProductModel</td>
+                        <td class="separator"></td>
+                        <td class="lable">系列号：</td>
+                        <td class="value">@Model.SerialNumber</td>
+                    </tr>
+                    <tr>
+                        <td class="lable">硬件版本：</td>
+                        <td class="value">@Model.HardwareVersion</td>
+                        <td class="separator"></td>
+                        <td class="lable">软件版本：</td>
+                        <td class="value">@Model.SoftwareVersion</td>
+                    </tr>
+                </tbody>
+            </table>
+        </fieldset>
+        <fieldset>
+            <legend>状态及配置</legend>
+            <table class="card_config">
+                <thead>
+                    <tr>
+                        <th>端口</th>
+                        <th>状态</th>
+                        <th>类型</th>
+                        <th>速率</th>
+                        <th>距离</th>
+                        <th>波长</th>
+                        <th>波道号</th>
+                        <th>发光功率</th>
+                        <th>收光功率</th>
+                        <th>温度</th>
+                        <th>告警</th>
+                        <th>工作模式</th>
+                        <th>发光控制</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="lable1">1</td>
+                        <td class="lable1">在位</td>
+                        <td class="lable1">SFP+</td>
+                        <td class="lable1">10.3</td>
+                        <td class="lable1">40</td>
+                        <td class="lable2">1550.12</td>
+                        <td class="lable1">34</td>
+                        <td class="lable2">+2</td>
+                        <td class="lable2">-14.5</td>
+                        <td class="lable1">35</td>
+                        <td class="lable1">LOS</td>
+                        <td class="value1">
+                            <select>
+                                <option>普通模式</option>
+                                <option>环回模式</option>
+                            </select>
+                        </td>
+                        <td class="value1">
+                            <select>
+                                <option>关闭</option>
+                                <option>开启</option>
+                                <option>自动</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="lable1">2</td>
+                        <td class="lable1">在位</td>
+                        <td class="lable1">SFP+</td>
+                        <td class="lable1">10.3</td>
+                        <td class="lable1">40</td>
+                        <td class="lable2">1550.12</td>
+                        <td class="lable1">34</td>
+                        <td class="lable2">+2</td>
+                        <td class="lable2">-14.5</td>
+                        <td class="lable1">35</td>
+                        <td class="lable1">LOS</td>
+                        <td class="value1">
+                            <select>
+                                <option>普通模式</option>
+                                <option>环回模式</option>
+                            </select>
+                        </td>
+                        <td class="value1">
+                            <select>
+                                <option>关闭</option>
+                                <option>开启</option>
+                                <option>自动</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="lable1">3</td>
+                        <td class="lable1">在位</td>
+                        <td class="lable1">SFP+</td>
+                        <td class="lable1">10.3</td>
+                        <td class="lable1">40</td>
+                        <td class="lable2">1550.12</td>
+                        <td class="lable1">34</td>
+                        <td class="lable2">+2</td>
+                        <td class="lable2">-14.5</td>
+                        <td class="lable1">35</td>
+                        <td class="lable1">LOS</td>
+                        <td class="value1">
+                            <select>
+                                <option>普通模式</option>
+                                <option>环回模式</option>
+                            </select>
+                        </td>
+                        <td class="value1">
+                            <select>
+                                <option>关闭</option>
+                                <option>开启</option>
+                                <option>自动</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="lable1">4</td>
+                        <td class="lable1">在位</td>
+                        <td class="lable1">SFP+</td>
+                        <td class="lable1">10.3</td>
+                        <td class="lable1">40</td>
+                        <td class="lable2">1550.12</td>
+                        <td class="lable1">34</td>
+                        <td class="lable2">+2</td>
+                        <td class="lable2">-14.5</td>
+                        <td class="lable1">35</td>
+                        <td class="lable1">LOS</td>
+                        <td class="value1">
+                            <select>
+                                <option>普通模式</option>
+                                <option>环回模式</option>
+                            </select>
+                        </td>
+                        <td class="value1">
+                            <select>
+                                <option>关闭</option>
+                                <option>开启</option>
+                                <option>自动</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="lable1">5</td>
+                        <td class="lable1">NA</td>
+                        <td class="lable1">NA</td>
+                        <td class="lable1">NA</td>
+                        <td class="lable1">NA</td>
+                        <td class="lable2">NA</td>
+                        <td class="lable1">NA</td>
+                        <td class="lable2">NA</td>
+                        <td class="lable2">NA</td>
+                        <td class="lable1">NA</td>
+                        <td class="lable1">NA</td>
+                        <td class="value1">
+                            <select>
+                                <option>普通模式</option>
+                                <option>环回模式</option>
+                            </select>
+                        </td>
+                        <td class="value1">
+                            <select>
+                                <option>关闭</option>
+                                <option>开启</option>
+                                <option>自动</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="lable1">6</td>
+                        <td class="lable1">NA</td>
+                        <td class="lable1">NA</td>
+                        <td class="lable1">NA</td>
+                        <td class="lable1">NA</td>
+                        <td class="lable2">NA</td>
+                        <td class="lable1">NA</td>
+                        <td class="lable2">NA</td>
+                        <td class="lable2">NA</td>
+                        <td class="lable1">NA</td>
+                        <td class="lable1">NA</td>
+                        <td class="value1">
+                            <select>
+                                <option>普通模式</option>
+                                <option>环回模式</option>
+                            </select>
+                        </td>
+                        <td class="value1">
+                            <select>
+                                <option>关闭</option>
+                                <option>开启</option>
+                                <option>自动</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="lable1">7</td>
+                        <td class="lable1">NA</td>
+                        <td class="lable1">NA</td>
+                        <td class="lable1">NA</td>
+                        <td class="lable1">NA</td>
+                        <td class="lable2">NA</td>
+                        <td class="lable1">NA</td>
+                        <td class="lable2">NA</td>
+                        <td class="lable2">NA</td>
+                        <td class="lable1">NA</td>
+                        <td class="lable1">NA</td>
+                        <td class="value1">
+                            <select>
+                                <option>普通模式</option>
+                                <option>环回模式</option>
+                            </select>
+                        </td>
+                        <td class="value1">
+                            <select>
+                                <option>关闭</option>
+                                <option>开启</option>
+                                <option>自动</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="lable1">8</td>
+                        <td class="lable1">NA</td>
+                        <td class="lable1">NA</td>
+                        <td class="lable1">NA</td>
+                        <td class="lable1">NA</td>
+                        <td class="lable2">NA</td>
+                        <td class="lable1">NA</td>
+                        <td class="lable2">NA</td>
+                        <td class="lable2">NA</td>
+                        <td class="lable1">NA</td>
+                        <td class="lable1">NA</td>
+                        <td class="value1">
+                            <select>
+                                <option>普通模式</option>
+                                <option>环回模式</option>
+                            </select>
+                        </td>
+                        <td class="value1">
+                            <select>
+                                <option>关闭</option>
+                                <option>开启</option>
+                                <option>自动</option>
+                            </select>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="config_menu">
+                <button id="btnReset" type="button">恢复出厂设置</button>
+                <button id="btnConfig" type="button">配置</button>
+                <button id="btnRefresh" type="button">刷新</button>
+            </div>
+        </fieldset>
+    </div>
+    <script src="~/scripts/jquery-1.9.1.min.js"></script>
+    <script src="~/scripts/jquery.form.min.js"></script>
+    <script src="~/scripts/lib/device_compenent.js"></script>
+    <script>
+        $(function(){
+            $("#btnRefresh").click(function(){
+                bUpdateConfig = true;
+                updateRequest();
+            });
+            $("#btnConfig").click(function(){
+                var arrModule = new Array();
+                $(".card_config tbody tr").each(function(){
+                    var $tr = $(this);
+                    var status = $tr.children("td:eq(1)").text();
+                    if(status != "NA"){
+                        var tds = $tr.children("td.value1");
+                        var module = {
+                            SlotPosition: +$tr.children("td:eq(0)").text(),
+                            Work_Mode: +tds.children("select[name='Work_Mode']").val(),
+                            Tx_Power_Control: +tds.children("select[name='Tx_Power_Control']").val()
+                        };
+                        arrModule.push(module);
+                    }
+                });
+                $.post("@Url.Action("SetConfiguration", "OEOCard")", { ip: "@Model.IP", port: @Model.Port, slot: @Model.Slot, modules:arrModule },
+                    function (data, status, jqXHR) {
+                        var divAlert = $("#alert");
+                        var showText = "";
+                        if (status == "success" && data) {                        
+                            if (data.Code == "") {
+                                divAlert.removeClass("alert-failure").addClass("alert-success");
+                            }
+                            else {
+                                divAlert.removeClass("alert-success").addClass("alert-failure");
+                            }
+                            showText = data.Data;
+                        }
+                        else{
+                            showText = "请求失败";
+                        }
+                        divAlert.text(showText);
+                        divAlert.show();
+                        setTimeout(function () {
+                            divAlert.fadeOut();
+                        }, 1500);
+                    }, "json");
+            });
+            //闪灯处理
+            setInterval(function () {
+                for (var i = 0; i < arrBinkObject.length; ++i) {
+                    //obj = {ctrl, lights}第一个控件，第二个闪烁灯名称
+                    var obj = arrBinkObject[i].ctrl;
+                    var lights = arrBinkObject[i].lights;
+                    if (obj) {
+                        if (obj instanceof glsun.ElectricMCU) {
+                            obj.runningLightBlinking();
+                        }
+                        else if (obj instanceof glsun.EDFACard ||
+                            obj instanceof glsun.OEOCard ||
+                            obj instanceof glsun.OLPCard) {
+                            for (var k = 0; k < lights.length; ++k) {
+                                obj.ligthBlink(lights[k], "normal");
+                            }
+                        }
+                        else if (obj instanceof glsun.FAN) {
+                            obj.lightBlink("state", "normal");
+                        }
+                    }
+                }
+            }, 500);
+            setInterval(updateRequest, 2000);
+            bUpdateConfig = true;
+            updateRequest();
+        });
+        //更新请求
+        function updateRequest() {
+            $.post("@Url.Action("UpdateConfig", "OEOCard")", { ip: "@Model.IP", port: @Model.Port, slot: @Model.Slot },
+            function (data, status, jqXHR) {
+                if (data) {
+                    if (data.Code == "") {
+                        if(bUpdateConfig)
+                            updateConfig(data.Data);
+                        updateCardStatus(data.Data);
+                    }
+                    else if(data.Code == "Exception"){
+                        console.log("Exception");
+                    }
+                }
+            }, "json");
+        }
+        var bUpdateConfig = false;
+        //更新配置信息
+        function updateConfig(sfpSet){
+            var $tbody = $(".card_config tbody");
+            $tbody.html('');
+            for(var i = 0; i < sfpSet.length; ++i){
+                var sfp = sfpSet[i];
+                var sfpHTML = "";
+                sfpHTML += "<tr>"
+                sfpHTML += '<td class="lable1">' + sfp.SlotPosition + '</td>';
+                //在位
+                if(sfp.Status == 1){
+                    sfpHTML += '<td class="lable1">在位</td>';
+                    sfpHTML += '<td class="lable1">' + sfp.Type + '</td>';
+                    sfpHTML += '<td class="lable1">' + sfp.Transmission_Rate + '</td>';
+                    sfpHTML += '<td class="lable1">' + sfp.Transmission_Distance + '</td>';
+                    sfpHTML += '<td class="lable2">' + sfp.Module_Wave + '</td>';
+                    sfpHTML += '<td class="lable1">' + sfp.Wave_Channel_Number + '</td>';
+                    sfpHTML += '<td class="lable2">' + sfp.Tx_Power + '</td>';
+                    sfpHTML += '<td class="lable2">' + sfp.Rx_Power + '</td>';
+                    sfpHTML += '<td class="lable1">' + sfp.Module_Temperature + '</td>';
+                    sfpHTML += '<td class="lable1">' + sfp.Alarm + '</td>';
+                    //工作模式
+                    sfpHTML += '<td class="value1"><select name="Work_Mode">';
+                    sfpHTML += '<option value="1"' + (sfp.Work_Mode == 1 ? ' selected' : '') + '>普通模式</option>';
+                    sfpHTML += '<option value="3"' + (sfp.Work_Mode == 3 ? ' selected' : '') + '>环回模式</option>';
+                    sfpHTML += '</select></td>';
+                    //发光控制
+                    sfpHTML += '<td class="value1"><select name="Tx_Power_Control">';
+                    sfpHTML += '<option value="0"' + (sfp.Tx_Power_Control == 0 ? ' selected' : '') + '>关闭</option>';
+                    sfpHTML += '<option value="1"' + (sfp.Tx_Power_Control == 1 ? ' selected' : '') + '>开启</option>';
+                    sfpHTML += '<option value="2"' + (sfp.Tx_Power_Control == 2 ? ' selected' : '') + '>自动</option>';
+                    sfpHTML += '</select></td>';
+                }
+                else{
+                    sfpHTML += '<td class="lable1">NA</td>';
+                    sfpHTML += '<td class="lable1">NA</td>';
+                    sfpHTML += '<td class="lable1">NA</td>';
+                    sfpHTML += '<td class="lable1">NA</td>';
+                    sfpHTML += '<td class="lable2">NA</td>';
+                    sfpHTML += '<td class="lable1">NA</td>';
+                    sfpHTML += '<td class="lable2">NA</td>';
+                    sfpHTML += '<td class="lable2">NA</td>';
+                    sfpHTML += '<td class="lable1">NA</td>';
+                    sfpHTML += '<td class="lable1">NA</td>';
+                    //工作模式
+                    sfpHTML += '<td class="value1"><select>';
+                    sfpHTML += '</select></td>';
+                    //发光控制
+                    sfpHTML += '<td class="value1"><select>';
+                    sfpHTML += '</select></td>';
+                }
+                sfpHTML += "</tr>"
+                $tbody.append(sfpHTML);
+            }
+            bUpdateConfig = false;
+        }
+        //闪灯对象
+        var arrBinkObject = new Array();
+        var oeoCard = new glsun.OEOCard(".oeo");
+        //更新板卡状态
+        function updateCardStatus(oeoInfo){
+            arrBinkObject = [];
+            var oeo = oeoCard;
+            oeo.setNormal_pwr();
+            arrBinkObject.push({
+                ctrl: oeo,
+                lights: ["run"]
+            });
+            for (var j = 0; j < oeoInfo.length; ++j) {
+                var sfp = oeoInfo[j];
+                //模块状态
+                if (sfp.Status == 1) {
+                    oeo.moduleInsert(sfp.SlotPosition);
+                } else if (sfp.Status == 0) {
+                    oeo.modulePullout(sfp.SlotPosition);
+                }
+                //收光状态
+                if (sfp.Rx_Power_State == 1) {
+                    oeo.setModuleLightToNormal(sfp.SlotPosition);
+                } else if(sfp.Rx_Power_State == 0) {
+                    oeo.resetModuleLight(sfp.SlotPosition);
+                }
+
+            }
+        }
+    </script>
+</body>
+</html>

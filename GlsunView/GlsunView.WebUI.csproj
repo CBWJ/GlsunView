@@ -158,6 +158,7 @@
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\css\AdminLTE.min.css" />
+    <Content Include="Content\css\alertBox.css" />
     <Content Include="Content\css\device.css" />
     <Content Include="Content\css\dialog.css" />
     <Content Include="Content\css\img\diy\1_close.png" />
@@ -338,6 +339,7 @@
     <Compile Include="Models\ModuleAuthItem.cs" />
     <Compile Include="Models\NMUInfo.cs" />
     <Compile Include="Models\OEOInfo.cs" />
+    <Compile Include="Models\OEOViewModel.cs" />
     <Compile Include="Models\OLPInfo.cs" />
     <Compile Include="Models\PagingInfo.cs" />
     <Compile Include="Models\RoleAuthrizeInfo.cs" />
@@ -408,6 +410,11 @@
     <Content Include="Views\DeviceView\Index.cshtml" />
     <Content Include="Views\MachineFrame\Index.cshtml" />
     <Content Include="Views\EDFACard\Details.cshtml" />
+    <Content Include="Views\OEOCard\Details.cshtml" />
+    <Content Include="Views\Shared\_ListView.cshtml" />
+    <Content Include="Views\DeviceView\RoomList.cshtml" />
+    <Content Include="Views\MachineRoom\Index.cshtml" />
+    <Content Include="Views\MachineShelf\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
