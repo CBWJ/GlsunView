@@ -26,9 +26,6 @@
             margin: 0 10px;
             margin-bottom: 10px;
         }
-        .box fieldset legend{
-            background-color: #53bbf3;
-        }
         .box .card_info td{
             background-color: #eee;
         }
@@ -397,7 +394,7 @@
                 $(".card_config tbody tr").each(function(){
                     var $tr = $(this);
                     var status = $tr.children("td:eq(1)").text();
-                    if(status != "NA"){
+                    if(status != "N/A"){
                         var tds = $tr.children("td.value1");
                         var module = {
                             SlotPosition: +$tr.children("td:eq(0)").text(),
@@ -497,7 +494,7 @@
                     sfpHTML += '<td class="lable1">' + sfp.Alarm + '</td>';
                     //工作模式
                     sfpHTML += '<td class="value1"><select name="Work_Mode">';
-                    sfpHTML += '<option value="1"' + (sfp.Work_Mode == 1 ? ' selected' : '') + '>普通模式</option>';
+                    sfpHTML += '<option value="1"' + (sfp.Work_Mode == 1 ? ' selected' : '') + '>转发模式</option>';
                     sfpHTML += '<option value="3"' + (sfp.Work_Mode == 3 ? ' selected' : '') + '>环回模式</option>';
                     sfpHTML += '</select></td>';
                     //发光控制
@@ -508,16 +505,16 @@
                     sfpHTML += '</select></td>';
                 }
                 else{
-                    sfpHTML += '<td class="lable1">NA</td>';
-                    sfpHTML += '<td class="lable1">NA</td>';
-                    sfpHTML += '<td class="lable1">NA</td>';
-                    sfpHTML += '<td class="lable1">NA</td>';
-                    sfpHTML += '<td class="lable2">NA</td>';
-                    sfpHTML += '<td class="lable1">NA</td>';
-                    sfpHTML += '<td class="lable2">NA</td>';
-                    sfpHTML += '<td class="lable2">NA</td>';
-                    sfpHTML += '<td class="lable1">NA</td>';
-                    sfpHTML += '<td class="lable1">NA</td>';
+                    sfpHTML += '<td class="lable1">N/A</td>';
+                    sfpHTML += '<td class="lable1">N/A</td>';
+                    sfpHTML += '<td class="lable1">N/A</td>';
+                    sfpHTML += '<td class="lable1">N/A</td>';
+                    sfpHTML += '<td class="lable2">N/A</td>';
+                    sfpHTML += '<td class="lable1">N/A</td>';
+                    sfpHTML += '<td class="lable2">N/A</td>';
+                    sfpHTML += '<td class="lable2">N/A</td>';
+                    sfpHTML += '<td class="lable1">N/A</td>';
+                    sfpHTML += '<td class="lable1">N/A</td>';
                     //工作模式
                     sfpHTML += '<td class="value1"><select>';
                     sfpHTML += '</select></td>';

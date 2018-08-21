@@ -12,25 +12,24 @@ namespace GlsunView.Domain
     using System;
     using System.Collections.Generic;
     
-    public partial class Device
+    public partial class RouteGroup
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public RouteGroup()
+        {
+            this.Route = new HashSet<Route>();
+        }
+    
         public int ID { get; set; }
-        public Nullable<int> SID { get; set; }
-        public string DName { get; set; }
-        public string DAddress { get; set; }
-        public string DIcon { get; set; }
-        public string DType { get; set; }
-        public string DProtocal { get; set; }
-        public Nullable<int> CoordinateX { get; set; }
-        public Nullable<int> CoordinateY { get; set; }
+        public string RGName { get; set; }
+        public string RGIcon { get; set; }
         public string Remark { get; set; }
         public Nullable<int> CreatorID { get; set; }
         public Nullable<System.DateTime> CreationTime { get; set; }
         public Nullable<int> EditorID { get; set; }
         public Nullable<System.DateTime> EditingTime { get; set; }
-        public Nullable<int> DPort { get; set; }
-        public int MFID { get; set; }
     
-        public virtual Subnet Subnet { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Route> Route { get; set; }
     }
 }

@@ -1,0 +1,438 @@
+﻿@model GlsunView.Models.OLPViewModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Details</title>
+    <link rel="stylesheet" href="~/Content/css/device.css" />
+    <link rel="stylesheet" href="~/Content/css/alertBox.css" />
+    <style>
+        .module{
+            zoom: 0.5;
+            margin: 10px;
+        }
+        .box{
+            border: 1px solid;
+            display: table;
+            font-size: 1em;
+        }
+        .box fieldset{
+            border-color: #1bbd1b;
+            margin: 0 10px;
+            margin-bottom: 10px;
+        }
+        .box .card_info td{
+            background-color: #eee;
+        }
+        .box .card_info td.label{
+            width: 100px;
+            text-align: right;
+        }
+        .box .card_info td.value{
+            width: 300px;
+        }
+        .box .card_info td.separator{
+            width: 50px;
+            background: transparent;
+        }
+        .box .card_info, .card_config{
+            border-spacing: 5px 2px;
+        }
+        /*状态与配置*/
+        .box .card_config th{
+            background-color: #eee;
+        }
+        .box .card_config td.separator{
+            width: 100px;
+            background: transparent;
+        }
+        .box .card_config td.label1{
+            width: 80px;
+            background-color: #eee;
+            text-align: center;
+        }
+        .box .card_config td.label2{
+            width: 120px;
+            background-color: #eee;
+            text-align: right;
+        }
+        .box .card_config td.value1{
+            width: 100px;
+            background-color: #eee;            
+            text-align: center;
+        }
+        .box .card_config td.value2{
+            width: 120px;
+            background-color: #eee;
+        }
+        .box .card_config td.value2 select, .box .card_config td.value2 input{
+            width: 120px;
+            height: 1.8em;
+            background-color: #8dce47;
+            border-style: none;
+        }
+        .box .card_config td.value1 input{
+            width: 100px;
+            height: 1.8em;
+            background-color: #8dce47;
+            border-style: none;
+            text-align: center;
+        }
+        .box .card_config td.blank{
+            background: transparent;
+        }
+
+        /*设置*/
+        .config_menu{
+            display: table;
+            margin-right: 20px;
+            float: right;
+        }
+        .config_menu button{
+            margin-top: 8px;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="alertBox" id="alert"></div>
+    <div class="box">
+        <div class="module olp">
+            <img src="../image/device/OLP.jpg">
+            <div class="light-circle pwr"></div>
+            <div class="light-circle run"></div>
+            <div class="light-circle alm"></div>
+            <div class="light-circle auto"></div>
+            <div class="light-circle r1"></div>
+            <div class="light-circle r2"></div>
+            <div class="light-circle prl"></div>
+            <div class="light-circle tx"></div>
+            <div class="light-circle ls"></div>
+        </div>
+        <fieldset>
+            <legend>板卡信息</legend>
+            <table class="card_info">
+                <tbody>
+                    <tr>
+                        <td class="lable">槽位：</td>
+                        <td class="value">@Model.Slot</td>
+                        <td class="separator"></td>
+                        <td class="lable">类型：</td>
+                        <td class="value">@Model.Type</td>
+                    </tr>
+                    <tr>
+                        <td class="lable">工作模式：</td>
+                        <td class="value">
+                            @switch (Model.WorkMode)
+                            {
+                                case 0:
+                                    @:手动
+                                    break;
+                                case 1:
+                                    @:自动
+                                    break;
+                                default: break;
+                            }
+                        </td>
+                        <td class="separator"></td>
+                        <td class="lable">状态：</td>
+                        <td class="value">@Model.Status</td>
+                    </tr>
+                    <tr>
+                        <td class="lable">产品型号：</td>
+                        <td class="value">@Model.ProductModel</td>
+                        <td class="separator"></td>
+                        <td class="lable">系列号：</td>
+                        <td class="value">@Model.SerialNumber</td>
+                    </tr>
+                    <tr>
+                        <td class="lable">硬件版本：</td>
+                        <td class="value">@Model.HardwareVersion</td>
+                        <td class="separator"></td>
+                        <td class="lable">软件版本：</td>
+                        <td class="value">@Model.SoftwareVersion</td>
+                    </tr>
+                </tbody>
+            </table>
+        </fieldset>
+        <fieldset>
+            <legend>状态及配置</legend>
+            <table class="card_config">
+                <tbody>
+                    <tr>
+                        <td class="label2">工作线路：</td>
+                        <td class="value2">
+                            <select id="Manual_Switch_Channel" name="Manual_Switch_Channel">
+                                <option value="1">主线路</option>
+                                <option value="2">备线路</option>
+                            </select>
+                        </td>
+                        <td class="separator"></td>
+                        <td class="label1">端口</td>
+                        <td class="label1">当前值</td>
+                        <td class="value1">告警阀值</td>
+                        <td class="value1">切换阀值</td>
+                        <td class="value1">校准阀值</td>
+                    </tr>
+                    <tr>
+                        <td class="label2">工作模式：</td>
+                        <td class="value2">
+                            <select  id="Work_Mode" name="Work_Mode">
+                                <option value="0">手动</option>
+                                <option value="1">自动</option>
+                            </select>
+                        </td>
+                        <td class="separator"></td>
+                        <td class="label1">R1</td>
+                        <td class="label1"  id="R1_Input_Power" name="R1_Input_Power">-11.4</td>
+                        <td class="value1">
+                            <input id="R1_Alarm_Power" name="R1_Alarm_Power" value="-30.0">
+                        </td>
+                        <td class="value1">
+                            <input id="R1_Switching_Power" name="R1_Switching_Power" value="-35.0">
+                        </td>
+                        <td class="value1">
+                            <input  id="R1_Calibration_Power" name="R1_Calibration_Power" value="6">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="label2">返回模式：</td>
+                        <td class="value2">
+                            <select  id="Back_Mode" name="Back_Mode">
+                                <option value="0")>自动不回切</option>
+                                <option value="1")>自动回切</option>
+                            </select>
+                        </td>
+                        <td class="separator"></td>
+                        <td class="label1">R2</td>
+                        <td class="label1" id="R2_Input_Power" name="R2_Input_Power">-16.9</td>
+                        <td class="value1">
+                            <input id="R2_Alarm_Power" name="R2_Alarm_Power" value="-30.0">
+                        </td>
+                        <td class="value1">
+                            <input id="R2_Switching_Power" name="R2_Switching_Power" value="-35.0">
+                        </td>
+                        <td class="value1">
+                            <input id="R2_Calibration_Power" name="R2_Calibration_Power" value="10">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="label2">监测波长nm：</td>
+                        <td class="value2">
+                            <input id="Monitor_Wave" name="Monitor_Wave" value="1550">
+                        </td>
+                        <td class="separator"></td>
+                        <td class="label1">RX</td>
+                        <td class="label1" id="RX_Power" name="RX_Power">-10.4</td>
+                        <td class="value1">
+                            <input id="RX_Alarm_Power" name="RX_Alarm_Power" value="-32.0">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="label2">切换延时(s)：</td>
+                        <td class="value2">
+                            <input id="Auto_Back_Delay" name="Auto_Back_Delay" value="0.1">
+                        </td>
+                        <td class="separator"></td>
+                        <td class="label1">T1</td>
+                        <td class="label1" id="T1_Power" name="T1_Power">4.0</td>
+                        <td class="value1">
+                            <input id="T1_Alarm_Power" name="T1_Alarm_Power" value="-17.0">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="label2">切换时间(ms)：</td>
+                        <td class="value2">
+                            <input id="Switch_Delay" name="Switch_Delay" value="10">
+                        </td>
+                        <td class="separator"></td>
+                        <td class="label1">T2</td>
+                        <td class="label1" id="T2_Power" name="T2_Power">-1.0</td>
+                        <td class="value1">
+                            <input id="T2_Alarm_Power" name="T2_Alarm_Power" value="-17.0">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="label2 blank"></td>
+                        <td class="value2 blank"></td>
+                        <td class="separator"></td>
+                        <td class="label1">TX</td>
+                        <td class="label1" id="TX_Input_Power" name="TX_Input_Power">5.0</td>
+                        <td class="value1">
+                            <input id="TX_Alarm_Power" name="TX_Alarm_Power" value="-15.0">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="config_menu">
+                <button id="btnReset" type="button">恢复出厂设置</button>
+                <button id="btnConfig" type="button">配置</button>
+                <button id="btnRefresh" type="button">刷新</button>
+            </div>
+        </fieldset>
+    </div>
+    <script src="~/scripts/jquery-1.9.1.min.js"></script>
+    <script src="~/scripts/jquery.form.min.js"></script>
+    <script src="~/scripts/lib/device_compenent.js"></script>
+    <script>
+        $(function(){
+            $("#btnRefresh").click(function(){
+                bUpdateConfig = true;
+                updateRequest();
+            });
+            $("#btnConfig").click(function(){
+                var inputs = $(":input");
+                var dataObj = {};
+                for(var i = 0; i < inputs.length; ++i){
+                    var element = inputs[i];
+                    if(element.tagName == "INPUT" || element.tagName == "SELECT"){
+                        dataObj[element.name] = $(element).val();
+                    }
+                }
+                $.post("@Url.Action("SetConfiguration", "OLPCard")", {info:dataObj, ip: "@Model.IP", port: @Model.Port, slot: @Model.Slot },
+                        function (data, status, jqXHR) {
+                            var divAlert = $("#alert");
+                            var showText = "";
+                            if (status == "success" && data) {                        
+                                if (data.Code == "") {
+                                    divAlert.removeClass("alert-failure").addClass("alert-success");
+                                }
+                                else {
+                                    divAlert.removeClass("alert-success").addClass("alert-failure");
+                                }
+                                showText = data.Data;
+                            }
+                            else{
+                                showText = "请求失败";
+                            }
+                            divAlert.text(showText);
+                            divAlert.show();
+                            setTimeout(function () {
+                                divAlert.fadeOut();
+                            }, 1500);
+                        }, "json");
+            });
+            //闪灯处理
+            setInterval(function () {
+                for (var i = 0; i < arrBinkObject.length; ++i) {
+                    //obj = {ctrl, lights}第一个控件，第二个闪烁灯名称
+                    var obj = arrBinkObject[i].ctrl;
+                    var lights = arrBinkObject[i].lights;
+                    if (obj) {
+                        if (obj instanceof glsun.ElectricMCU) {
+                            obj.runningLightBlinking();
+                        }
+                        else if (obj instanceof glsun.EDFACard ||
+                            obj instanceof glsun.OEOCard ||
+                            obj instanceof glsun.OLPCard) {
+                            for (var k = 0; k < lights.length; ++k) {
+                                obj.ligthBlink(lights[k], "normal");
+                            }
+                        }
+                        else if (obj instanceof glsun.FAN) {
+                            obj.lightBlink("state", "normal");
+                        }
+                    }
+                }
+            }, 500);
+            setInterval(updateRequest, 2000);
+            bUpdateConfig = true;
+            updateRequest();
+        });
+        //更新请求
+        function updateRequest() {
+            $.post("@Url.Action("UpdateConfig", "OLPCard")", { ip: "@Model.IP", port: @Model.Port, slot: @Model.Slot },
+                function (data, status, jqXHR) {
+                    if (data) {
+                        if (data.Code == "") {
+                            if(bUpdateConfig)
+                                updateConfig(data.Data);
+                            updateCardStatus(data.Data);
+                        }
+                        else if(data.Code == "Exception"){
+                            console.log("Exception");
+                        }
+                    }
+                }, "json");
+        }
+        var bUpdateConfig = false;
+        //更新配置信息
+        function updateConfig(olpInfo){
+            for(var prop in olpInfo){
+                //console.log(prop + ":" + olpInfo[prop]);
+                var element = document.getElementById(prop);
+                if(element){
+                    var value = olpInfo[prop];
+                    if(value){
+                        if(!isNaN(value)) value = value.toFixed(2);
+                        if(element.tagName == "INPUT" || element.tagName == "SELECT"){
+                            $(element).val(value);
+                        }else{
+                            $(element).text(value);
+                        }
+                    }
+                }
+            }
+            bUpdateConfig = false;
+        }
+        //闪灯对象
+        var arrBinkObject = new Array();
+        var olpCard = new glsun.OLPCard(".olp");
+        //更新板卡状态
+        function updateCardStatus(olpInfo){
+            var olp = olpCard;
+            olp.setNormal_pwr();
+            var olpBlinkLight = ["run"];
+            //自动模式Work_Mode
+            if (olpInfo.Work_Mode == 1) {
+                olp.setNormal_auto();
+            } else if (olpInfo.Work_Mode == 0) {
+                olp.resetLight_auto();
+            }
+            //ALM红灯状态
+            if (olpInfo.ALM_State == 1) {
+                olp.setError_alm();
+            } else if (olpInfo.ALM_State == 0) {
+                olp.resetLight_alm();
+            }
+            //R1绿灯灯状态
+            if (olpInfo.R1_State == 1) {
+                olp.setNormal_r1();
+            } else if (olpInfo.R1_State == 0) {
+                olp.resetLight_r1();
+            } else if (olpInfo.R1_State == 2) {
+                olpBlinkLight.push("r1");
+            }
+            //R2绿灯状态
+            if (olpInfo.R2_State == 1) {
+                olp.setNormal_r2();
+            } else if (olpInfo.R2_State == 0) {
+                olp.resetLight_r2();
+            } else if (olpInfo.R2_State == 2) {
+                olpBlinkLight.push("r2");
+            }
+            //TX绿灯状态
+            if (olpInfo.TX_State == 1) {
+                olp.setNormal_tx();
+            } else if (olpInfo.TX_State == 0) {
+                olp.resetLight_tx();
+            }
+            //LS绿灯状态
+            if (olpInfo.LS_State == 1) {
+                olp.setNormal_ls();
+            } else if (olpInfo.LS_State == 0) {
+                olp.resetLight_ls();
+            }
+            arrBinkObject.push({
+                ctrl: olp,
+                lights: olpBlinkLight
+            });
+        }
+    </script>
+</body>
+</html>

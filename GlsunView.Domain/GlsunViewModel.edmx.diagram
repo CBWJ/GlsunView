@@ -48,6 +48,9 @@
         <EntityTypeShape EntityType="GlsunViewModel.MachineFrame" Width="1.5" PointX="5.125" PointY="17.625" />
         <AssociationConnector Association="GlsunViewModel.FK_MACHINEF_REFERENCE_MACHINES" />
         <EntityTypeShape EntityType="GlsunViewModel.v_MachineFrame" Width="1.5" PointX="5.125" PointY="21.5" />
+        <EntityTypeShape EntityType="GlsunViewModel.Route" Width="1.5" PointX="15.625" PointY="19.125" />
+        <EntityTypeShape EntityType="GlsunViewModel.RouteGroup" Width="1.5" PointX="12.875" PointY="19.125" />
+        <AssociationConnector Association="GlsunViewModel.FK_ROUTE_REFERENCE_ROUTEGRO" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

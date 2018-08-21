@@ -11,6 +11,7 @@ using GlsunView.CommService;
 using System.IO;
 using System.Web.Script.Serialization;
 using System.Net.Sockets;
+using System.Text;
 
 namespace GlsunView.Controllers
 {
@@ -147,6 +148,24 @@ namespace GlsunView.Controllers
             d.CoordinateX = 100;
             d.CoordinateY = 100;
             d.SID = id;
+            StringBuilder sbFrames = new StringBuilder();
+            sbFrames.Append("[");
+            sbFrames.AppendFormat("{{id: '', text: '请选择'}}");
+            using (var ctx = new GlsunViewEntities())
+            {
+                int count = 0;
+                if(ctx.MachineFrame.Count() > 0)
+                    sbFrames.Append(",");
+                foreach (var frame in ctx.MachineFrame)
+                {
+                    sbFrames.AppendFormat("{{id: {0}, text: '{1}'}}", frame.ID, frame.MFName);
+                    count++;
+                    if (count != ctx.MachineRoom.Count())
+                        sbFrames.Append(",");
+                }
+            }
+            sbFrames.Append("]");
+            ViewBag.frameData = sbFrames.ToString();
             ViewBag.Action = "Create";
             return View(d);
         }
@@ -225,10 +244,25 @@ namespace GlsunView.Controllers
         public ActionResult Edit(int id)
         {
             Device d = null;
-            using(var ctx = new GlsunViewEntities())
+            StringBuilder sbFrames = new StringBuilder();
+            sbFrames.Append("[");
+            sbFrames.AppendFormat("{{id: '', text: '请选择'}}");
+            using (var ctx = new GlsunViewEntities())
             {
+                int count = 0;
+                if (ctx.MachineFrame.Count() > 0)
+                    sbFrames.Append(",");
+                foreach (var frame in ctx.MachineFrame)
+                {
+                    sbFrames.AppendFormat("{{id: {0}, text: '{1}'}}", frame.ID, frame.MFName);
+                    count++;
+                    if (count != ctx.MachineRoom.Count())
+                        sbFrames.Append(",");
+                }
                 d = ctx.Device.Find(id);
             }
+            sbFrames.Append("]");
+            ViewBag.frameData = sbFrames.ToString();
             ViewBag.Action = "Edit";
             return View("Create", d);
         }
@@ -264,6 +298,7 @@ namespace GlsunView.Controllers
                     deviceModify.Remark = device.Remark;
                     deviceModify.EditorID = loginUser.ID;
                     deviceModify.EditingTime = DateTime.Now;
+                    deviceModify.MFID = device.MFID;
 
                     if (!string.IsNullOrWhiteSpace(iconFileName))
                     {
@@ -438,5 +473,6 @@ namespace GlsunView.Controllers
             }
             return json;
         }
+        
     }
 }

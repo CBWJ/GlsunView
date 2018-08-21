@@ -17,10 +17,22 @@ namespace GlsunView.Controllers
         // GET: MachineFrame
         public ActionResult Index(int id)
         {
+            DeviceOverview deviceView;
+            DeviceInfo info;
+            List<CardSlotInfo> cardSlotInfo;
+            GetDeviceOverView(id, out deviceView, out info, out cardSlotInfo);
+            JavaScriptSerializer serializer = new JavaScriptSerializer();
+            ViewBag.DeviceView = serializer.Serialize(deviceView);
+            ViewBag.CardSlotInfo = serializer.Serialize(cardSlotInfo);
+            return View(info);
+        }
+
+        private static void GetDeviceOverView(int id, out DeviceOverview deviceView, out DeviceInfo info, out List<CardSlotInfo> cardSlotInfo)
+        {
             MachineFrame frame = null;
             MachineShelf shelf = null;
             MachineRoom room = null;
-            using(var ctx = new GlsunViewEntities())
+            using (var ctx = new GlsunViewEntities())
             {
                 frame = ctx.MachineFrame.Find(id);
                 shelf = ctx.MachineShelf.Find(frame.MSID);
@@ -29,16 +41,16 @@ namespace GlsunView.Controllers
             var tcp = TcpClientServicePool.GetService(frame.MFIP, frame.MFPort.Value);
             //设备整体状态信息
             NMUCommService nmu = new NMUCommService(tcp);
-            DeviceOverview deviceView = new DeviceOverview();
+            deviceView = new DeviceOverview();
             deviceView.IP = frame.MFIP;
             deviceView.Port = frame.MFPort.Value;
             deviceView.MCUType = frame.MFMCUType;
             //主控卡信息
             NMUInfo nmuInfo = new NMUInfo();
             //设备信息
-            DeviceInfo info = new DeviceInfo();
+            info = new DeviceInfo();
             //卡槽信息
-            List<CardSlotInfo> cardSlotInfo = new List<CardSlotInfo>();
+            cardSlotInfo = new List<CardSlotInfo>();
             try
             {
                 if (tcp != null)
@@ -71,10 +83,26 @@ namespace GlsunView.Controllers
                 deviceView.Unit = 4;
             }
             if (deviceView.Slots == null) deviceView.Slots = new List<Slot>();
+        }
+
+        public ActionResult DeviceIndex(int id)
+        {
+            Device d = null;
+            using (var ctx = new GlsunViewEntities())
+            {
+                d = ctx.Device.Find(id);
+            }
+            int mfID = 0;
+            if (d != null)
+                mfID = d.MFID;
+            DeviceOverview deviceView;
+            DeviceInfo info;
+            List<CardSlotInfo> cardSlotInfo;
+            GetDeviceOverView(mfID, out deviceView, out info, out cardSlotInfo);
             JavaScriptSerializer serializer = new JavaScriptSerializer();
             ViewBag.DeviceView = serializer.Serialize(deviceView);
             ViewBag.CardSlotInfo = serializer.Serialize(cardSlotInfo);
-            return View(info);
+            return View("Index", info);
         }
 
         private static List<CardSlotInfo> GetCardSlotInfo(TcpClientService tcp, DeviceOverview deviceView)
@@ -86,7 +114,7 @@ namespace GlsunView.Controllers
                 CardSlotInfo slotInfo = new CardSlotInfo
                 {
                     Slot = e.SlotNumber,
-                    Status = e.IsInsert ? "在位" : "NA",
+                    Status = e.IsInsert ? "在位" : "N/A",
                     CardType = e.CardType
                 };
                 //其他信息
@@ -154,7 +182,7 @@ namespace GlsunView.Controllers
                         }
                         else
                         {
-                            slotInfo.WorkMode = "NA";
+                            slotInfo.WorkMode = "N/A";
                         }
                         var alarmOEO = context.AlarmInformation
                             .Where(a => a.DAddress == deviceView.IP && a.AISlot == slotInfo.Slot)
@@ -190,11 +218,11 @@ namespace GlsunView.Controllers
                             slotInfo.CurrentAlarm = "";
                         break;
                     default:
-                        slotInfo.CardType = "NA";
-                        slotInfo.HardwareVersion = "NA";
-                        slotInfo.SoftwareVersion = "NA";
-                        slotInfo.WorkMode = "NA";
-                        slotInfo.CurrentAlarm = "NA";
+                        slotInfo.CardType = "N/A";
+                        slotInfo.HardwareVersion = "N/A";
+                        slotInfo.SoftwareVersion = "N/A";
+                        slotInfo.WorkMode = "N/A";
+                        slotInfo.CurrentAlarm = "N/A";
                         break;
                 }
                 cardSlotInfo.Add(slotInfo);
@@ -459,6 +487,27 @@ namespace GlsunView.Controllers
                 ret.Data = new { Code = "Exception", Data = ex.Message + "\n" + ex.StackTrace };
             }
             return ret;
+        }
+
+        [HttpPost]
+        public ActionResult GetMachineFrame(int id)
+        {
+            var json = new JsonResult();
+            try
+            {
+                MachineFrame frame = null;
+                using (var ctx = new GlsunViewEntities())
+                {
+                    frame = ctx.MachineFrame.Find(id);
+                }
+                json.Data = new { Code = "", Data = new MachineFrame{ MFIP = frame.MFIP, MFPort = frame.MFPort, MFMCUType = frame.MFMCUType},
+                    Message = "保存成功" };
+            }
+            catch (Exception ex)
+            {
+                json.Data = new { Code = "Exception", Data = "", Message = ex.Message };
+            }
+            return json;
         }
     }
 }

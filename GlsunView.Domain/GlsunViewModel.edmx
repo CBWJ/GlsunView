@@ -62,6 +62,7 @@
           <Property Name="CreationTime" Type="datetime" />
           <Property Name="EditorID" Type="int" />
           <Property Name="EditingTime" Type="datetime" />
+          <Property Name="MFID" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="DeviceLine">
           <Key>
@@ -199,6 +200,41 @@
           <Property Name="RID" Type="int" />
           <Property Name="MAID" Type="int" />
           <Property Name="IsEnabled" Type="bit" />
+          <Property Name="CreatorID" Type="int" />
+          <Property Name="CreationTime" Type="datetime" />
+          <Property Name="EditorID" Type="int" />
+          <Property Name="EditingTime" Type="datetime" />
+        </EntityType>
+        <EntityType Name="Route">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="RName" Type="nvarchar" MaxLength="50" />
+          <Property Name="RType" Type="nvarchar" MaxLength="20" />
+          <Property Name="RGID" Type="int" />
+          <Property Name="RAName" Type="nvarchar" MaxLength="30" />
+          <Property Name="RAMFID" Type="int" />
+          <Property Name="RAIP" Type="varchar" MaxLength="20" />
+          <Property Name="RASlot" Type="smallint" />
+          <Property Name="RBName" Type="nvarchar" MaxLength="30" />
+          <Property Name="RBMFID" Type="int" />
+          <Property Name="RBIP" Type="varchar" MaxLength="20" />
+          <Property Name="RBSlot" Type="smallint" />
+          <Property Name="Remark" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatorID" Type="int" />
+          <Property Name="CreationTime" Type="datetime" />
+          <Property Name="EditorID" Type="int" />
+          <Property Name="EditingTime" Type="datetime" />
+        </EntityType>
+        <EntityType Name="RouteGroup">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RGName" Type="nvarchar" MaxLength="30" />
+          <Property Name="RGIcon" Type="nvarchar" MaxLength="20" />
+          <Property Name="Remark" Type="nvarchar" MaxLength="50" />
           <Property Name="CreatorID" Type="int" />
           <Property Name="CreationTime" Type="datetime" />
           <Property Name="EditorID" Type="int" />
@@ -661,6 +697,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_ROUTE_REFERENCE_ROUTEGRO">
+          <End Role="RouteGroup" Type="Self.RouteGroup" Multiplicity="0..1" />
+          <End Role="Route" Type="Self.Route" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="RouteGroup">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Route">
+              <PropertyRef Name="RGID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_USERLOG_FK_USELOG_USER">
           <End Role="User" Type="Self.User" Multiplicity="0..1" />
           <End Role="UserLog" Type="Self.UserLog" Multiplicity="*" />
@@ -719,6 +767,8 @@
           <EntitySet Name="ModuleAuthority" EntityType="Self.ModuleAuthority" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Role" EntityType="Self.Role" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="RoleAuthority" EntityType="Self.RoleAuthority" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Route" EntityType="Self.Route" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="RouteGroup" EntityType="Self.RouteGroup" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SceneLocation" EntityType="Self.SceneLocation" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Subnet" EntityType="Self.Subnet" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SubnetLine" EntityType="Self.SubnetLine" Schema="dbo" store:Type="Tables" />
@@ -982,6 +1032,10 @@
             <End Role="Role" EntitySet="Role" />
             <End Role="RoleAuthority" EntitySet="RoleAuthority" />
           </AssociationSet>
+          <AssociationSet Name="FK_ROUTE_REFERENCE_ROUTEGRO" Association="Self.FK_ROUTE_REFERENCE_ROUTEGRO">
+            <End Role="RouteGroup" EntitySet="RouteGroup" />
+            <End Role="Route" EntitySet="Route" />
+          </AssociationSet>
           <AssociationSet Name="FK_USERLOG_FK_USELOG_USER" Association="Self.FK_USERLOG_FK_USELOG_USER">
             <End Role="User" EntitySet="User" />
             <End Role="UserLog" EntitySet="UserLog" />
@@ -1223,6 +1277,12 @@
             <End Role="MachineFrame" EntitySet="MachineFrame" />
           </AssociationSet>
           <EntitySet Name="v_MachineFrame" EntityType="GlsunViewModel.v_MachineFrame" />
+          <EntitySet Name="Route" EntityType="GlsunViewModel.Route" />
+          <EntitySet Name="RouteGroup" EntityType="GlsunViewModel.RouteGroup" />
+          <AssociationSet Name="FK_ROUTE_REFERENCE_ROUTEGRO" Association="GlsunViewModel.FK_ROUTE_REFERENCE_ROUTEGRO">
+            <End Role="RouteGroup" EntitySet="RouteGroup" />
+            <End Role="Route" EntitySet="Route" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="v_ModuleUser">
           <Key>
@@ -1469,6 +1529,7 @@
           <Property Name="EditingTime" Type="DateTime" Precision="3" />
           <NavigationProperty Name="Subnet" Relationship="GlsunViewModel.FK_DEVICE_REFERENCE_SUBNET" FromRole="Device" ToRole="Subnet" />
           <Property Name="DPort" Type="Int32" />
+          <Property Name="MFID" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="DeviceLine">
           <Key>
@@ -1758,6 +1819,55 @@
           <Property Name="Creator" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Editor" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
         </EntityType>
+        <EntityType Name="Route">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="RName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="RType" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="RGID" Type="Int32" />
+          <Property Name="RAName" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="RAMFID" Type="Int32" />
+          <Property Name="RAIP" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="RASlot" Type="Int16" />
+          <Property Name="RBName" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="RBMFID" Type="Int32" />
+          <Property Name="RBIP" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="RBSlot" Type="Int16" />
+          <Property Name="Remark" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatorID" Type="Int32" />
+          <Property Name="CreationTime" Type="DateTime" Precision="3" />
+          <Property Name="EditorID" Type="Int32" />
+          <Property Name="EditingTime" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="RouteGroup" Relationship="GlsunViewModel.FK_ROUTE_REFERENCE_ROUTEGRO" FromRole="Route" ToRole="RouteGroup" />
+        </EntityType>
+        <EntityType Name="RouteGroup">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RGName" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="RGIcon" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Remark" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatorID" Type="Int32" />
+          <Property Name="CreationTime" Type="DateTime" Precision="3" />
+          <Property Name="EditorID" Type="Int32" />
+          <Property Name="EditingTime" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Route" Relationship="GlsunViewModel.FK_ROUTE_REFERENCE_ROUTEGRO" FromRole="RouteGroup" ToRole="Route" />
+        </EntityType>
+        <Association Name="FK_ROUTE_REFERENCE_ROUTEGRO">
+          <End Type="GlsunViewModel.RouteGroup" Role="RouteGroup" Multiplicity="0..1" />
+          <End Type="GlsunViewModel.Route" Role="Route" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="RouteGroup">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Route">
+              <PropertyRef Name="RGID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -2060,6 +2170,7 @@
           <EntitySetMapping Name="Device">
             <EntityTypeMapping TypeName="GlsunViewModel.Device">
               <MappingFragment StoreEntitySet="Device">
+                <ScalarProperty Name="MFID" ColumnName="MFID" />
                 <ScalarProperty Name="DPort" ColumnName="DPort" />
                 <ScalarProperty Name="EditingTime" ColumnName="EditingTime" />
                 <ScalarProperty Name="EditorID" ColumnName="EditorID" />
@@ -2335,6 +2446,43 @@
                 <ScalarProperty Name="MFPort" ColumnName="MFPort" />
                 <ScalarProperty Name="MFIP" ColumnName="MFIP" />
                 <ScalarProperty Name="MFName" ColumnName="MFName" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Route">
+            <EntityTypeMapping TypeName="GlsunViewModel.Route">
+              <MappingFragment StoreEntitySet="Route">
+                <ScalarProperty Name="EditingTime" ColumnName="EditingTime" />
+                <ScalarProperty Name="EditorID" ColumnName="EditorID" />
+                <ScalarProperty Name="CreationTime" ColumnName="CreationTime" />
+                <ScalarProperty Name="CreatorID" ColumnName="CreatorID" />
+                <ScalarProperty Name="Remark" ColumnName="Remark" />
+                <ScalarProperty Name="RBSlot" ColumnName="RBSlot" />
+                <ScalarProperty Name="RBIP" ColumnName="RBIP" />
+                <ScalarProperty Name="RBMFID" ColumnName="RBMFID" />
+                <ScalarProperty Name="RBName" ColumnName="RBName" />
+                <ScalarProperty Name="RASlot" ColumnName="RASlot" />
+                <ScalarProperty Name="RAIP" ColumnName="RAIP" />
+                <ScalarProperty Name="RAMFID" ColumnName="RAMFID" />
+                <ScalarProperty Name="RAName" ColumnName="RAName" />
+                <ScalarProperty Name="RGID" ColumnName="RGID" />
+                <ScalarProperty Name="RType" ColumnName="RType" />
+                <ScalarProperty Name="RName" ColumnName="RName" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="RouteGroup">
+            <EntityTypeMapping TypeName="GlsunViewModel.RouteGroup">
+              <MappingFragment StoreEntitySet="RouteGroup">
+                <ScalarProperty Name="EditingTime" ColumnName="EditingTime" />
+                <ScalarProperty Name="EditorID" ColumnName="EditorID" />
+                <ScalarProperty Name="CreationTime" ColumnName="CreationTime" />
+                <ScalarProperty Name="CreatorID" ColumnName="CreatorID" />
+                <ScalarProperty Name="Remark" ColumnName="Remark" />
+                <ScalarProperty Name="RGIcon" ColumnName="RGIcon" />
+                <ScalarProperty Name="RGName" ColumnName="RGName" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>

@@ -39,7 +39,159 @@ namespace GlsunView.Controllers
             ViewBag.EndPoint = d.DAddress + ":" + d.DPort.Value + ":" + slot.ToString();
             return View(olpInfo);
         }
+        /// <summary>
+        /// 设备视图
+        /// </summary>
+        /// <param name="ip"></param>
+        /// <param name="port"></param>
+        /// <param name="slot"></param>
+        /// <returns></returns>
+        public ActionResult Details(string ip, int port, int slot)
+        {
+            OLPInfo olpInfo = new OLPInfo();
+            OLPViewModel model = new OLPViewModel()
+            {
+                IP = ip,
+                Port = port,
+                Slot = slot
+            };
+            
+            var tcp = TcpClientServicePool.GetService(ip, port);
+            if (tcp != null)
+            {
+                try
+                {
+                    OLPCommService service = new OLPCommService(tcp, slot);
+                    olpInfo.RefreshData(service);
+                    model.Type = olpInfo.Card_Type;
+                    model.Status = "正常";
+                    model.ProductModel = "OTS-" + model.Type;
+                    model.SerialNumber = olpInfo.Serial_Number;
+                    model.HardwareVersion = olpInfo.Hardware_Version;
+                    model.SoftwareVersion = olpInfo.Software_Version;
+                    model.WorkMode = olpInfo.Work_Mode;
+                }
+                catch(Exception ex)
+                {
+                    throw ex;
+                }
+                finally
+                {
+                    tcp.IsBusy = false;
+                }
+            }
+            return View(model);
+        }
+        /// <summary>
+        /// 设备视图更新配置信息
+        /// </summary>
+        /// <param name="ip"></param>
+        /// <param name="port"></param>
+        /// <param name="slot"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult UpdateConfig(string ip, int port, int slot)
+        {
+            JsonResult result = new JsonResult();
+            try
+            {
+                OLPInfo olpInfo = new OLPInfo();
+                var tcp = TcpClientServicePool.GetService(ip, port);
+                if (tcp == null) throw new NullReferenceException();
+                OLPCommService service = new OLPCommService(tcp, slot);
+                olpInfo.RefreshData(service);
+                tcp.IsBusy = false;
+                result.Data = new { Code = "", Data = olpInfo };
+            }
+            catch (Exception ex)
+            {
+                result.Data = new { Code = "Exception", Data = "" };
+            }
+            return result;
+        }
+        /// <summary>
+        /// OLP配置
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="ip"></param>
+        /// <param name="port"></param>
+        /// <param name="slot"></param>
+        /// <returns></returns>
+        public ActionResult SetConfiguration(OLPInfo info, string ip, int port, int slot)
+        {
+            JsonResult result = new JsonResult();
+            var tcp = TcpClientServicePool.GetService(ip, port);
+            if (tcp != null)
+            {
+                try
+                {
+                    List<string> listException = new List<string>();
+                    OLPCommService service = new OLPCommService(tcp, slot);
 
+                    foreach(var prop in info.GetType().GetProperties())
+                    {
+                        string name = prop.Name;
+                        object value = prop.GetValue(info);
+                        //设置方法名
+                        string methodName = "Set" + name.Replace("_", "");
+                        var methodInfo = service.GetType().GetMethod(methodName);
+                        if (methodInfo != null)
+                        {
+                            string operation = "";
+                            //获取设置项说明
+                            object[] arrDescription = methodInfo.GetCustomAttributes(typeof(DescriptionAttribute), false);
+                            if (arrDescription != null && arrDescription.Length > 0)
+                            {
+                                DescriptionAttribute desc = (DescriptionAttribute)arrDescription[0];
+                                if (desc != null)
+                                {
+                                    operation = desc.Description;
+                                }
+                            }
+                            //获取方法参数信息
+                            var paramInfo = methodInfo.GetParameters();
+                            object[] paramObject = new object[paramInfo.Length];
+                            foreach (var e in paramInfo)
+                            {
+                                paramObject[0] = Convert.ChangeType(value, e.ParameterType);
+                            }
+
+                            var ret = (bool)methodInfo.Invoke(service, paramObject);
+                            if (!ret)
+                            {
+                                listException.Add(operation);
+                            }
+                        }
+                    }
+                    if (listException.Count == 0)
+                    {
+                        result.Data = new { Code = "", Data = "配置成功" };
+                    }
+                    else
+                    {
+                        string data = "配置失败：";
+                        foreach (var e in listException)
+                        {
+                            data += e + " ";
+                        }
+                        result.Data = new { Code = "Exception", Data = data };
+                    }
+                }
+                catch (Exception ex)
+                {
+                    result.Data = new { Code = "Exception", Data = ex.Message };
+                }
+                finally
+                {
+                    tcp.IsBusy = false;
+                }
+            }
+            else
+            {
+                result.Data = new { Code = "Exception", Data = "获取TCP连接失败" };
+            }
+            return result;
+        }
         public ActionResult SetParam(string endpoint, string name, string value, int did)
         {
             JsonResult result = new JsonResult();

@@ -103,6 +103,12 @@
     <Compile Include="RoleAuthority.cs">
       <DependentUpon>GlsunViewModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Route.cs">
+      <DependentUpon>GlsunViewModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="RouteGroup.cs">
+      <DependentUpon>GlsunViewModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="SceneLocation.cs">
       <DependentUpon>GlsunViewModel.tt</DependentUpon>
     </Compile>

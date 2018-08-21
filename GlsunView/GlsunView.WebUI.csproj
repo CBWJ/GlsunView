@@ -341,6 +341,7 @@
     <Compile Include="Models\OEOInfo.cs" />
     <Compile Include="Models\OEOViewModel.cs" />
     <Compile Include="Models\OLPInfo.cs" />
+    <Compile Include="Models\OLPViewModel.cs" />
     <Compile Include="Models\PagingInfo.cs" />
     <Compile Include="Models\RoleAuthrizeInfo.cs" />
     <Compile Include="Models\SFPModule.cs" />
@@ -415,6 +416,7 @@
     <Content Include="Views\DeviceView\RoomList.cshtml" />
     <Content Include="Views\MachineRoom\Index.cshtml" />
     <Content Include="Views\MachineShelf\Index.cshtml" />
+    <Content Include="Views\OLPCard\Details.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

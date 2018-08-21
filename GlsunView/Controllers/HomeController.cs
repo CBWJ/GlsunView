@@ -79,7 +79,7 @@ namespace GlsunView.Controllers
                                 MIconType = "image",
                                 MIcon = "image/topo/" + device.DIcon,
                                 MName = device.DName,
-                                MUrl = string.Format("Device/Index/{0}", device.ID)
+                                MUrl = string.Format("DeviceView/Index/{0}", device.ID)
                             };
                             modules.Add(md);
                         }

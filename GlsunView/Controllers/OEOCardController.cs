@@ -164,11 +164,11 @@ namespace GlsunView.Controllers
                     }
                     if (listException.Count == 0)
                     {
-                        result.Data = new { Code = "", Data = "设置成功" };
+                        result.Data = new { Code = "", Data = "配置成功" };
                     }
                     else
                     {
-                        string data = "设置失败：";
+                        string data = "配置失败：";
                         foreach (var e in listException)
                         {
                             data += e + " ";

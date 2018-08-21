@@ -12,13 +12,17 @@ namespace GlsunView.Controllers
     public class DeviceViewController : Controller
     {
         // GET: DeviceView
-        public ActionResult Index()
+        public ActionResult Index(int id = 0)
         {
             List<MachineTreeNode> nodes = new List<MachineTreeNode>();
             int nodeId = 1;
+            int mfID = 0;
             using(var ctx = new GlsunViewEntities())
             {
-                foreach(var room in ctx.MachineRoom)
+                var d = ctx.Device.Find(id);
+                if (d != null)
+                    mfID = d.MFID;
+                foreach (var room in ctx.MachineRoom)
                 {
                     //机房
                     var roomNode = new MachineTreeNode
@@ -84,7 +88,7 @@ namespace GlsunView.Controllers
             }
             sbText.Append("]");
             ViewBag.TreeNodes = sbText.ToString();
-            return View();
+            return View(mfID);
         }
         /// <summary>
         /// 机房列表

@@ -327,7 +327,7 @@
             if (target == null) return;
             if (target.elementType == "node") {
                 console.log("双击节点");
-                var url = getHostPath() + "/Device/Index/" + target.xData;
+                var url = getHostPath() + "/DeviceView/Index/" + target.xData;
                 parent.tab.add(target.text, url);
             }
             else if (target.elementType == "link") {

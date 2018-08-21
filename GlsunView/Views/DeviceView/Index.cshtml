@@ -1,4 +1,4 @@
-﻿
+﻿@model int
 @{
     Layout = null;
 }
@@ -95,7 +95,11 @@
         </div>
     </div>
     <script>
-        var navData = {};
+        var mfID = @Model;
+        var navData = {
+            "-1":{name:"机房列表", level:-1, url :"/DeviceView/RoomList"},
+            begLevel:-1,
+            endLevel:0};
         var setting = {
             view: {
                 fontCss : {"font-size": "1.5em"}
@@ -114,6 +118,15 @@
         var treeObj = null;
         $(document).ready(function(){
             treeObj = $.fn.zTree.init($("#treeMachine"), setting, zTreeNodes);
+            updatePath();
+            //具体机框
+            if(mfID > 0){
+                navData.begLevel = 2;
+                childCallback(2, mfID);
+                $(".container-left").width(0);
+                $(".container-left").hide();
+                $(".container-right").css("marginLeft",0);
+            }
         });
         //设置zTree节点图标大小
         function zTreeOnNodeCreated(event, treeId, treeNode) {
@@ -169,7 +182,7 @@
             var $navPath = $("#navPath");
             $navPath.html('');
             var html = '';
-            for(var i = 0; i < navData.endLevel; ++i){
+            for(var i = navData.begLevel; i < navData.endLevel; ++i){
                 if(i == navData.endLevel - 1){
                     html += '<li class="active">' + navData[i].name + '</li>';
                 }else{
@@ -184,18 +197,7 @@
                 if(!isNaN(level)){
                     var $frameContent = $("#frameContent");
                     var url = navData[level].url;
-                    switch(level){
-                        case 0:
-                            $frameContent.attr("src", url);
-                            break;
-                        case 1:
-                            $frameContent.attr("src", url);
-                            break;
-                        case 2:
-                            $frameContent.attr("src", url);
-                            break;
-                        default:break;
-                    }
+                    $frameContent.attr("src", url);
                 }
                 //当前级别小于最大的级别，删除后面的
                 if(level < navData.endLevel - 1){

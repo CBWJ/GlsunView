@@ -121,9 +121,64 @@ namespace GlsunView.Models
         /// 工作模式关机保存
         /// </summary>
         public int Power_Off_Keep_Work_Mode { get; set; }
+        /// <summary>
+        /// 卡类型
+        /// </summary>
+        public string Card_Type { get; set; }
+        /// <summary>
+        /// 监测波长
+        /// </summary>
+        public string Monitor_Wave { get; set; }
+        /// <summary>
+        /// R1校准阀值
+        /// </summary>
+        public double R1_Calibration_Power { get; set; }
+        /// <summary>
+        /// R2校准阀值
+        /// </summary>
+        public double R2_Calibration_Power { get; set; }
+        /// <summary>
+        /// RX当前值
+        /// </summary>
+        public double RX_Power { get; set; }
+        /// <summary>
+        /// RX告警阀值
+        /// </summary>
+        public double RX_Alarm_Power { get; set; }
+        /// <summary>
+        /// T1当前值
+        /// </summary>
+        public double T1_Power { get; set; }
+        /// <summary>
+        /// T2当前值
+        /// </summary>
+        public double T2_Power { get; set; }
+        /// <summary>
+        /// T1告警阀值
+        /// </summary>
+        public double T1_Alarm_Power { get; set; }
+        /// <summary>
+        /// T2告警阀值
+        /// </summary>
+        public double T2_Alarm_Power { get; set; }
+
 
         public void RefreshData(CardCommService service)
         {
+            var basicInfo = InstructionHelper.ExtractData(service.GetCardBasicInfo(), "B");
+            var arrInfo = basicInfo.Split('_');
+            if(arrInfo.Length > 2)
+            {
+                switch (arrInfo[2])
+                {
+                    case "0101":
+                        Card_Type = "OLP1:1";
+                        break;
+                    case "0102":
+                        Card_Type = "OLP1+1";
+                        break;
+                }
+            }
             var data = service.GetCardDataInfo();
             if (data.Contains("NOCARD")) return;
             Work_Mode = int.Parse(InstructionHelper.ExtractDataFromSet(data, "M"));

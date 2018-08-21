@@ -30,31 +30,33 @@
 {
     @Html.HiddenFor(m => m.ID)
     @Html.HiddenFor(m => m.SID)
+    @Html.HiddenFor(m => m.DType)
+    @Html.HiddenFor(m => m.MFID)
     <div class="form-group">
         <label class="col-xs-2 control-label">名称</label>
         <div class="col-xs-4">
             @Html.TextBoxFor(m => m.DName, new { @class = "form-control" })
         </div>
-        <label class="col-xs-2 control-label">地址</label>
+        <label class="col-xs-2 control-label">机框</label>
         <div class="col-xs-4">
-            @Html.TextBoxFor(m => m.DAddress, new { @class = "form-control" })
+            <select class="form-control" id="frameList"></select>
         </div>
     </div>
     <div class="form-group">
+        <label class="col-xs-2 control-label">地址</label>
+        <div class="col-xs-4">
+            @Html.TextBoxFor(m => m.DAddress, new { @class = "form-control", @readonly="" })
+        </div>
         <label class="col-xs-2 control-label">端口</label>
         <div class="col-xs-4">
-            @Html.TextBoxFor(m => m.DPort, new { @class = "form-control" })
-        </div>
-        <label class="col-xs-2 control-label">设备类型</label>
+            @Html.TextBoxFor(m => m.DPort, new { @class = "form-control", @readonly = "" })
+        </div>        
+        @*<label class="col-xs-2 control-label">设备类型</label>
         <div class="col-xs-4">
             <select class="form-control" name="DType">
                 <option value="electronic" @(Model.DType == "electronic" ? "selected" : "")>电口主控</option>
                 <option value="optics" @(Model.DType == "optics" ? "selected" : "")>光口主控</option>
             </select>
-        </div>
-        @*<label class="col-xs-2 control-label">通信协议</label>
-        <div class="col-xs-4">
-            @Html.TextBoxFor(m => m.DProtocal, new { @class = "form-control" })
         </div>*@
     </div>
         <div class="form-group">
@@ -89,6 +91,7 @@
 
 <script>
     var iconDialog = null;
+
     $(function () {
         //注册表单提交方式为ajaxForm
         $("#dataForm").ajaxForm({
@@ -118,6 +121,16 @@
                     integer: true
                 }
             }
+        });
+        var data = @Html.Raw(ViewBag.frameData);
+        $("#frameList").select2({
+            language: "zh-CN", //设置 提示语言
+            width: "100%", //设置下拉框的宽度
+            tags: false,  //设置必须存在的选项 才能选中，设置不存在的值则为null,如果 placeholder: {id: '', text: "请选择"} 则为 ''
+            multiple: false,    //单选
+            data: data  //候选数组
+        }).on("change", function(e) {      
+                setFrameInfo();
         });
         $("#imgUpload").on("change", function () {
             if (!checkFileSizeAndFormat(this)) return;
@@ -155,7 +168,34 @@
                 }
             }).width(400).height(200).show();
         });
+
+        console.log($("#frameList").select2("val"));
     });
+    //设置机框信息
+    function setFrameInfo(){
+        var mfID = $("#frameList").select2("val");
+        if(mfID && !isNaN(mfID)){
+            $("#MFID").val(mfID);
+            $.post("@Url.Action("GetMachineFrame", "MachineFrame")", { id: mfID },
+            function (data, status, jqXHR) {
+                if (data) {
+                    if (data.Code == "") {
+                        $("#DAddress").val(data.Data.MFIP);
+                        $("#DPort").val(data.Data.MFPort);
+                        $("#DType").val(data.Data.MFMCUType);
+                    }
+                    else if(data.Code == "Exception"){
+                        console.log("Exception");
+                    }
+                }
+            }, "json");
+        }
+        else{
+            $("#DAddress").val("");
+            $("#DPort").val("");
+            $("#DType").val("");
+        }
+    }
     function iconSelect() {
         iconDialog.ok();
         iconDialog.close().remove();
@@ -213,6 +253,17 @@
                 $(".form-group div a").attr("disabled", "disabled");
                 $(".form-group div textarea").attr("disabled", "disabled");
             }(jQuery));
+        </script>
+    }
+    if (action != "Create")
+    {
+        <script>
+            $(function () {
+                //选中机房
+                var arrSelected = new Array();
+                arrSelected.push(@Model.MFID);
+                $("#frameList").val(arrSelected).trigger("change")
+            });
         </script>
     }
 }
