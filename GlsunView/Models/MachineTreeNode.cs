@@ -17,6 +17,10 @@ namespace GlsunView.Models
         /// </summary>
         public bool Open { get; set; }
         /// <summary>
+        /// 图标路径
+        /// </summary>
+        public string IconPath { get; set; }
+        /// <summary>
         /// 转换为JSON对象
         /// </summary>
         /// <returns></returns>
@@ -31,7 +35,7 @@ namespace GlsunView.Models
             sbText.AppendFormat(",\"open\":{0}", Open.ToString().ToLower());
             if (!string.IsNullOrWhiteSpace(Icon))
             {
-                sbText.AppendFormat(",\"icon\":\"{0}\"", "../../image/" + Icon);
+                sbText.AppendFormat(",\"icon\":\"{0}{1}\"", IconPath, Icon);
             }
             sbText.Append("}");
             return sbText.ToString();

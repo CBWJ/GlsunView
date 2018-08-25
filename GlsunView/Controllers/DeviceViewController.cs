@@ -17,7 +17,8 @@ namespace GlsunView.Controllers
             List<MachineTreeNode> nodes = new List<MachineTreeNode>();
             int nodeId = 1;
             int mfID = 0;
-            using(var ctx = new GlsunViewEntities())
+            string iconPath = "../../image/";
+            using (var ctx = new GlsunViewEntities())
             {
                 var d = ctx.Device.Find(id);
                 if (d != null)
@@ -32,7 +33,8 @@ namespace GlsunView.Controllers
                         ID = nodeId++,
                         PID = 0,
                         Open = true,
-                        Icon = room.MRIcon
+                        Icon = room.MRIcon,
+                        IconPath = iconPath
                     };
                     if (string.IsNullOrWhiteSpace(roomNode.Icon))
                         roomNode.Icon = "structural.png";
@@ -47,7 +49,8 @@ namespace GlsunView.Controllers
                             ID = nodeId++,
                             PID = roomNode.ID,
                             Open = false,
-                            Icon = shelf.MSIcon
+                            Icon = shelf.MSIcon,
+                            IconPath = iconPath
                         };
                         if (string.IsNullOrWhiteSpace(shelfNode.Icon))
                             shelfNode.Icon = "cabinet.png";
@@ -62,7 +65,8 @@ namespace GlsunView.Controllers
                                 ID = nodeId++,
                                 PID = shelfNode.ID,
                                 Open = false,
-                                Icon = frame.MFIcon
+                                Icon = frame.MFIcon,
+                                IconPath = iconPath
                             };
                             if (string.IsNullOrWhiteSpace(frameNode.Icon))
                                 frameNode.Icon = "wacom.png";

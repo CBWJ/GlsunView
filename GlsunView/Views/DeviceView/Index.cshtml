@@ -1,124 +1,14 @@
 ﻿@model int
 @{
-    Layout = null;
+    Layout = "~/Views/Shared/_ViewLayout.cshtml";
 }
-
-<!DOCTYPE html>
-
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <script src="~/scripts/jquery-1.9.1.min.js"></script>
-    <script src="~/scripts/lib/jquery.ztree.core.js"></script>
-    <script src="~/scripts/bootstrap.min.js"></script>
-
-    <link rel="stylesheet" href="~/Content/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/Content/css/zTreeStyle.css" />
-    <title>Index</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-        }
-
-        html, body {
-            height: 100%;
-            font-family: Arial, Microsoft YaHei, SimSun, Tahoma, Helvetica, "\5b8b\4f53", sans-serif;
-        }
-        /*布局*/
-        .container {
-            height: 100%;
-        }
-
-        .container-left {
-            width: 200px;
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            border: 1px solid #ccc;
-            border-bottom-left-radius: 5px;
-            border-top-left-radius: 5px;
-        }
-
-        .container-right {
-            margin-left: 200px;
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            border: 1px solid #ccc;
-            border-bottom-right-radius: 5px;
-            border-top-right-radius: 5px;
-            border-left: 0;
-        }
-
-        .content_title {
-            height: 36px;
-            background-color: #ecf0f5;
-            border-bottom: 1px solid #ccc;
-        }
-
-        .content_body {
-            position: absolute;
-            left: 0;
-            top: 36px;
-            right: 0;
-            bottom: 0;
-            overflow-y: hidden;
-        }
-
-        #frameContent {
-            height: 100%;
-            width: 100%;
-            border: 0;
-        }
-        /*树*/
-        .ztree li a span.button {
-            background-size: 100% 100%;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="container-left">
-            <ul id="treeMachine" class="ztree"></ul>
-        </div>
-        <div class="container-right">
-            <div class="content_title">
-                <ol id="navPath" class="breadcrumb"></ol>
-            </div>
-            <div class="content_body">
-                <iframe id="frameContent" src="@Url.Action("RoomList", "DeviceView")"></iframe>
-            </div>
-        </div>
-    </div>
     <script>
         var mfID = @Model;
         var navData = {
             "-1":{name:"机房列表", level:-1, url :"/DeviceView/RoomList"},
             begLevel:-1,
             endLevel:0};
-        var setting = {
-            view: {
-                fontCss : {"font-size": "1.5em"}
-            },
-            data: {
-                simpleData: {
-                    enable: true
-                }
-            },
-            callback: {
-                onNodeCreated: zTreeOnNodeCreated,
-                onClick: onClick
-            }
-        };
-        var zTreeNodes = @Html.Raw(ViewBag.TreeNodes);
-        var treeObj = null;
         $(document).ready(function(){
-            treeObj = $.fn.zTree.init($("#treeMachine"), setting, zTreeNodes);
-            updatePath();
             //具体机框
             if(mfID > 0){
                 navData.begLevel = 2;
@@ -126,16 +16,12 @@
                 $(".container-left").width(0);
                 $(".container-left").hide();
                 $(".container-right").css("marginLeft",0);
+            }else{
+                $("#frameContent").attr("src","@Url.Action("RoomList", "DeviceView")");
             }
+
         });
-        //设置zTree节点图标大小
-        function zTreeOnNodeCreated(event, treeId, treeNode) {
-            $('#'+treeNode.tId+'_ico').css("background", "url("+treeNode.icon+") center center/16px 16px no-repeat");
-        }
-        //节点点击
-        function onClick(event, treeId, treeNode, clickFlag) {
-            treeClickAction(treeNode);
-        }
+
         function treeClickAction(treeNode){
             var pathNodes = treeNode.getPath();
             var path = "";
@@ -177,64 +63,5 @@
             }
             updatePath();
         }
-        //更新导航路径
-        function updatePath(){
-            var $navPath = $("#navPath");
-            $navPath.html('');
-            var html = '';
-            for(var i = navData.begLevel; i < navData.endLevel; ++i){
-                if(i == navData.endLevel - 1){
-                    html += '<li class="active">' + navData[i].name + '</li>';
-                }else{
-                    html += '<li data-level='+navData[i].level+'><a href="#">' + navData[i].name + '</a></li>';
-                }
-            }
-            $navPath.append(html);
 
-            $navPath.children("li").click(function(){
-                var $this = $(this);
-                var level = $this.data("level");
-                if(!isNaN(level)){
-                    var $frameContent = $("#frameContent");
-                    var url = navData[level].url;
-                    $frameContent.attr("src", url);
-                }
-                //当前级别小于最大的级别，删除后面的
-                if(level < navData.endLevel - 1){
-                    for(var i = level + 1; i < navData.endLevel; ++i){
-                        delete navData[i];
-                    }
-                    //更新终止级别
-                    navData.endLevel = level + 1;
-                }
-                updatePath();
-            });
-        }
-        //添加导航数据
-        function addNavigatorData(elem){
-            navData[elem.level] = elem;
-            navData.endLevel += 1;
-            updatePath();
-            var $frameContent = $("#frameContent");
-            $frameContent.attr("src", elem.url);
-        }
-        //子页面回调，双击节点级别和数据id
-        function childCallback(level, id){
-            var theNode = treeObj.getNodesByFilter(
-                function(node){
-                return (node.level == level && node.dataId == id);
-                });
-            if(theNode && theNode.length == 1){
-                treeClickAction(theNode[0]);
-            }
-        }
-        function getTime() {
-            var now= new Date(),
-			h=now.getHours(),
-			m=now.getMinutes(),
-			s=now.getSeconds();
-            return (h+":"+m+":"+s);
-        }
     </script>
-</body>
-</html>

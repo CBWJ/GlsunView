@@ -66,7 +66,7 @@ namespace GlsunView.Controllers
             //alarmInfo = alarmInfo.Where(a => a.AIConfirmTime < conditions.ConfirmTimeEnd.AddDays(1));
             //分页处理
             var totals = alarmInfo.Count();
-            alarmInfo = alarmInfo.OrderBy(a => a.AITime)
+            alarmInfo = alarmInfo.OrderByDescending(a => a.AITime)
                                 .Skip((page - 1) * pageSize)
                                 .Take(pageSize)
                                 .ToList();

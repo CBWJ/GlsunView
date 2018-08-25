@@ -127,8 +127,8 @@ namespace GlsunView.Controllers
                 {
                     List<string> listException = new List<string>();
                     OLPCommService service = new OLPCommService(tcp, slot);
-
-                    foreach(var prop in info.GetType().GetProperties())
+                    List<string> listMethod = new List<string>();
+                    foreach (var prop in info.GetType().GetProperties().OrderBy(p => p.Name))
                     {
                         string name = prop.Name;
                         object value = prop.GetValue(info);
@@ -137,6 +137,7 @@ namespace GlsunView.Controllers
                         var methodInfo = service.GetType().GetMethod(methodName);
                         if (methodInfo != null)
                         {
+                            listMethod.Add(methodInfo.Name);
                             string operation = "";
                             //获取设置项说明
                             object[] arrDescription = methodInfo.GetCustomAttributes(typeof(DescriptionAttribute), false);

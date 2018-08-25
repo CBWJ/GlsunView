@@ -8,7 +8,23 @@
     var conditions = (AlarmQueryCondition)ViewBag.Conditions;
     var userModuleAuth = (IEnumerable<GlsunView.Domain.v_UserModuleAuthority>)ViewBag.UserModuleAuth;
 }
-
+<style>
+    .critical{
+	    color:red;
+    }
+    .major{
+	    color:orange;
+    }
+    .minor{
+	    color:yellowgreen;
+    }
+    .warn{
+	    color:deepskyblue;
+    }
+    .normal{
+	    color:green;
+    }
+</style>
 <div class="main_body_top">
     <div class="row">
         <form class="col-sm-12" action="@Url.Action("List","CurrentAlarm")" method="post" id="formSearch">
@@ -65,7 +81,7 @@
                             <td>@e.DName</td>
                             <td>@e.DAddress</td>
                             <td>@e.AISlot</td>
-                            <td>
+                            <td class="@e.AILevel.ToLower()">
                                 @switch (e.AILevel)
                                 {
                                     case "CRITICAL":

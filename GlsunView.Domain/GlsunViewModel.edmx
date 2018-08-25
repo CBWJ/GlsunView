@@ -209,7 +209,7 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="RName" Type="nvarchar" MaxLength="50" />
           <Property Name="RType" Type="nvarchar" MaxLength="20" />
           <Property Name="RGID" Type="int" />
@@ -527,6 +527,52 @@
           <Property Name="ID" Type="int" Nullable="false" />
           <Property Name="RName" Type="nvarchar" MaxLength="20" />
           <Property Name="RCode" Type="varchar" MaxLength="20" />
+          <Property Name="CreatorID" Type="int" />
+          <Property Name="CreationTime" Type="datetime" />
+          <Property Name="EditorID" Type="int" />
+          <Property Name="EditingTime" Type="datetime" />
+          <Property Name="Creator" Type="nvarchar" MaxLength="20" />
+          <Property Name="Editor" Type="nvarchar" MaxLength="20" />
+        </EntityType>
+        <!--生成过程中发现错误:
+警告 6002: 表/视图“GlsunView.dbo.v_Route”未定义主键。已推断出该键，并将定义创建为只读的表/视图。-->
+        <EntityType Name="v_Route">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="RName" Type="nvarchar" MaxLength="50" />
+          <Property Name="RType" Type="nvarchar" MaxLength="20" />
+          <Property Name="RGID" Type="int" />
+          <Property Name="RAName" Type="nvarchar" MaxLength="30" />
+          <Property Name="RAMFID" Type="int" />
+          <Property Name="RAIP" Type="varchar" MaxLength="20" />
+          <Property Name="RASlot" Type="smallint" />
+          <Property Name="RBName" Type="nvarchar" MaxLength="30" />
+          <Property Name="RBMFID" Type="int" />
+          <Property Name="RBIP" Type="varchar" MaxLength="20" />
+          <Property Name="RBSlot" Type="smallint" />
+          <Property Name="Remark" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatorID" Type="int" />
+          <Property Name="CreationTime" Type="datetime" />
+          <Property Name="EditorID" Type="int" />
+          <Property Name="EditingTime" Type="datetime" />
+          <Property Name="Creator" Type="nvarchar" MaxLength="20" />
+          <Property Name="Editor" Type="nvarchar" MaxLength="20" />
+          <Property Name="RGName" Type="nvarchar" MaxLength="30" />
+          <Property Name="RAMFName" Type="nvarchar" MaxLength="50" />
+          <Property Name="RBMFName" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <!--生成过程中发现错误:
+警告 6002: 表/视图“GlsunView.dbo.v_RouteGroup”未定义主键。已推断出该键，并将定义创建为只读的表/视图。-->
+        <EntityType Name="v_RouteGroup">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="RGName" Type="nvarchar" MaxLength="30" />
+          <Property Name="RGIcon" Type="nvarchar" MaxLength="20" />
+          <Property Name="Remark" Type="nvarchar" MaxLength="50" />
           <Property Name="CreatorID" Type="int" />
           <Property Name="CreationTime" Type="datetime" />
           <Property Name="EditorID" Type="int" />
@@ -939,6 +985,46 @@
     [v_Role].[Editor] AS [Editor]
     FROM [dbo].[v_Role] AS [v_Role]</DefiningQuery>
           </EntitySet>
+          <EntitySet Name="v_Route" EntityType="Self.v_Route" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [v_Route].[ID] AS [ID], 
+    [v_Route].[RName] AS [RName], 
+    [v_Route].[RType] AS [RType], 
+    [v_Route].[RGID] AS [RGID], 
+    [v_Route].[RAName] AS [RAName], 
+    [v_Route].[RAMFID] AS [RAMFID], 
+    [v_Route].[RAIP] AS [RAIP], 
+    [v_Route].[RASlot] AS [RASlot], 
+    [v_Route].[RBName] AS [RBName], 
+    [v_Route].[RBMFID] AS [RBMFID], 
+    [v_Route].[RBIP] AS [RBIP], 
+    [v_Route].[RBSlot] AS [RBSlot], 
+    [v_Route].[Remark] AS [Remark], 
+    [v_Route].[CreatorID] AS [CreatorID], 
+    [v_Route].[CreationTime] AS [CreationTime], 
+    [v_Route].[EditorID] AS [EditorID], 
+    [v_Route].[EditingTime] AS [EditingTime], 
+    [v_Route].[Creator] AS [Creator], 
+    [v_Route].[Editor] AS [Editor], 
+    [v_Route].[RGName] AS [RGName], 
+    [v_Route].[RAMFName] AS [RAMFName], 
+    [v_Route].[RBMFName] AS [RBMFName]
+    FROM [dbo].[v_Route] AS [v_Route]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="v_RouteGroup" EntityType="Self.v_RouteGroup" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [v_RouteGroup].[ID] AS [ID], 
+    [v_RouteGroup].[RGName] AS [RGName], 
+    [v_RouteGroup].[RGIcon] AS [RGIcon], 
+    [v_RouteGroup].[Remark] AS [Remark], 
+    [v_RouteGroup].[CreatorID] AS [CreatorID], 
+    [v_RouteGroup].[CreationTime] AS [CreationTime], 
+    [v_RouteGroup].[EditorID] AS [EditorID], 
+    [v_RouteGroup].[EditingTime] AS [EditingTime], 
+    [v_RouteGroup].[Creator] AS [Creator], 
+    [v_RouteGroup].[Editor] AS [Editor]
+    FROM [dbo].[v_RouteGroup] AS [v_RouteGroup]</DefiningQuery>
+          </EntitySet>
           <EntitySet Name="v_User" EntityType="Self.v_User" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
     [v_User].[ROW_ID] AS [ROW_ID], 
@@ -1283,6 +1369,8 @@
             <End Role="RouteGroup" EntitySet="RouteGroup" />
             <End Role="Route" EntitySet="Route" />
           </AssociationSet>
+          <EntitySet Name="v_Route" EntityType="GlsunViewModel.v_Route" />
+          <EntitySet Name="v_RouteGroup" EntityType="GlsunViewModel.v_RouteGroup" />
           </EntityContainer>
         <EntityType Name="v_ModuleUser">
           <Key>
@@ -1868,6 +1956,48 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="v_Route">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="RName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="RType" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="RGID" Type="Int32" />
+          <Property Name="RAName" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="RAMFID" Type="Int32" />
+          <Property Name="RAIP" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="RASlot" Type="Int16" />
+          <Property Name="RBName" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="RBMFID" Type="Int32" />
+          <Property Name="RBIP" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="RBSlot" Type="Int16" />
+          <Property Name="Remark" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatorID" Type="Int32" />
+          <Property Name="CreationTime" Type="DateTime" Precision="3" />
+          <Property Name="EditorID" Type="Int32" />
+          <Property Name="EditingTime" Type="DateTime" Precision="3" />
+          <Property Name="Creator" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Editor" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="RGName" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="RAMFName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="RBMFName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="v_RouteGroup">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="RGName" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="RGIcon" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Remark" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatorID" Type="Int32" />
+          <Property Name="CreationTime" Type="DateTime" Precision="3" />
+          <Property Name="EditorID" Type="Int32" />
+          <Property Name="EditingTime" Type="DateTime" Precision="3" />
+          <Property Name="Creator" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Editor" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -2476,6 +2606,50 @@
           <EntitySetMapping Name="RouteGroup">
             <EntityTypeMapping TypeName="GlsunViewModel.RouteGroup">
               <MappingFragment StoreEntitySet="RouteGroup">
+                <ScalarProperty Name="EditingTime" ColumnName="EditingTime" />
+                <ScalarProperty Name="EditorID" ColumnName="EditorID" />
+                <ScalarProperty Name="CreationTime" ColumnName="CreationTime" />
+                <ScalarProperty Name="CreatorID" ColumnName="CreatorID" />
+                <ScalarProperty Name="Remark" ColumnName="Remark" />
+                <ScalarProperty Name="RGIcon" ColumnName="RGIcon" />
+                <ScalarProperty Name="RGName" ColumnName="RGName" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="v_Route">
+            <EntityTypeMapping TypeName="GlsunViewModel.v_Route">
+              <MappingFragment StoreEntitySet="v_Route">
+                <ScalarProperty Name="RBMFName" ColumnName="RBMFName" />
+                <ScalarProperty Name="RAMFName" ColumnName="RAMFName" />
+                <ScalarProperty Name="RGName" ColumnName="RGName" />
+                <ScalarProperty Name="Editor" ColumnName="Editor" />
+                <ScalarProperty Name="Creator" ColumnName="Creator" />
+                <ScalarProperty Name="EditingTime" ColumnName="EditingTime" />
+                <ScalarProperty Name="EditorID" ColumnName="EditorID" />
+                <ScalarProperty Name="CreationTime" ColumnName="CreationTime" />
+                <ScalarProperty Name="CreatorID" ColumnName="CreatorID" />
+                <ScalarProperty Name="Remark" ColumnName="Remark" />
+                <ScalarProperty Name="RBSlot" ColumnName="RBSlot" />
+                <ScalarProperty Name="RBIP" ColumnName="RBIP" />
+                <ScalarProperty Name="RBMFID" ColumnName="RBMFID" />
+                <ScalarProperty Name="RBName" ColumnName="RBName" />
+                <ScalarProperty Name="RASlot" ColumnName="RASlot" />
+                <ScalarProperty Name="RAIP" ColumnName="RAIP" />
+                <ScalarProperty Name="RAMFID" ColumnName="RAMFID" />
+                <ScalarProperty Name="RAName" ColumnName="RAName" />
+                <ScalarProperty Name="RGID" ColumnName="RGID" />
+                <ScalarProperty Name="RType" ColumnName="RType" />
+                <ScalarProperty Name="RName" ColumnName="RName" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="v_RouteGroup">
+            <EntityTypeMapping TypeName="GlsunViewModel.v_RouteGroup">
+              <MappingFragment StoreEntitySet="v_RouteGroup">
+                <ScalarProperty Name="Editor" ColumnName="Editor" />
+                <ScalarProperty Name="Creator" ColumnName="Creator" />
                 <ScalarProperty Name="EditingTime" ColumnName="EditingTime" />
                 <ScalarProperty Name="EditorID" ColumnName="EditorID" />
                 <ScalarProperty Name="CreationTime" ColumnName="CreationTime" />

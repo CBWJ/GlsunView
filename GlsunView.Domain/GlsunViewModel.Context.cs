@@ -62,6 +62,8 @@ namespace GlsunView.Domain
         public virtual DbSet<v_MachineFrame> v_MachineFrame { get; set; }
         public virtual DbSet<Route> Route { get; set; }
         public virtual DbSet<RouteGroup> RouteGroup { get; set; }
+        public virtual DbSet<v_Route> v_Route { get; set; }
+        public virtual DbSet<v_RouteGroup> v_RouteGroup { get; set; }
     
         [DbFunction("GlsunViewEntities", "F_GetTreeModuleID")]
         public virtual IQueryable<Nullable<int>> F_GetTreeModuleID()

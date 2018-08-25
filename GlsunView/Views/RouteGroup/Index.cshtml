@@ -1,0 +1,23 @@
+﻿@model IEnumerable<GlsunView.Domain.Route>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_ListView.cshtml";
+}
+
+@foreach (var route in Model)
+{
+    <li data-id="@route.ID">
+        <img src="~/image/route/route.png" />
+        <div class="title">
+            @route.RName
+        </div>
+    </li>
+}
+@section AddToEnd{
+    <script>
+        function itemDblClick(id) {
+            parent.childCallback(1, id);
+        }
+    </script>
+}
+

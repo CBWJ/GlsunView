@@ -1,6 +1,7 @@
 ﻿@model List<FileInfo>
 @{
     Layout = null;
+    var iconPath = (string)ViewBag.IconPath;
 }
 
 <!DOCTYPE html>
@@ -48,11 +49,11 @@
 </head>
 <body>
     <ul class="icons">
-        @foreach(var f in Model)
+        @foreach (var f in Model)
         {
             <li>
                 <a href="#" class="thumbnail">
-                    <img src="~/image/topo/@f.Name" alt="@f.Name">
+                    <img src="@iconPath@f.Name" alt="@f.Name">
                 </a>
             </li>
         }

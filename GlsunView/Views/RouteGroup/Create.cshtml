@@ -1,0 +1,177 @@
+﻿@model GlsunView.Domain.RouteGroup
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_EditLayout.cshtml";
+    string action = (string)@ViewBag.Action;
+}
+@section AddToHead{
+    <style>
+        #upload {
+            position: relative;
+            overflow: hidden;
+        }
+
+        #imgUpload {
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            top: 0;
+            opacity: 0;
+        }
+    </style>
+    <script src="~/scripts/lib/dialog.js"></script>
+    <script src="~/scripts/lib/jquery.validate.extend.js"></script>
+}
+@using (Html.BeginForm(action, "RouteGroup", FormMethod.Post, new { id = "dataForm", @class = "form-horizontal" }))
+{
+    @Html.HiddenFor(m => m.ID)
+    <div class="form-group">
+        <label class="col-xs-3 control-label">路由组名称</label>
+        <div class="col-xs-9">
+            @Html.TextBoxFor(m => m.RGName, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.HiddenFor(m => m.RGIcon)
+        <label class="col-xs-3 control-label">图标</label>
+        <div class="col-xs-9">
+            <img id="preview" width="32" height="32" src="@(string.IsNullOrWhiteSpace(Model.RGIcon) ? "" : "../../image/route/"+Model.RGIcon)" />
+            <button class="btn btn-primary" type="button" id="selectIcon">选择图标</button>
+            <a href="javascript:;" class="btn btn-default" id="upload">
+                上传图标
+                <input type="file" name="iconFile" id="imgUpload">
+            </a>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-xs-3 control-label">备注</label>
+        <div class="col-xs-9">
+            @Html.TextAreaFor(m => m.Remark, new { @class = "form-control" })
+        </div>
+    </div>
+}
+
+<script>
+    $(function () {
+        //注册表单提交方式为ajaxForm
+        $("#dataForm").ajaxForm({
+            success: onSuccess
+        });
+        //开启验证
+        $("#dataForm").validate({
+            rules: {
+                RGName: {
+                    required: true,
+                    maxlength: 30
+                },
+                RGIcon: {
+                    required: false,
+                    maxlength: 20
+                },
+                Remark: {
+                    required: false,
+                    maxlength: 50
+                }
+            }
+        });
+        //上传图标
+        $("#imgUpload").on("change", function () {
+            if (!checkFileSizeAndFormat(this)) return;
+            var file = this.files[0];
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    //alert(e.target.result);
+                    $("#preview").attr("src", e.target.result);
+                    $("#RGIcon").val("");
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+        //
+        $("#selectIcon").click(function () {
+            iconDialog = dialog({
+                title: '选择图标',
+                content: '<iframe name="formFrame" src="@Url.Action("IconList", "RouteGroup")" style="width:100%;border:0;"></iframe>',
+                okValue: '确定',
+                ok: function () {
+                    //调用Frame的方法
+                    var childWindow = formFrame.window;
+                    var icon = childWindow.getSelectedIcon();
+                    if (icon && icon != "") {
+                        $("#preview").attr("src", "../../image/route/" + icon);
+                        $("#RGIcon").val(icon);
+                        return true;
+                    }
+                    return false;
+                },
+                cancelValue: '取消',
+                cancel: function () {
+                    //alert("取消");
+                }
+            }).width(350).height(150).show();
+        });
+    });
+    //提交表单
+    function submitForm() {
+        if (!$("#dataForm").valid()) {
+            return;
+        };
+        $('#dataForm').submit();
+    }
+    //  提交后
+    function onSuccess(data, statusText, xhr) {
+        if (data) {
+            parent.window.childCallback(data);
+        }
+    }
+    //检查上传文件大小格式
+    var isIE = /msie/i.test(navigator.userAgent) && !window.opera;
+    function checkFileSizeAndFormat(target) {
+        var fileSize = 0;
+        if (isIE && !target.files) {
+            var filePath = target.value;
+            var fileSystem = new ActiveXObject("Scripting.FileSystemObject");
+            var file = fileSystem.GetFile(filePath);
+            fileSize = file.Size;
+        } else {
+            fileSize = target.files[0].size;
+        }
+        var size = fileSize / 1024;
+        if (size > 2000) {
+            alert("附件不能大于2M");
+            target.value = "";
+            return false
+        }
+        var name = target.value;
+        var fileName = name.substring(name.lastIndexOf(".") + 1).toLowerCase();
+        if (fileName != "jpg" && fileName != "jpeg" && fileName != "pdf" && fileName != "png" && fileName != "dwg" && fileName != "gif") {
+            alert("请选择图片格式文件上传(jpg,png,gif,dwg,pdf,gif等)！");
+            target.value = "";
+            return false
+        }
+        return true;
+    }
+    //图标选择框回调
+    function iconSelect() {
+        iconDialog.ok();
+        iconDialog.close().remove();
+    }
+</script>
+@{
+            if (action == "Details")
+            {
+        <script>
+            (function ($) {
+                if (!$) return;
+                $(".form-group div input").attr("disabled", "disabled");
+                $(".form-group div select").attr("disabled", "disabled");
+                $(".form-group div button").attr("disabled", "disabled");
+                $(".form-group div a").attr("disabled", "disabled");
+                $(".form-group div textarea").attr("disabled", "disabled");
+            }(jQuery));
+        </script>
+    }
+}
+

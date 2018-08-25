@@ -312,6 +312,9 @@
     <Compile Include="Controllers\OEOCardController.cs" />
     <Compile Include="Controllers\OLPCardController.cs" />
     <Compile Include="Controllers\RoleController.cs" />
+    <Compile Include="Controllers\RouteController.cs" />
+    <Compile Include="Controllers\RouteGroupController.cs" />
+    <Compile Include="Controllers\RouteViewController.cs" />
     <Compile Include="Controllers\ShareListController.cs" />
     <Compile Include="Controllers\SubnetController.cs" />
     <Compile Include="Controllers\SubnetLineController.cs" />
@@ -417,6 +420,15 @@
     <Content Include="Views\MachineRoom\Index.cshtml" />
     <Content Include="Views\MachineShelf\Index.cshtml" />
     <Content Include="Views\OLPCard\Details.cshtml" />
+    <Content Include="Views\RouteGroup\List.cshtml" />
+    <Content Include="Views\RouteGroup\Create.cshtml" />
+    <Content Include="Views\Route\List.cshtml" />
+    <Content Include="Views\Route\Create.cshtml" />
+    <Content Include="Views\Shared\_ViewLayout.cshtml" />
+    <Content Include="Views\RouteView\Index.cshtml" />
+    <Content Include="Views\RouteView\RouteGroupList.cshtml" />
+    <Content Include="Views\RouteGroup\Index.cshtml" />
+    <Content Include="Views\Route\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

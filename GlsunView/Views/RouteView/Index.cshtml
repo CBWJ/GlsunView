@@ -1,0 +1,49 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_ViewLayout.cshtml";
+}
+
+<script>
+    var navData = {
+        "-1": { name: "路由组列表", level: -1, url: "/RouteView/RouteGroupList" },
+        begLevel: -1,
+        endLevel: 0
+    };
+    $(document).ready(function(){
+        $("#frameContent").attr("src","@Url.Action("RouteGroupList", "RouteView")");
+    });
+    function treeClickAction(treeNode) {
+        var pathNodes = treeNode.getPath();
+        setPath(pathNodes);
+        var $frameContent = $("#frameContent");
+        switch (treeNode.level) {
+            case 0:
+                $frameContent.attr("src", "/RouteGroup/Index/" + treeNode.dataId);
+                break;
+            case 1:
+                $frameContent.attr("src", "/Route/Index/" + treeNode.dataId);
+                break;
+            default: break;
+        }
+    }
+    //根据路径结点设置导航数据
+    function setPath(pathNodes) {
+        navData.endLevel = 0;
+        for (var i = 0; i < pathNodes.length; ++i) {
+            var elem = {
+                name: pathNodes[i].name,
+                level: pathNodes[i].level
+            };
+            var level = pathNodes[i].level;
+            if (level == 0) {
+                elem.url = "/RouteGroup/Index/" + pathNodes[i].dataId;
+            } else if (level == 1) {
+                elem.url = "/Route/Index/" + pathNodes[i].dataId;
+            } 
+            navData[level] = elem;
+            navData.endLevel = i + 1;
+        }
+        updatePath();
+    }
+</script>

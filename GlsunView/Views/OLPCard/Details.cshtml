@@ -428,6 +428,13 @@
             } else if (olpInfo.LS_State == 0) {
                 olp.resetLight_ls();
             }
+            //Pri
+            if(olpInfo.Manual_Switch_Channel == 1){
+                olp.setNormal_prl()
+            }else{
+                olp.resetLight_prl();
+            }
+            
             arrBinkObject.push({
                 ctrl: olp,
                 lights: olpBlinkLight

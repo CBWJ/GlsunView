@@ -17,6 +17,7 @@
         .info_area{
             border: 1px solid black;
             border-top: 0;
+            padding-top: 15px;
         }
         .info_area fieldset{
             border-color: #1bbd1b;
@@ -175,7 +176,7 @@
                     device.insertCard(slot.SlotNumber, slot.CardType);
                 }
             }
-            setTimeout(adjustInfoFrameWidth, 100);
+            setTimeout(adjustInfoFrameWidth, 200);
             //更新设备状态
             updateRequest();
             setInterval(function () {

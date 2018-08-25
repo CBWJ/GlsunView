@@ -311,6 +311,7 @@ namespace GlsunView.Controllers
             var subnetFiles = (from f in imgFiles
                                where f.Name.ToLower().Contains(type)
                                select f).ToList();
+            ViewBag.IconPath = "/image/topo/";
             return View(subnetFiles);
         }
         /// <summary>

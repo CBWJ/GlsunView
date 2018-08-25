@@ -51,6 +51,8 @@
         <EntityTypeShape EntityType="GlsunViewModel.Route" Width="1.5" PointX="15.625" PointY="19.125" />
         <EntityTypeShape EntityType="GlsunViewModel.RouteGroup" Width="1.5" PointX="12.875" PointY="19.125" />
         <AssociationConnector Association="GlsunViewModel.FK_ROUTE_REFERENCE_ROUTEGRO" />
+        <EntityTypeShape EntityType="GlsunViewModel.v_Route" Width="1.5" PointX="15.625" PointY="23.75" />
+        <EntityTypeShape EntityType="GlsunViewModel.v_RouteGroup" Width="1.5" PointX="12.875" PointY="23.125" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

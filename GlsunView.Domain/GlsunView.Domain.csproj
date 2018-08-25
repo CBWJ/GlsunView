@@ -160,6 +160,12 @@
     <Compile Include="v_Role.cs">
       <DependentUpon>GlsunViewModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="v_Route.cs">
+      <DependentUpon>GlsunViewModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="v_RouteGroup.cs">
+      <DependentUpon>GlsunViewModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="v_User.cs">
       <DependentUpon>GlsunViewModel.tt</DependentUpon>
     </Compile>

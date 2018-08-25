@@ -1,0 +1,23 @@
+﻿@model IEnumerable<GlsunView.Domain.RouteGroup>
+@{
+    ViewBag.Title = "RouteGroupList";
+    Layout = "~/Views/Shared/_ListView.cshtml";
+}
+
+@foreach (var group in Model)
+{
+    <li data-id="@group.ID">
+        <img src="~/image/route/@(string.IsNullOrWhiteSpace(group.RGIcon) ? "group.png" : group.RGIcon)" />
+        <div class="title">
+            @group.RGName
+        </div>
+    </li>
+}
+@section AddToEnd{
+    <script>
+        function itemDblClick(id) {
+            parent.childCallback(0, id);
+        }
+    </script>
+}
+

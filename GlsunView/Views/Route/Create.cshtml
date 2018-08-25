@@ -1,0 +1,157 @@
+﻿@model GlsunView.Domain.Route
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_EditLayout.cshtml";
+    string action = (string)@ViewBag.Action;
+}
+
+@using (Html.BeginForm(action, "Route", FormMethod.Post, new { id = "dataForm", @class = "form-horizontal" }))
+{
+    @Html.HiddenFor(m => m.ID)
+    @Html.HiddenFor(m => m.RGID)
+    @Html.HiddenFor(m => m.RAMFID)
+    @Html.HiddenFor(m => m.RBMFID)
+    <div class="form-group">
+        <label class="col-xs-2 control-label">名称</label>
+        <div class="col-xs-4">
+            @Html.TextBoxFor(m => m.RName, new { @class = "form-control" })
+        </div>
+        <label class="col-xs-2 control-label">所属路由组</label>
+        <div class="col-xs-4">
+            @*@Html.TextBoxFor(m => m.RGID, new { @class = "form-control" })*@
+            <select class="form-control" id="groupList"></select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-xs-2 control-label">A端名称</label>
+        <div class="col-xs-4">
+            @Html.TextBoxFor(m => m.RAName, new { @class = "form-control" })
+        </div>
+        <label class="col-xs-2 control-label">A端机框</label>
+        <div class="col-xs-4">
+            @*@Html.TextBoxFor(m => m.RAMFID, new { @class = "form-control" })*@
+            <select class="form-control" id="frameListA"></select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-xs-2 control-label">A端卡槽</label>
+        <div class="col-xs-4">
+            @Html.TextBoxFor(m => m.RASlot, new { @class = "form-control" })
+        </div>
+        <label class="col-xs-2 control-label">B端名称</label>
+        <div class="col-xs-4">
+            @Html.TextBoxFor(m => m.RBName, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-xs-2 control-label">B端机框</label>
+        <div class="col-xs-4">
+            @*@Html.TextBoxFor(m => m.RBMFID, new { @class = "form-control" })*@
+            <select class="form-control" id="frameListB"></select>
+        </div>
+        <label class="col-xs-2 control-label">B端卡槽</label>
+        <div class="col-xs-4">
+            @Html.TextBoxFor(m => m.RBSlot, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-xs-2 control-label">备注</label>
+        <div class="col-xs-10">
+            @Html.TextAreaFor(m => m.Remark, new { @class = "form-control" })
+        </div>
+    </div>
+}
+<script>
+    $(function () {
+        //注册表单提交方式为ajaxForm
+        $("#dataForm").ajaxForm({
+            success: onSuccess
+        });
+        //开启验证
+        $("#dataForm").validate({
+            rules: {
+                RName: {
+                    required: true,
+                    maxlength: 50
+                },
+                RAName: {
+                    required: true,
+                    maxlength: 30
+                },
+                RBName: {
+                    required: true,
+                    maxlength: 30
+                },
+                RASlot:{
+                    required: true,
+                    digits:true
+                },
+                RBSlot:{
+                    required: true,
+                    digits:true
+                },
+                Remark: {
+                    required: false,
+                    maxlength: 50
+                }
+            }
+        });
+        var action = "@action";
+        var groupData = @Html.Raw(ViewBag.GroupData);
+        var frameData = @Html.Raw(ViewBag.FrameData);
+        $("#groupList").select2({
+            language: "zh-CN", //设置 提示语言
+            width: "100%", //设置下拉框的宽度
+            tags: false,  //设置必须存在的选项 才能选中，设置不存在的值则为null,如果 placeholder: {id: '', text: "请选择"} 则为 ''
+            multiple: false,    //单选
+            data: groupData  //候选数组
+        }).on("change", function(e) {
+        });
+        $("#frameListA").select2({
+            language: "zh-CN", //设置 提示语言
+            width: "100%", //设置下拉框的宽度
+            tags: false,  //设置必须存在的选项 才能选中，设置不存在的值则为null,如果 placeholder: {id: '', text: "请选择"} 则为 ''
+            multiple: false,    //单选
+            data: frameData  //候选数组
+        });
+        $("#frameListB").select2({
+            language: "zh-CN", //设置 提示语言
+            width: "100%", //设置下拉框的宽度
+            tags: false,  //设置必须存在的选项 才能选中，设置不存在的值则为null,如果 placeholder: {id: '', text: "请选择"} 则为 ''
+            multiple: false,    //单选
+            data: frameData  //候选数组
+        });
+
+        if(action != "Create"){
+            //选中路由组
+            $("#groupList").val([@Model.RGID]).trigger("change")
+            //机框A
+            $("#frameListA").val([@Model.RAMFID]).trigger("change")
+            //机框A
+            $("#frameListB").val([@Model.RBMFID]).trigger("change");
+        }
+        if(action == "Details"){
+            $(".form-group div input").attr("disabled", "disabled");
+            $(".form-group div select").attr("disabled", "disabled");
+            $(".form-group div button").attr("disabled", "disabled");
+            $(".form-group div a").attr("disabled", "disabled");
+            $(".form-group div textarea").attr("disabled", "disabled");
+        }
+    });
+    //提交表单
+    function submitForm() {
+        $("#RGID").val($("#groupList").select2("val"));
+        $("#RAMFID").val($("#frameListA").select2("val"));
+        $("#RBMFID").val($("#frameListB").select2("val"));
+        if (!$("#dataForm").valid()) {
+            return;
+        };
+        $('#dataForm').submit();
+    }
+    //  提交后
+    function onSuccess(data, statusText, xhr) {
+        if (data) {
+            parent.window.childCallback(data);
+        }
+    }
+</script>
