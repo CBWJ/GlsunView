@@ -1,6 +1,8 @@
-﻿@model GlsunView.Domain.Route
+﻿@using System.Web.Script.Serialization;
+@model GlsunView.Models.RouteViewModel
 @{
     Layout = null;
+    var modelJson = new JavaScriptSerializer().Serialize(Model);
 }
 
 <!DOCTYPE html>
@@ -9,8 +11,246 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>Index</title>
+    <link rel="stylesheet" href="~/Content/css/alertBox.css" />
+    <style>
+        html,body{
+            height: 100%;
+            font-family: Arial, Microsoft YaHei, SimSun , Tahoma, Helvetica, "\5b8b\4f53", sans-serif;
+        }
+        .top{
+            width: 1000px;
+            height: 250px;
+        }
+        .middle{
+            width: 1000px;
+            height: 40px;
+            background-color: #d7e3bf;
+            border: 1px solid #ccc;
+            margin-top: 10px;
+        }
+        .middle input, .middle select{
+            width: 150px;
+            height: 30px;
+            margin-left: 50px;
+            margin-top:5px;
+        }
+        .middle input[type='button']{
+            background-color: #4aadc7;
+            border: none;
+        }
+        .middle input[type='text']{
+            text-align: center;
+            border: none;
+        }
+        #txtStatus.normal{
+            background-color: #feff01;
+        }
+        #txtStatus.exception{
+            background-color: orangered;
+        }
+        .bottom{
+            margin-top: 10px;
+        }
+        .bottom .box{
+            float: left;
+            border: 1px solid #000;
+            width: 480px;
+            height: 330px;
+            margin-right: 38px;
+            position: relative;
+        }
+        .bottom .box .title{
+            background-color: #eee;
+            height: 30px;
+            border-bottom: 1px solid #ccc;
+            text-align: center;
+            line-height: 30px;
+            font-size: 14px;
+        }
+        #btnOK{
+            width: 80px;
+            margin-right: 0px;
+        }
+        .frame_config{
+            position: absolute;
+            left: 0;
+            top: 30px;
+            right: 0;
+            bottom: 0;
+            overflow: hidden;
+        }
+        .frame_config iframe{            
+            border: none;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
 </head>
 <body>
-    <h1>@Model.RName</h1>
+    <div class="alertBox" id="alert"></div>
+    <div class="top" id="graph">
+        <canvas id="route"></canvas>
+    </div>
+    <div class="middle">
+        <input type="button" id="btnPrimary" value="切换到主线路">
+        <input type="button" id="btnSecondary" value="切换到备线路">
+        <input type="text" id="txtStatus" value="备线路监测正常">
+        <select id="Back_Mode" name="Back_Mode">
+            <option value="0">自动不返回（双纤）</option>
+            <option value="1" )>自动回切（双纤）</option>
+        </select>
+        <input type="button" id="btnOK" value="确定">
+    </div>
+    <div class="bottom">
+        <div class="box">
+            <div class="title">
+                @Model.ACardPosition
+            </div>
+            <div class="frame_config">
+                <iframe src="@Url.Action("RouteView", "OLPCard", new { ip = Model.AIP, port = Model.APort, slot = Model.ASlot})"></iframe>
+            </div>
+        </div>
+        <div class="box">
+            <div class="title">
+                @Model.BCardPosition
+            </div>
+            <div class="frame_config">
+                <iframe src="@Url.Action("RouteView", "OLPCard", new { ip = Model.BIP, port = Model.BPort, slot = Model.BSlot})"></iframe>
+            </div>
+        </div>
+    </div>
+    <script src="~/scripts/jquery-1.9.1.min.js"></script>
+    <script src="~/scripts/lib/route_view.js"></script>
+    <script>
+        var json = '@Html.Raw(modelJson)';
+        var viewModel = JSON.parse(json);
+        var topDiv = document.getElementById("graph");
+        var canvas = document.getElementById("route");
+        canvas.height = graph.offsetHeight;
+        canvas.width = graph.offsetWidth;
+        var route = new glsun.Route(canvas);
+        $(function () {
+            //线路设置
+            if(viewModel.AWorkRoute == viewModel.BWorkRoute){
+                if(viewModel.AWorkRoute == 1){
+                route.switchToPrimary();
+                }else if(viewModel.AWorkRoute == 2){
+                    route.switchToSecondary();
+                }
+            }
+            //静态文本设置
+            route.setCenterText("@Model.RouteName");
+            route.setleftTitle("@Model.AName");
+            route.setLeftBoxTopText("@Model.ACardPosition");
+            route.setLeftBoxBottomText("@Model.ACardType");
+            route.setRightTitle("@Model.BName");
+            route.setRightBoxTopText("@Model.BCardPosition");
+            route.setRightBoxBottomText("@Model.BCardType");
+            $("#btnPrimary").click(function () {
+                configRoute("Manual_Switch_Channel", 1);
+            });
+            $("#btnSecondary").click(function () {
+                configRoute("Manual_Switch_Channel", 2);
+            });
+            $("#btnOK").click(function () {
+                configRoute("Back_Mode", $("#Back_Mode").val());
+            });
+            updateRequest();
+            setInterval(updateRequest, 2000);
+        });
+        //更新请求
+        var okA = okB = true;
+        function updateRequest() {
+            okA = okB = true;
+            $.post("@Url.Action("UpdateConfig", "OLPCard")", { ip: "@Model.AIP", port: @Model.APort, slot: @Model.ASlot },
+                function (data, status, jqXHR) {
+                    if (data) {
+                        if (data.Code == "") {
+                            var olpInfo = data.Data;
+                            route.setLeftR1(olpInfo.R1_Input_Power);
+                            route.setLeftR2(olpInfo.R2_Input_Power);
+                            route.setLeftRX(olpInfo.RX_Power);
+                            route.setLeftT1(olpInfo.T1_Power);
+                            route.setLeftT2(olpInfo.T2_Power);
+                            route.setLeftTX(olpInfo.TX_Input_Power);
+                        }
+                        else if(data.Code == "Exception"){
+                            console.log("Exception");
+                            okA = false;
+                        }
+                    }
+                }, "json");
+            $.post("@Url.Action("UpdateConfig", "OLPCard")", { ip: "@Model.BIP", port: @Model.BPort, slot: @Model.BSlot },
+                function (data, status, jqXHR) {
+                    if (data) {
+                        if (data.Code == "") {
+                            var olpInfo = data.Data;
+                            route.setRightR1(olpInfo.R1_Input_Power);
+                            route.setRightR2(olpInfo.R2_Input_Power);
+                            route.setRightRX(olpInfo.RX_Power);
+                            route.setRightT1(olpInfo.T1_Power);
+                            route.setRightT2(olpInfo.T2_Power);
+                            route.setRightTX(olpInfo.TX_Input_Power);
+                        }
+                        else if(data.Code == "Exception"){
+                            console.log("Exception");
+                            okB = false;                            
+                        }
+                    }
+                    updateRouteStatus();
+                }, "json");            
+        }
+        function updateRouteStatus(){
+            var $text = $("#txtStatus");
+            $text[0].className = "";
+            if(okA && okB){
+                $text.val("线路监测正常");
+                $text.addClass("normal");
+            }else 
+            {
+                $text.addClass("exception");
+                if(okA){
+                    $text.val("B框通信异常");
+                }
+                else if(okB){
+                    $text.val("A框通信异常");
+                }
+                else{
+                    $text.val("线路监测异常");
+                }
+            }
+        }
+        //切换线路
+        function configRoute(prop, val){
+            if(!val) val = 1;
+            $.post("@Url.Action("ConfigRoute", "Route")", {model:viewModel, property:prop, value: val },
+                function (data, status, jqXHR) {
+                    var divAlert = $("#alert");
+                    var showText = "";
+                    if (status == "success" && data) {
+                        if (data.Code == "") {
+                            divAlert.removeClass("alert-failure").addClass("alert-success");
+                            if(val == 1){
+                                route.switchToPrimary();
+                            }else{
+                                route.switchToSecondary();
+                            }
+                        }
+                        else {
+                            divAlert.removeClass("alert-success").addClass("alert-failure");
+                        }
+                        showText = data.Data;
+                    }
+                    else{
+                        showText = "请求失败";
+                    }
+                    divAlert.text(showText);
+                    divAlert.show();
+                    setTimeout(function () {
+                        divAlert.fadeOut();
+                    }, 1500);
+                }, "json");
+        }
+    </script>
 </body>
 </html>

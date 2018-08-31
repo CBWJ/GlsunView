@@ -117,19 +117,29 @@ namespace GlsunView.Controllers
         public ActionResult UpdateConfig(string ip, int port, int slot)
         {
             JsonResult result = new JsonResult();
-            try
+            OEOInfo oeoInfo = new OEOInfo();
+            var tcp = TcpClientServicePool.GetService(ip, port);
+            if (tcp != null)
             {
-                OEOInfo oeoInfo = new OEOInfo();
-                var tcp = TcpClientServicePool.GetService(ip, port);
-                if (tcp == null) throw new NullReferenceException();
-                OEOCommService service = new OEOCommService(tcp, slot);
-                oeoInfo.RefreshData(service);
-                tcp.IsBusy = false;
-                result.Data = new { Code = "", Data = oeoInfo.SFPSet };
+                try
+                {
+                    if (tcp == null) throw new NullReferenceException();
+                    OEOCommService service = new OEOCommService(tcp, slot);
+                    oeoInfo.RefreshData(service);
+                    result.Data = new { Code = "", Data = oeoInfo.SFPSet };
+                }
+                catch (Exception ex)
+                {
+                    result.Data = new { Code = "Exception", Data = ex.Message };
+                }
+                finally
+                {
+                    tcp.IsBusy = false;
+                }
             }
-            catch (Exception ex)
+            else
             {
-                result.Data = new { Code = "Exception", Data = "" };
+                result.Data = new { Code = "Exception", Data = "获取TCP连接失败" };
             }
             return result;
         }

@@ -92,19 +92,28 @@ namespace GlsunView.Controllers
         {
             JsonResult result = new JsonResult();
             //result.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
-            try
+            EDFAInfo edfaInfo = new EDFAInfo();
+            var tcp = TcpClientServicePool.GetService(ip, port);
+            if (tcp != null)
             {
-                EDFAInfo edfaInfo = new EDFAInfo();
-                var tcp = TcpClientServicePool.GetService(ip, port);
-                if (tcp == null) throw new NullReferenceException();
-                EDFACommService service = new EDFACommService(tcp, slot);
-                edfaInfo.RefreshData(service);
-                tcp.IsBusy = false;
-                result.Data = new { Code = "", Data = edfaInfo };
+                try
+                {
+                    EDFACommService service = new EDFACommService(tcp, slot);
+                    edfaInfo.RefreshData(service);
+                    result.Data = new { Code = "", Data = edfaInfo };
+                }
+                catch (Exception ex)
+                {
+                    result.Data = new { Code = "Exception", Data = ex.Message };
+                }
+                finally
+                {
+                    tcp.IsBusy = false;
+                }
             }
-            catch (Exception ex)
+            else
             {
-                result.Data = new { Code = "Exception", Data = "" };
+                result.Data = new { Code = "Exception", Data = "获取TCP连接失败" };
             }
             return result;
         }

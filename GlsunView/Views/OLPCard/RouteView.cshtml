@@ -1,0 +1,345 @@
+﻿@model GlsunView.Models.OLPViewModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>RouteView</title>
+    <link rel="stylesheet" href="~/Content/css/alertBox.css" />
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        html,body{
+            height: 100%;
+            font-family: Arial, Microsoft YaHei, SimSun , Tahoma, Helvetica, "\5b8b\4f53", sans-serif;
+        }
+        .table_up, .table_down{
+            font-size: 1em;
+            width: 480px;
+            border-spacing: 5px 4px;
+        }
+        .table_up td.label{
+            width:80px;
+            text-align: right;
+        }
+        .table_up td.value{
+            width:100px;
+        }
+        .table_up td.value input, .table_up td.value select{
+            width:100px;
+            height: 1.8em;
+            background-color: #8dce47;
+            border-style: none;
+        }
+        .table_up td.separator{
+            width: 40px;
+        }
+        .table_down{
+            margin-top: 20px;
+        }
+        .table_down td.label1{
+            width:50px;
+            text-align: center;
+        }
+        .table_down td.label2{
+            width:60px;
+            text-align: center;
+        }
+        .table_down td.light{
+            width: 50px;
+        }
+        .table_down td.light span{
+            display: block;
+            width: 15px;
+            height: 15px;
+            background-color: #ccc;
+            border-radius: 15px;
+            margin-left: 20px;
+        }
+        .table_down td.light span.red{
+            background-color: red;
+        }
+        .table_down td.light span.green{
+            background-color: green;
+        }
+        .table_down td.value1{
+            width: 80px;
+        }
+        .table_down td.value1 input{
+            width: 80px;
+            height: 1.6em;
+            background-color: #8dce47;
+            border-style: none;
+            text-align: center;
+        }
+        .table_down button{
+            width: 60px;
+        }
+        #txtStatus{
+            width:150px;
+            height: 1.8em;
+            background-color: #feff01;
+            border-style: none;            
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="alertBox" id="alert"></div>
+    <table class="table_up">
+        <tbody>
+            <tr>
+                <td class="label">工作线路</td>
+                <td class="value">
+                    <select id="Manual_Switch_Channel" name="Manual_Switch_Channel">
+                        <option value="1">主线路</option>
+                        <option value="2">备线路</option>
+                    </select>
+                </td>
+                <td class="separator"></td>
+                <td class="label">监测波长nm</td>
+                <td class="value">
+                    <input id="Monitor_Wave" name="Monitor_Wave" value="1550">
+                </td>
+            </tr>
+            <tr>
+                <td class="label">工作模式</td>
+                <td class="value">
+                    <select id="Work_Mode" name="Work_Mode">
+                        <option value="0">手动</option>
+                        <option value="1">自动</option>
+                    </select>
+                </td>
+                <td class="separator"></td>
+                <td class="label">切换延时(s)</td>
+                <td class="value">
+                    <input id="Auto_Back_Delay" name="Auto_Back_Delay" value="0.1">
+                </td>
+            </tr>
+            <tr>
+                <td class="label">返回模式</td>
+                <td class="value">
+                    <select id="Back_Mode" name="Back_Mode">
+                        <option value="0" )>自动不返回</option>
+                        <option value="1" )>自动返回</option>
+                    </select>
+                </td>
+                <td class="separator"></td>
+                <td class="label">返回时间</td>
+                <td class="value">
+                    <input id="Switch_Delay" name="Switch_Delay" value="10">
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table_down">
+        <thead>
+            <tr>
+                <th>端口</th>
+                <th>指示灯</th>
+                <th>当前值</th>
+                <th>告警阈值</th>
+                <th>切换阈值</th>
+                <th>校准阈值</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="label1">R1</td>
+                <td class="light"><span class="green"></span></td>
+                <td class="label2" id="R1_Input_Power" name="R1_Input_Power">-11.4</td>
+                <td class="value1">
+                    <input id="R1_Alarm_Power" name="R1_Alarm_Power" value="-30.0">
+                </td>
+                <td class="value1">
+                    <input id="R1_Switching_Power" name="R1_Switching_Power" value="-35.0">
+                </td>
+                <td class="value1">
+                    <input id="R1_Calibration_Power" name="R1_Calibration_Power" value="6">
+                </td>
+            </tr>
+            <tr>
+                <td class="label1">R2</td>
+                <td class="light"><span class="green"></span></td>
+                <td class="label2"  id="R2_Input_Power" name="R2_Input_Power">-16.9</td>
+                <td class="value1">
+                    <input id="R2_Alarm_Power" name="R2_Alarm_Power" value="-30.0">
+                </td>
+                <td class="value1">
+                    <input id="R2_Switching_Power" name="R2_Switching_Power" value="-35.0">
+                </td>
+                <td class="value1">
+                    <input id="R2_Calibration_Power" name="R2_Calibration_Power" value="10">
+                </td>
+            </tr>
+            <tr>
+                <td class="label1">RX</td>
+                <td class="light"><span class="red"></span></td>
+                <td class="label2" id="RX_Power" name="RX_Power">-10.4</td>
+                <td class="value1">
+                    <input id="RX_Alarm_Power" name="RX_Alarm_Power" value="-32.0">
+                </td>
+            </tr>
+            <tr>
+                <td class="label1">T1</td>
+                <td class="light"><span class="green"></span></td>
+                <td class="label2" id="T1_Power" name="T1_Power">4.0</td>
+                <td class="value1">
+                    <input id="T1_Alarm_Power" name="T1_Alarm_Power" value="-17.0">
+                </td>
+            </tr>
+            <tr>
+                <td class="label1">T2</td>
+                <td class="light"><span class="green"></span></td>
+                <td class="label2" id="T2_Power" name="T2_Power">-1.0</td>
+                <td class="value1">
+                    <input id="T2_Alarm_Power" name="T2_Alarm_Power" value="-17.0">
+                </td>
+                <td colspan="2">
+                    <input id="txtStatus" name="Control_Status" value="处于远程控制">
+                </td>
+            </tr>
+            <tr>
+                <td class="label1">TX</td>
+                <td class="light"><span class="green"></span></td>
+                <td class="label2" id="TX_Input_Power" name="TX_Input_Power">5.0</td>
+                <td class="value1">
+                    <input id="TX_Alarm_Power" name="TX_Alarm_Power" value="-15.0">
+                </td>
+                <td>
+                    <button id="btnConfig">配置</button>
+                </td>
+                <td>
+                    <button id="btnRefresh">刷新</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <script src="~/scripts/jquery-1.9.1.min.js"></script>
+    <script>
+        $(function () {
+            $("#btnRefresh").click(function () {
+                updateRequest();
+            });
+            $("#btnConfig").click(function(){
+                var inputs = $(":input");
+                var dataObj = {};
+                for(var i = 0; i < inputs.length; ++i){
+                    var element = inputs[i];
+                    if(element.tagName == "INPUT" || element.tagName == "SELECT"){
+                        dataObj[element.name] = $(element).val();
+                    }
+                }
+                $.post("@Url.Action("SetConfiguration", "OLPCard")", {info:dataObj, ip: "@Model.IP", port: @Model.Port, slot: @Model.Slot },
+                        function (data, status, jqXHR) {
+                            var divAlert = $("#alert");
+                            var showText = "";
+                            if (status == "success" && data) {
+                                if (data.Code == "") {
+                                    divAlert.removeClass("alert-failure").addClass("alert-success");
+                                }
+                                else {
+                                    divAlert.removeClass("alert-success").addClass("alert-failure");
+                                }
+                                showText = data.Data;
+                            }
+                            else{
+                                showText = "请求失败";
+                            }
+                            divAlert.text(showText);
+                            divAlert.show();
+                            setTimeout(function () {
+                                divAlert.fadeOut();
+                            }, 1500);
+                        }, "json");
+            });
+            updateRequest();
+        });
+        //更新请求
+        function updateRequest() {
+            $.post("@Url.Action("UpdateConfig", "OLPCard")", { ip: "@Model.IP", port: @Model.Port, slot: @Model.Slot },
+            function (data, status, jqXHR) {
+                if (data) {
+                    if (data.Code == "") {
+                        updateConfig(data.Data);
+                    }
+                    else if(data.Code == "Exception"){
+                        console.log("Exception");
+                    }
+                }
+            }, "json");
+        }
+        //更新配置信息
+        function updateConfig(olpInfo){
+            for(var prop in olpInfo){
+                //console.log(prop + ":" + olpInfo[prop]);
+                var element = document.getElementById(prop);
+                if(element){
+                    var value = olpInfo[prop];
+                    if(value != null){                        
+                        if(element.tagName == "SELECT"){
+                            $(element).val(value);
+                        }
+                        else if(element.tagName == "INPUT"){
+                            if(!isNaN(value)) value = value.toFixed(2);
+                            $(element).val(value);
+                        }else{
+                            if(!isNaN(value)) value = value.toFixed(2);
+                            $(element).text(value);
+                        }
+                    }
+                }
+            }
+            //更新指示灯
+            var span = $("#R1_Input_Power").prev().children("span");
+            span.attr("class", "");
+            if(olpInfo["R1_Input_Power"] < olpInfo["R1_Alarm_Power"]){
+                span.addClass("red");
+            }else{
+                span.addClass("green");
+            }
+            span = $("#R2_Input_Power").prev().children("span");
+            span.attr("class", "");
+            if(olpInfo["R2_Input_Power"] < olpInfo["R2_Alarm_Power"]){
+                span.addClass("red");
+            }else{
+                span.addClass("green");
+            }
+            span = $("#RX_Power").prev().children("span");
+            span.attr("class", "");
+            if(olpInfo["RX_Power"] < olpInfo["RX_Alarm_Power"]){
+                span.addClass("red");
+            }else{
+                span.addClass("green");
+            }
+            span = $("#T1_Power").prev().children("span");
+            span.attr("class", "");
+            if(olpInfo["T1_Power"] < olpInfo["T1_Alarm_Power"]){
+                span.addClass("red");
+            }else{
+                span.addClass("green");
+            }
+            span = $("#T2_Power").prev().children("span");
+            span.attr("class", "");
+            if(olpInfo["T2_Power"] < olpInfo["T2_Alarm_Power"]){
+                span.addClass("red");
+            }else{
+                span.addClass("green");
+            }
+            span = $("#TX_Input_Power").prev().children("span");
+            span.attr("class", "");
+            if(olpInfo["TX_Input_Power"] < olpInfo["TX_Alarm_Power"]){
+                span.addClass("red");
+            }else{
+                span.addClass("green");
+            }
+        }
+    </script>
+</body>
+</html>

@@ -83,6 +83,25 @@ namespace GlsunView.Controllers
             return View(model);
         }
         /// <summary>
+        /// 路由视图OLP部分
+        /// </summary>
+        /// <param name="ip"></param>
+        /// <param name="port"></param>
+        /// <param name="slot"></param>
+        /// <returns></returns>
+        public ActionResult RouteView(string ip, int port, int slot)
+        {
+            OLPInfo olpInfo = new OLPInfo();
+            OLPViewModel model = new OLPViewModel()
+            {
+                IP = ip,
+                Port = port,
+                Slot = slot
+            };
+            
+            return View(model);
+        }
+        /// <summary>
         /// 设备视图更新配置信息
         /// </summary>
         /// <param name="ip"></param>
@@ -93,19 +112,28 @@ namespace GlsunView.Controllers
         public ActionResult UpdateConfig(string ip, int port, int slot)
         {
             JsonResult result = new JsonResult();
-            try
+            OLPInfo olpInfo = new OLPInfo();
+            var tcp = TcpClientServicePool.GetService(ip, port);
+            if (tcp != null)
             {
-                OLPInfo olpInfo = new OLPInfo();
-                var tcp = TcpClientServicePool.GetService(ip, port);
-                if (tcp == null) throw new NullReferenceException();
-                OLPCommService service = new OLPCommService(tcp, slot);
-                olpInfo.RefreshData(service);
-                tcp.IsBusy = false;
-                result.Data = new { Code = "", Data = olpInfo };
+                try
+                {
+                    OLPCommService service = new OLPCommService(tcp, slot);
+                    olpInfo.RefreshData(service);
+                    result.Data = new { Code = "", Data = olpInfo };
+                }
+                catch (Exception ex)
+                {
+                    result.Data = new { Code = "Exception", Data = ex.Message };
+                }
+                finally
+                {
+                    tcp.IsBusy = false;
+                }
             }
-            catch (Exception ex)
+            else
             {
-                result.Data = new { Code = "Exception", Data = "" };
+                result.Data = new { Code = "Exception", Data = "获取TCP连接失败" };
             }
             return result;
         }

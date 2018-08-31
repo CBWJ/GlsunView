@@ -97,6 +97,7 @@
     <Compile Include="Util\JsonHelper.cs" />
     <Compile Include="Util\JsonResultEx.cs" />
     <Compile Include="Util\MemoryCacheHelper.cs" />
+    <Compile Include="Util\ReflectionHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GlsunView.Domain\GlsunView.Domain.csproj">

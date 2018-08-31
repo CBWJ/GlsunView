@@ -273,6 +273,7 @@
     <Content Include="scripts\lib\jquery.ztree.core.js" />
     <Content Include="scripts\lib\jquery.ztree.excheck.min.js" />
     <Content Include="scripts\lib\jtopo-min.js" />
+    <Content Include="scripts\lib\route_view.js" />
     <Content Include="scripts\lib\select2.full.js" />
     <Content Include="scripts\messages_zh.js" />
     <Content Include="scripts\moment-with-locales.js" />
@@ -347,6 +348,7 @@
     <Compile Include="Models\OLPViewModel.cs" />
     <Compile Include="Models\PagingInfo.cs" />
     <Compile Include="Models\RoleAuthrizeInfo.cs" />
+    <Compile Include="Models\RouteViewModel.cs" />
     <Compile Include="Models\SFPModule.cs" />
     <Compile Include="Models\Slot.cs" />
     <Compile Include="Models\TcpPoolInfo.cs" />
@@ -429,6 +431,7 @@
     <Content Include="Views\RouteView\RouteGroupList.cshtml" />
     <Content Include="Views\RouteGroup\Index.cshtml" />
     <Content Include="Views\Route\Index.cshtml" />
+    <Content Include="Views\OLPCard\RouteView.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

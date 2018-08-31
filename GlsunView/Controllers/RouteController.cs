@@ -6,6 +6,8 @@ using System.Web.Mvc;
 using GlsunView.Domain;
 using GlsunView.Models;
 using System.Text;
+using GlsunView.CommService;
+using GlsunView.Infrastructure.Util;
 
 namespace GlsunView.Controllers
 {
@@ -14,12 +16,129 @@ namespace GlsunView.Controllers
         // GET: Route
         public ActionResult Index(int id)
         {
-            Route route = null;
+            RouteViewModel routeView = new RouteViewModel();
             using (var ctx = new GlsunViewEntities())
             {
-                route = ctx.Route.Find(id);
+                Route route = ctx.Route.Find(id);
+                MachineFrame frameA = ctx.MachineFrame.Find(route.RAMFID);
+                MachineFrame frameB = ctx.MachineFrame.Find(route.RBMFID);
+
+                routeView.RouteName = route.RName;
+                routeView.AName = route.RAName;
+                routeView.AIP = frameA.MFIP;
+                routeView.APort = frameA.MFPort.Value;
+                routeView.ASlot = route.RASlot.Value;
+                routeView.ACardPosition = string.Format("A框{0}-盘{1}", routeView.AIP, routeView.ASlot);
+                routeView.ACardType = "OLP";
+                routeView.BName = route.RBName;
+                routeView.BIP = frameB.MFIP;
+                routeView.BPort = frameB.MFPort.Value;
+                routeView.BSlot = route.RBSlot.Value;
+                routeView.BCardPosition = string.Format("B框{0}-盘{1}", routeView.BIP, routeView.BSlot);
+                routeView.BCardType = "OLP";
             }
-            return View(route);
+            OLPInfo olpInfo = new OLPInfo();
+            var tcp = TcpClientServicePool.GetService(routeView.AIP, routeView.APort);
+            if(tcp != null)
+            {
+                OLPCommService service = new OLPCommService(tcp, routeView.ASlot);
+                try
+                {
+                    olpInfo.RefreshData(service);
+                    routeView.ACardType = olpInfo.Card_Type;
+                    routeView.AWorkRoute = olpInfo.Manual_Switch_Channel;
+                }
+                catch
+                {
+                    routeView.ACardType = "";
+                    routeView.AWorkRoute = 1;
+                }
+                finally
+                {
+                    tcp.IsBusy = false;
+                }
+            }
+            tcp = TcpClientServicePool.GetService(routeView.BIP, routeView.BPort);
+            if (tcp != null)
+            {
+                OLPCommService service = new OLPCommService(tcp, routeView.BSlot);
+                try
+                {
+                    olpInfo.RefreshData(service);
+                    routeView.BCardType = olpInfo.Card_Type;
+                    routeView.BWorkRoute = olpInfo.Manual_Switch_Channel;
+                }
+                catch
+                {
+                    routeView.BCardType = "";
+                    routeView.BWorkRoute = 1;
+                }
+                finally
+                {
+                    tcp.IsBusy = false;
+                }
+            }
+            return View(routeView);
+        }
+        /// <summary>
+        /// 配置路由
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public ActionResult ConfigRoute(RouteViewModel model,string property, int value)
+        {
+            JsonResult result = new JsonResult();
+            var tcpA = TcpClientServicePool.GetService(model.AIP, model.APort);
+            var tcpB = TcpClientServicePool.GetService(model.BIP, model.BPort);
+            if (tcpA == null)
+            {
+                result.Data = new { Code = "Exception", Data = "获取A端TCP连接失败" };
+            }
+            else if (tcpB == null)
+            {
+                result.Data = new { Code = "Exception", Data = "获取B端TCP连接失败" };
+            }
+            if(tcpA != null && tcpB != null)
+            {
+                try
+                {
+                    List<string> listException = new List<string>();
+                    //设置方法名
+                    string methodName = "Set" + property.Replace("_", "");
+                    OLPCommService serviceA = new OLPCommService(tcpA, model.ASlot);
+                    bool ret = (bool)ReflectionHelper.InvokeMethod(serviceA, methodName, new object[] { value });
+                    if (!ret)
+                        listException.Add("A端线路");
+                    OLPCommService serviceB = new OLPCommService(tcpB, model.BSlot);
+                    ret = (bool)ReflectionHelper.InvokeMethod(serviceB, methodName, new object[] { value });
+                    if (!ret)
+                        listException.Add("B端线路");
+                    if (listException.Count == 0)
+                    {
+                        result.Data = new { Code = "", Data = "配置成功" };
+                    }
+                    else
+                    {
+                        string data = "配置失败：";
+                        foreach (var e in listException)
+                        {
+                            data += e + " ";
+                        }
+                        result.Data = new { Code = "Exception", Data = data };
+                    }
+                }
+                catch (Exception ex)
+                {
+                    result.Data = new { Code = "Exception", Data = ex.Message };
+                }
+                finally
+                {
+                    tcpA.IsBusy = false;
+                    tcpB.IsBusy = false;
+                }
+            }
+            return result;
         }
         /// <summary>
         /// 路由列表
