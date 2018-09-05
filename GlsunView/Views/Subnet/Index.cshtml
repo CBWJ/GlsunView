@@ -46,6 +46,7 @@
         <li><a>删除</a></li>
     </ul>
     <ul id="linkmenu" class="contextmenu dropdown-menu" style="display:none;">
+        <li><a>关联路由</a></li>
         <li><a>删除连线</a></li>
     </ul>
     <input id="txtNodeEdit" style="display:none;position:absolute;width:100px;" onkeydown="if(event.keyCode==13)this.blur();" />
@@ -68,6 +69,8 @@
     var $canvas = $("#canvas"), $content = $("#content");
     //画板最大高度
     var maxHeight = 0, fixH = 10;
+    //线条颜色值
+    var colors = ["0,238,238", "255,127,0", "102,205,0", "160,10,220"];
     window.onresize = function (e) {
         var w = $content.width();
         var h = $content.height() - fixH;
@@ -224,10 +227,10 @@
             link.xData = xData;
             link.lineWidth = 1; // 线宽
             link.dashedPattern = dashedPattern; // 虚线
-            link.bundleOffset = 60; // 折线拐角处的长度
+            link.bundleOffset = 50; // 折线拐角处的长度
             link.bundleGap = 20; // 线条之间的间隔
             link.textOffsetY = 3; // 文本偏移量（向下3个像素）
-            link.strokeColor = '204,204,204';
+            link.strokeColor = colors[getLinks(nodeA, nodeZ).length]; // 线条颜色随机
             link.addEventListener('mouseup', function (event) {
                 $(".contextmenu").hide();
                 currentLink = this;
@@ -259,6 +262,12 @@
                     nodeMenu.hide();
                     return;
                 }
+                var lineMenu = $("#linkmenu");
+                display = lineMenu.css("display");
+                if (display == "block") {
+                    lineMenu.hide();
+                    return;
+                }
             }
             if (e.button == 2) {
                 beginNode = null;
@@ -283,7 +292,8 @@
                         }
                         else if (beginNode != e.target) { //其他节点
                             var endNode = e.target;
-                            if (isExistLink(beginNode, endNode)) {
+                            var links = getLinks(beginNode, endNode);
+                            if (links.length >= 4) {
                                 beginNode = null;
                                 scene.remove(lineLink);
                                 return;
@@ -332,6 +342,12 @@
             }
             else if (target.elementType == "link") {
                 console.log("双击连线");
+                var url = getHostPath() + "/Route/LinkRoute/" + target.xData;
+                if(target.text != null && target.text !== "")
+                    parent.tab.add(target.text, url);
+                else{
+                    infoDialog.message("提示", "未关联路由，无法跳转到路由视图！");
+                }
             }
         })
         scene.mousedrag(function () {
@@ -343,6 +359,20 @@
         });
         //场景中的两个节点是否存在连线
         function isExistLink(a, b) {
+            //var links = scene.childs.filter(function (e) {
+            //    return e.elementType == "link";
+            //});
+            //links = links.filter(function (e) {
+            //    return (e.nodeA.xData == a.xData && e.nodeZ.xData == b.xData) ||
+            //            (e.nodeA.xData == b.xData && e.nodeZ.xData == a.xData);
+            //});
+            var links = getLinks(a, b);
+            if (links.length > 0)
+                return true;
+            return false;
+        }
+        //场景中的两个节点连线数量
+        function getLinks(a, b){
             var links = scene.childs.filter(function (e) {
                 return e.elementType == "link";
             });
@@ -350,9 +380,7 @@
                 return (e.nodeA.xData == a.xData && e.nodeZ.xData == b.xData) ||
                         (e.nodeA.xData == b.xData && e.nodeZ.xData == a.xData);
             });
-            if (links.length > 0)
-                return true;
-            return false;
+            return links;
         }
         //获取选择节点
         function getSelectedNodes() {
@@ -417,7 +445,7 @@
                 dataType: "json",
                 success: function (data, textStatus, jqXHR) {
                     if (data.Code == "") {
-                        newLink(beginNode, endNode, data.Data.ID);
+                        newLink(beginNode, endNode, data.Data.ID, data.Data.Name);
                         beginNode = null;
                         scene.remove(lineLink);
                     }
@@ -473,6 +501,17 @@
                     });
                     });
                 confirmDialog.confirm("确认操作", "真的要删除了吗？该操作无法撤销！");
+            }
+            else if (text == "关联路由"){
+                mainDialog.init("关联路由", function () {
+                    var frame = document.getElementById("formFrame");
+                    var url = getHostPath() + "/DeviceLine/Edit/" + currentLink.xData;
+                    frame.src = url;
+                }, function(){
+                    //调用Frame的方法
+                    formFrame.window.submitForm();
+                });
+                mainDialog.modal();
             }
             $(".contextmenu").hide();
         });
@@ -582,7 +621,7 @@
                 var nodeA = getNodeByDataId(line.NodeIDA),
                     nodeZ = getNodeByDataId(line.NodeIDZ);
                 if (nodeA && nodeZ) {
-                    newLink(nodeA, nodeZ, line.ID);
+                    newLink(nodeA, nodeZ, line.ID, line.Name);
                 }
             }
         }

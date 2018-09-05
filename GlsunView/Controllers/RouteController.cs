@@ -81,6 +81,82 @@ namespace GlsunView.Controllers
             return View(routeView);
         }
         /// <summary>
+        /// 设备连线跳转到路由
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public ActionResult LinkRoute(int id)
+        {
+            RouteViewModel routeView = new RouteViewModel();
+            using (var ctx = new GlsunViewEntities())
+            {
+                DeviceLine line = ctx.DeviceLine.Find(id);
+                Route route = ctx.Route.Find(line.RID);
+                
+                MachineFrame frameA = ctx.MachineFrame.Find(route.RAMFID);
+                MachineFrame frameB = ctx.MachineFrame.Find(route.RBMFID);                
+
+                if (route != null)
+                {
+                    routeView.RouteName = route.RName;
+                    routeView.AName = route.RAName;
+                    routeView.AIP = frameA.MFIP;
+                    routeView.APort = frameA.MFPort.Value;
+                    routeView.ASlot = route.RASlot.Value;
+                    routeView.ACardPosition = string.Format("A框{0}-盘{1}", routeView.AIP, routeView.ASlot);
+                    routeView.ACardType = "OLP";
+                    routeView.BName = route.RBName;
+                    routeView.BIP = frameB.MFIP;
+                    routeView.BPort = frameB.MFPort.Value;
+                    routeView.BSlot = route.RBSlot.Value;
+                    routeView.BCardPosition = string.Format("B框{0}-盘{1}", routeView.BIP, routeView.BSlot);
+                    routeView.BCardType = "OLP";
+                }
+            }
+            OLPInfo olpInfo = new OLPInfo();
+            var tcp = TcpClientServicePool.GetService(routeView.AIP, routeView.APort);
+            if (tcp != null)
+            {
+                OLPCommService service = new OLPCommService(tcp, routeView.ASlot);
+                try
+                {
+                    olpInfo.RefreshData(service);
+                    routeView.ACardType = olpInfo.Card_Type;
+                    routeView.AWorkRoute = olpInfo.Manual_Switch_Channel;
+                }
+                catch
+                {
+                    routeView.ACardType = "";
+                    routeView.AWorkRoute = 1;
+                }
+                finally
+                {
+                    tcp.IsBusy = false;
+                }
+            }
+            tcp = TcpClientServicePool.GetService(routeView.BIP, routeView.BPort);
+            if (tcp != null)
+            {
+                OLPCommService service = new OLPCommService(tcp, routeView.BSlot);
+                try
+                {
+                    olpInfo.RefreshData(service);
+                    routeView.BCardType = olpInfo.Card_Type;
+                    routeView.BWorkRoute = olpInfo.Manual_Switch_Channel;
+                }
+                catch
+                {
+                    routeView.BCardType = "";
+                    routeView.BWorkRoute = 1;
+                }
+                finally
+                {
+                    tcp.IsBusy = false;
+                }
+            }
+            return View("Index", routeView);
+        }
+        /// <summary>
         /// 配置路由
         /// </summary>
         /// <param name="model"></param>
@@ -336,6 +412,31 @@ namespace GlsunView.Controllers
                 json.Data = new { Code = "Exception", Data = "", Message = ex.Message };
             }
             return json;
+        }
+
+        public string GetRouteOption(int id)
+        {
+            //路由组数据
+            StringBuilder sbRoute = new StringBuilder();
+            sbRoute.Append("[");
+            using (var ctx = new GlsunViewEntities())
+            {
+                int count = 0;
+                var routes = ctx.Route.ToList();
+                if (id > 0)
+                    routes = routes.Where(r => r.RGID == id).ToList();
+                foreach (var r in routes)
+                {
+                    sbRoute.AppendFormat("{{id: {0}, text: '{1}'}}", r.ID, r.RName);
+                    count++;
+                    if (count != routes.Count())
+                    {
+                        sbRoute.Append(",");
+                    }
+                }
+            }
+            sbRoute.Append("]");
+            return sbRoute.ToString();
         }
     }
 }

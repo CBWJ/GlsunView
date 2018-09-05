@@ -72,6 +72,7 @@
           <Property Name="DLName" Type="nvarchar" MaxLength="30" />
           <Property Name="DIDA" Type="int" />
           <Property Name="DIDB" Type="int" />
+          <Property Name="RID" Type="int" />
           <Property Name="CreatorID" Type="int" />
           <Property Name="CreationTime" Type="datetime" />
           <Property Name="EditorID" Type="int" />
@@ -1631,6 +1632,7 @@
           <Property Name="CreationTime" Type="DateTime" Precision="3" />
           <Property Name="EditorID" Type="Int32" />
           <Property Name="EditingTime" Type="DateTime" Precision="3" />
+          <Property Name="RID" Type="Int32" />
         </EntityType>
         <EntityType Name="Subnet">
           <Key>
@@ -2322,6 +2324,7 @@
           <EntitySetMapping Name="DeviceLine">
             <EntityTypeMapping TypeName="GlsunViewModel.DeviceLine">
               <MappingFragment StoreEntitySet="DeviceLine">
+                <ScalarProperty Name="RID" ColumnName="RID" />
                 <ScalarProperty Name="EditingTime" ColumnName="EditingTime" />
                 <ScalarProperty Name="EditorID" ColumnName="EditorID" />
                 <ScalarProperty Name="CreationTime" ColumnName="CreationTime" />

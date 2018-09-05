@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using GlsunView.Domain;
 using GlsunView.Models;
 using System.IO;
+using System.Text;
 
 namespace GlsunView.Controllers
 {
@@ -222,6 +223,28 @@ namespace GlsunView.Controllers
                                select f).ToList();
             ViewBag.IconPath = "/image/route/";
             return View("~/Views/Subnet/IconList.cshtml", groupFiles);
+        }
+
+        public string GetGroupOption()
+        {
+            //路由组数据
+            StringBuilder sbGroups = new StringBuilder();
+            sbGroups.Append("[");
+            using (var ctx = new GlsunViewEntities())
+            {
+                int count = 0;
+                foreach (var group in ctx.RouteGroup)
+                {
+                    sbGroups.AppendFormat("{{id: {0}, text: '{1}'}}", group.ID, group.RGName);
+                    count++;
+                    if (count != ctx.RouteGroup.Count())
+                    {
+                        sbGroups.Append(",");
+                    }
+                }
+            }
+            sbGroups.Append("]");
+            return sbGroups.ToString();
         }
     }
 }

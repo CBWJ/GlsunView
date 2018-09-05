@@ -22,5 +22,6 @@ namespace GlsunView.Domain
         public Nullable<System.DateTime> CreationTime { get; set; }
         public Nullable<int> EditorID { get; set; }
         public Nullable<System.DateTime> EditingTime { get; set; }
+        public Nullable<int> RID { get; set; }
     }
 }

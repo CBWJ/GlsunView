@@ -20,6 +20,53 @@ namespace GlsunView.Controllers
             return View();
         }
 
+        public ActionResult Edit(int id)
+        {
+            DeviceLine line = null;
+            int RGID = 0;
+            using (var ctx = new GlsunViewEntities())
+            {
+                line = ctx.DeviceLine.Find(id);
+                if(line.RID.HasValue)
+                {
+                    var route = ctx.Route.Find(line.RID);
+                    if(route != null)
+                    {
+                        RGID = route.RGID.Value;
+                    }
+                }
+            }
+            ViewBag.RGID = RGID;
+            return View(line);
+        }
+        [HttpPost]
+        public ActionResult Edit(DeviceLine line)
+        {
+            var json = new JsonResult();
+            User loginUser = null;
+            try
+            {
+                using (var ctx = new GlsunViewEntities())
+                {
+                    loginUser = (from u in ctx.User
+                                 where u.ULoginName == HttpContext.User.Identity.Name
+                                 select u).FirstOrDefault();
+                    var route = ctx.Route.Find(line.RID);
+                    var modifyLine = ctx.DeviceLine.Find(line.ID);
+                    modifyLine.DLName = route.RName;
+                    modifyLine.RID = line.RID;
+                    modifyLine.EditorID = loginUser.ID;
+                    modifyLine.EditingTime = DateTime.Now;
+                    ctx.SaveChanges();
+                }
+                json.Data = new { Code = "", Data = "", Message = "保存成功" };
+            }
+            catch (Exception ex)
+            {
+                json.Data = new { Code = "Exception", Data = "", Message = ex.Message };
+            }
+            return json;
+        }
         [HttpPost]
         public string Add(TopologyLine line)
         {
@@ -34,7 +81,18 @@ namespace GlsunView.Controllers
                                      where u.ULoginName == HttpContext.User.Identity.Name
                                      select u).FirstOrDefault();
                     var newLine = ctx.DeviceLine.Create();
-
+                    Device dA = ctx.Device.Find(line.NodeIDA);
+                    Device dB = ctx.Device.Find(line.NodeIDZ);
+                    /*Route route = ctx.Route.Where(r => (r.RAMFID == dA.MFID && r.RBMFID == dB.MFID) || 
+                                                        (r.RAMFID == dB.MFID && r.RBMFID == dA.MFID)).FirstOrDefault();
+                    if(route != null)
+                    {
+                        newLine.DLName = route.RName;
+                    }
+                    else
+                    {
+                        newLine.DLName = string.Format("{0}-{1}", dA.DName, dB.DName);
+                    }*/
                     newLine.DIDA = line.NodeIDA;
                     newLine.DIDB = line.NodeIDZ;
                     newLine.CreatorID = loginUser.ID;
@@ -43,9 +101,8 @@ namespace GlsunView.Controllers
                     ctx.DeviceLine.Add(newLine);
                     ctx.SaveChanges();
                     line.ID = newLine.ID;
-
-                    var dA = ctx.Device.Find(line.NodeIDA);
-                    var dB = ctx.Device.Find(line.NodeIDZ);
+                    //line.Name = newLine.DLName;
+                    
                     details = string.Format("{0}-{1}", dA.DName, dB.DName);
                 }
                 result = new { Code = "", Data = line, Message = "保存成功" };

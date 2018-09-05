@@ -349,6 +349,7 @@
     <Compile Include="Models\PagingInfo.cs" />
     <Compile Include="Models\RoleAuthrizeInfo.cs" />
     <Compile Include="Models\RouteViewModel.cs" />
+    <Compile Include="Models\SelectOption.cs" />
     <Compile Include="Models\SFPModule.cs" />
     <Compile Include="Models\Slot.cs" />
     <Compile Include="Models\TcpPoolInfo.cs" />
@@ -432,6 +433,7 @@
     <Content Include="Views\RouteGroup\Index.cshtml" />
     <Content Include="Views\Route\Index.cshtml" />
     <Content Include="Views\OLPCard\RouteView.cshtml" />
+    <Content Include="Views\DeviceLine\Edit.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -442,7 +444,6 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Views\CardInfo\" />
-    <Folder Include="Views\DeviceLine\" />
     <Folder Include="Views\ShareList\" />
   </ItemGroup>
   <ItemGroup>

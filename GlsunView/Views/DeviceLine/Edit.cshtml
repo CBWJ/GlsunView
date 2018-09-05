@@ -1,0 +1,93 @@
+﻿@model GlsunView.Domain.DeviceLine
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_EditLayout.cshtml";
+}
+
+@using (Html.BeginForm("Edit", "DeviceLine", FormMethod.Post, new { id = "dataForm", @class = "form-horizontal", enctype = "multipart/form-data" }))
+{
+    @Html.HiddenFor(m => m.ID)
+    @Html.HiddenFor(m => m.RID)
+    <div class="form-group">
+        <label class="col-xs-2 control-label">路由组</label>
+        <div class="col-xs-4">
+            <select class="form-control" id="groupList"></select>
+        </div>
+        <label class="col-xs-2 control-label">路由</label>
+        <div class="col-xs-4">
+            <select class="form-control" id="routeList"></select>
+        </div>
+    </div>
+}
+<script>
+    var groupData = null, routeData = null;
+    var rgid = @ViewBag.RGID, rid = @(Model.RID.HasValue ? Model.RID.Value : 0);
+    var bFirst = true;
+    $(function () {
+        //注册表单提交方式为ajaxForm
+        $("#dataForm").ajaxForm({
+            success: onSuccess
+        });
+        getGroupData();
+    });
+    //提交表单
+    function submitForm() {
+        $("#RID").val($("#routeList").select2("val"));
+        $('#dataForm').submit();
+    }
+    //  提交后
+    function onSuccess(data, statusText, xhr) {
+        if (data) {
+            parent.window.childCallback(data);
+        }
+    }
+    function getGroupData() {
+        $.get("@Url.Action("GetGroupOption", "RouteGroup")", {}, function (data) {
+            if (data) {
+                groupData = eval(data);
+                setGroupOption();
+                //选中路由组
+                $("#groupList").val([rgid]).trigger("change")
+                //getRouteData(rgid);                
+            }
+        }, "text");
+    }
+    function setGroupOption() {
+        var $groupList = $("#groupList");
+        $groupList.select2({
+            language: "zh-CN", //设置 提示语言
+            width: "100%", //设置下拉框的宽度
+            tags: false,  //设置必须存在的选项 才能选中，设置不存在的值则为null,如果 placeholder: {id: '', text: "请选择"} 则为 ''
+            multiple: false,    //单选
+            data: groupData  //候选数组
+        }).on("change", function (e) {
+            var v = $groupList.select2("val");
+            console.log(v);
+            if(!bFirst)
+                $("#routeList").select2('destroy').empty();
+            getRouteData(v);
+        });
+    }
+    function getRouteData(id) {
+        if (!id) id = 0;
+        $.get("@Url.Action("GetRouteOption", "Route")", {id: id}, function (data) {
+            if (data) {
+                routeData = eval(data);
+                setRouteOption();
+                $("#routeList").val([rid]).trigger("change")
+            }
+        }, "text");
+    }
+    function setRouteOption() {
+        var $routeList = $("#routeList");
+        $routeList.select2({
+            language: "zh-CN", //设置 提示语言
+            width: "100%", //设置下拉框的宽度
+            tags: false,  //设置必须存在的选项 才能选中，设置不存在的值则为null,如果 placeholder: {id: '', text: "请选择"} 则为 ''
+            multiple: false,    //单选
+            data: routeData  //候选数组
+        }).on("change", function (e) {
+        });
+        bFirst = false;
+    }
+</script>
