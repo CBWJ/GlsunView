@@ -145,7 +145,7 @@ namespace GlsunView.Controllers
         /// <param name="port"></param>
         /// <param name="slot"></param>
         /// <returns></returns>
-        public ActionResult SetConfiguration(OLPInfo info, string ip, int port, int slot)
+        public ActionResult SetConfiguration(OLPInfo info, string ip, int port, int slot, string configItems)
         {
             JsonResult result = new JsonResult();
             var tcp = TcpClientServicePool.GetService(ip, port);
@@ -153,44 +153,81 @@ namespace GlsunView.Controllers
             {
                 try
                 {
+                    var arrProperty = configItems.Split(',');
                     List<string> listException = new List<string>();
                     OLPCommService service = new OLPCommService(tcp, slot);
                     List<string> listMethod = new List<string>();
-                    foreach (var prop in info.GetType().GetProperties().OrderBy(p => p.Name))
+                    Type t = info.GetType();
+                    List<DeviceOperationLog> logs = new List<DeviceOperationLog>();
+                    foreach (var p in arrProperty.OrderBy(e => e))
                     {
-                        string name = prop.Name;
-                        object value = prop.GetValue(info);
-                        //设置方法名
-                        string methodName = "Set" + name.Replace("_", "");
-                        var methodInfo = service.GetType().GetMethod(methodName);
-                        if (methodInfo != null)
+                        //获取属性
+                        var prop = t.GetProperty(p);
+                        if (prop != null)
                         {
-                            listMethod.Add(methodInfo.Name);
-                            string operation = "";
-                            //获取设置项说明
-                            object[] arrDescription = methodInfo.GetCustomAttributes(typeof(DescriptionAttribute), false);
-                            if (arrDescription != null && arrDescription.Length > 0)
+                            string name = prop.Name;
+                            object value = prop.GetValue(info);
+                            //设置方法名
+                            string methodName = "Set" + name.Replace("_", "");
+                            var methodInfo = service.GetType().GetMethod(methodName);
+                            if (methodInfo != null)
                             {
-                                DescriptionAttribute desc = (DescriptionAttribute)arrDescription[0];
-                                if (desc != null)
+                                listMethod.Add(methodInfo.Name);
+                                string operation = "";
+                                //获取设置项说明
+                                object[] arrDescription = methodInfo.GetCustomAttributes(typeof(DescriptionAttribute), false);
+                                if (arrDescription != null && arrDescription.Length > 0)
                                 {
-                                    operation = desc.Description;
+                                    DescriptionAttribute desc = (DescriptionAttribute)arrDescription[0];
+                                    if (desc != null)
+                                    {
+                                        operation = desc.Description;
+                                    }
                                 }
-                            }
-                            //获取方法参数信息
-                            var paramInfo = methodInfo.GetParameters();
-                            object[] paramObject = new object[paramInfo.Length];
-                            foreach (var e in paramInfo)
-                            {
-                                paramObject[0] = Convert.ChangeType(value, e.ParameterType);
-                            }
+                                //获取方法参数信息
+                                var paramInfo = methodInfo.GetParameters();
+                                object[] paramObject = new object[paramInfo.Length];
+                                foreach (var e in paramInfo)
+                                {
+                                    paramObject[0] = Convert.ChangeType(value, e.ParameterType);
+                                }
 
-                            var ret = (bool)methodInfo.Invoke(service, paramObject);
-                            if (!ret)
-                            {
-                                listException.Add(operation);
-                            }
+                                var ret = (bool)methodInfo.Invoke(service, paramObject);
+                                if (!ret)
+                                {
+                                    listException.Add(operation);
+                                }
+                                var log = new DeviceOperationLog
+                                {
+                                    DOLCardSN = info.Serial_Number,
+                                    DOLCardType = "OLP",
+                                    DOLDeviceSlot = short.Parse(slot.ToString()),
+                                    DOLOperationDetials = operation,
+                                    DOLOperationType = "板卡配置",
+                                    DOLOperationResult = ret ? "成功" : "失败",
+                                    DOLOperationTime = DateTime.Now,
+                                    Remark = ""
+                                };
+                                logs.Add(log);
+                            } 
                         }
+                    }
+                    using (var ctx = new GlsunViewEntities())
+                    {
+                        MachineFrame frame = ctx.MachineFrame.Where(f => f.MFIP == ip && f.MFPort == port).FirstOrDefault();
+                        var user = ctx.User.Where(u => u.ULoginName == HttpContext.User.Identity.Name).FirstOrDefault();
+                        foreach (var log in logs)
+                        {
+                            //基本信息
+                            log.DID = frame.ID;
+                            log.DName = frame.MFName;
+                            log.DAddress = frame.MFIP;
+                            log.UID = user.ID;
+                            log.ULoginName = user.ULoginName;
+                            log.UName = user.UName;
+                        }
+                        ctx.DeviceOperationLog.AddRange(logs);
+                        ctx.SaveChanges();
                     }
                     if (listException.Count == 0)
                     {

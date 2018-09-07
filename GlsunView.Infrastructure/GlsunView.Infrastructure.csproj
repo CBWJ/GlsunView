@@ -85,7 +85,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Abstract\IAuthProvider.cs" />
+    <Compile Include="Abstract\IDeviceLogger.cs" />
     <Compile Include="Abstract\IUserlogger.cs" />
+    <Compile Include="Concrete\DeviceLogger.cs" />
     <Compile Include="Concrete\FormsAuthProvider.cs" />
     <Compile Include="Concrete\GlobalAuthenticationFilter.cs" />
     <Compile Include="Concrete\TopologyLogger.cs" />

@@ -117,7 +117,7 @@ namespace GlsunView.Controllers
             }
             return result;
         }
-        public ActionResult SetConfiguration(EDFAInfo edfaInfo, string ip, int port, int slot)
+        public ActionResult SetConfiguration(EDFAInfo edfaInfo, string ip, int port, int slot, string configItems)
         {
             JsonResult result = new JsonResult();
             var tcp = TcpClientServicePool.GetService(ip, port);
@@ -127,14 +127,86 @@ namespace GlsunView.Controllers
                 {
                     EDFACommService service = new EDFACommService(tcp, slot);
                     List<string> listException = new List<string>();
-                    if (!service.SetWorkMode(edfaInfo.Work_Mode))
+                    var arrProperty = configItems.Split(',');
+                    Type t = edfaInfo.GetType();
+                    Type srvType = service.GetType();
+                    List<DeviceOperationLog> logs = new List<DeviceOperationLog>();
+                    foreach (var p in arrProperty)
+                    {
+                        //获取属性
+                        var prop = t.GetProperty(p);
+                        if(prop != null)
+                        {
+                            //获取属性值
+                            var value = prop.GetValue(edfaInfo);
+                            var methodName = "Set" + p.Replace("_", "");
+                            var methodInfo = srvType.GetMethod(methodName);
+                            string operation = "";                            
+                            if (methodInfo != null)
+                            {
+                                //获取设置项说明
+                                object[] arrDescription = methodInfo.GetCustomAttributes(typeof(DescriptionAttribute), false);
+                                if (arrDescription != null && arrDescription.Length > 0)
+                                {
+                                    DescriptionAttribute desc = (DescriptionAttribute)arrDescription[0];
+                                    if (desc != null)
+                                    {
+                                        operation = desc.Description;
+                                    }
+                                }
+                                //获取方法参数信息
+                                var paramInfo = methodInfo.GetParameters();
+                                object[] paramObject = new object[paramInfo.Length];
+                                foreach (var e in paramInfo)
+                                {
+                                    paramObject[0] = Convert.ChangeType(value, e.ParameterType);
+                                }
+                                var ret = (bool)methodInfo.Invoke(service, paramObject);
+                                if (!ret)
+                                {
+                                    listException.Add(operation);
+                                }
+                                var log = new DeviceOperationLog
+                                {
+                                    DOLCardSN = edfaInfo.Serial_Number,
+                                    DOLCardType = "EDFA",
+                                    DOLDeviceSlot = short.Parse(slot.ToString()),
+                                    DOLOperationDetials = operation,
+                                    DOLOperationType = "板卡配置",
+                                    DOLOperationResult = ret ? "成功" : "失败",
+                                    DOLOperationTime = DateTime.Now,
+                                    Remark = ""
+                                };
+                                logs.Add(log);
+                            }
+                        }
+                    }
+                    using(var ctx = new GlsunViewEntities())
+                    {
+                        MachineFrame frame = ctx.MachineFrame.Where(f => f.MFIP == ip && f.MFPort == port).FirstOrDefault();
+                        var user = ctx.User.Where(u => u.ULoginName == HttpContext.User.Identity.Name).FirstOrDefault();
+                        foreach (var log in logs)
+                        {
+                            //基本信息
+                            log.DID = frame.ID;
+                            log.DName = frame.MFName;
+                            log.DAddress = frame.MFIP;
+                            log.UID = user.ID;
+                            log.ULoginName = user.ULoginName;
+                            log.UName = user.UName;
+                        }
+                        ctx.DeviceOperationLog.AddRange(logs);
+                        //异步保存不阻塞网页
+                        ctx.SaveChanges();
+                    }
+                    /*if (!service.SetWorkMode(edfaInfo.Work_Mode))
                     {
                         listException.Add("工作模式");
                     }
                     if (!service.SetGainSetting(edfaInfo.Gain_Setting))
                     {
                         listException.Add("增益");
-                    }
+                    }*/
                     if(listException.Count == 0)
                     {
                         result.Data = new { Code = "", Data = "配置成功" };

@@ -390,6 +390,33 @@
                 updateRequest();
             });
             $("#btnConfig").click(function(){
+                var currObj = getConfigValueObject();
+                var changeSet = [];
+                for(var p in configValueObject){
+                    var curr = currObj[p];
+                    var last = configValueObject[p];
+                    var record = false;
+                    var changeItems = [];
+                    for(var pp in last){                        
+                        if(curr[pp] !== last[pp]){
+                            record = true;
+                            changeItems.push(pp);
+                        }
+                    }
+                    var flag = new Object();
+                    flag["Slot"] = +p;
+                    flag["ChangeItems"] = changeItems;
+                    if(record)
+                        changeSet.push(flag);
+                }
+                if(changeSet.length == 0){
+                    showMessage("warning", "未检测到有任何更改项");
+                    return;
+                }
+                else{
+                    console.log(changeSet.length);
+                }
+                
                 var arrModule = new Array();
                 $(".card_config tbody tr").each(function(){
                     var $tr = $(this);
@@ -404,27 +431,25 @@
                         arrModule.push(module);
                     }
                 });
-                $.post("@Url.Action("SetConfiguration", "OEOCard")", { ip: "@Model.IP", port: @Model.Port, slot: @Model.Slot, modules:arrModule },
+                $.post("@Url.Action("SetConfiguration", "OEOCard")", { ip: "@Model.IP", port: @Model.Port, slot: @Model.Slot, modules:arrModule, records: changeSet},
                     function (data, status, jqXHR) {
-                        var divAlert = $("#alert");
                         var showText = "";
+                        var type = "";
                         if (status == "success" && data) {                        
                             if (data.Code == "") {
-                                divAlert.removeClass("alert-failure").addClass("alert-success");
+                                type = "success";
+                                $("#btnRefresh").click();
                             }
                             else {
-                                divAlert.removeClass("alert-success").addClass("alert-failure");
+                                type = "failure"
                             }
                             showText = data.Data;
                         }
                         else{
                             showText = "请求失败";
+                            type = "failure"
                         }
-                        divAlert.text(showText);
-                        divAlert.show();
-                        setTimeout(function () {
-                            divAlert.fadeOut();
-                        }, 1500);
+                        showMessage(type, showText);
                     }, "json");
             });
             //闪灯处理
@@ -454,6 +479,40 @@
             bUpdateConfig = true;
             updateRequest();
         });
+        //消息框
+        function showMessage(type, msg){
+            var divAlert = $("#alert");
+            divAlert.removeClass("alert-failure").removeClass("alert-success").removeClass("alert-warning");
+            if(type == "success")
+                divAlert.addClass("alert-success");
+            else if(type == "failure")
+                divAlert.addClass("alert-failure");
+            else if(type == "warning")
+                divAlert.addClass("alert-warning");
+            divAlert.text(msg);
+            divAlert.show();
+            setTimeout(function () {
+                divAlert.fadeOut();
+            }, 1500);
+        }
+        //获取表单值对象
+        function getConfigValueObject(){
+            var modules = {};
+            $(".card_config tbody tr").each(function(){
+                var $tr = $(this);
+                var status = $tr.children("td:eq(1)").text();
+                if(status != "N/A"){
+                    var tds = $tr.children("td.value1");
+                    var module = {
+                        SlotPosition: +$tr.children("td:eq(0)").text(),
+                        Work_Mode: +tds.children("select[name='Work_Mode']").val(),
+                        Tx_Power_Control: +tds.children("select[name='Tx_Power_Control']").val()
+                    };
+                    modules[module.SlotPosition] = module;
+                }
+            });
+            return modules;
+        }
         //更新请求
         function updateRequest() {
             $.post("@Url.Action("UpdateConfig", "OEOCard")", { ip: "@Model.IP", port: @Model.Port, slot: @Model.Slot },
@@ -471,6 +530,7 @@
             }, "json");
         }
         var bUpdateConfig = false;
+        var configValueObject = null;
         //更新配置信息
         function updateConfig(sfpSet){
             var $tbody = $(".card_config tbody");
@@ -526,6 +586,7 @@
                 $tbody.append(sfpHTML);
             }
             bUpdateConfig = false;
+            configValueObject = getConfigValueObject();
         }
         //闪灯对象
         var arrBinkObject = new Array();

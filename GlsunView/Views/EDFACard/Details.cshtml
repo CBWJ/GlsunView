@@ -269,37 +269,51 @@
             //注册表单提交方式为ajaxForm
             $("#dataForm").ajaxForm({
                 success: function (data, statusText, xhr) {
-                    var divAlert = $("#alert");
                     var showText = "";
+                    var type = "";
                     if (statusText == "success" && data) {                        
                         if (data.Code == "") {
-                            divAlert.removeClass("alert-failure").addClass("alert-success");
+                            type = "success";
+                            $("#btnRefresh").click();
                         }
                         else {
-                            divAlert.removeClass("alert-success").addClass("alert-failure");
+                            type = "failure"
                         }
                         showText = data.Data;
                     }
                     else{
                         showText = "请求失败";
+                        type = "failure"
                     }
-                    divAlert.text(showText);
-                    divAlert.show();
-                    setTimeout(function () {
-                        divAlert.fadeOut();
-                    }, 1500);
+                    showMessage(type, showText);
                 }
             });
             $("#btnConfig").click(function(){
-                $('#dataForm').submit();
+                var currObj = getConfigValueObject();
+                var changeSet = [];
+                for(var p in configValueObject){
+                    if(currObj[p] !== configValueObject[p])
+                        changeSet.push(p);
+                }
+                if(changeSet.length == 0){
+                    showMessage("warning", "未检测到有任何更改项");
+                }
+                else{
+                    var items = document.createElement("input");
+                    items.name = "configItems";
+                    items.id = "configItems";
+                    items.value = changeSet.join(",");
+                    $("#dataForm").append(items);
+                    $('#dataForm').submit();
+                    $(items).remove();
+                }
             });
             $("#btnRefresh").click(function(){
                 bUpdateConfig = true;
                 updateRequest();
             });
             $("#btnReset").click(function(){
-            });
-
+            });            
             //闪灯处理
             setInterval(function () {
                 for (var i = 0; i < arrBinkObject.length; ++i) {
@@ -327,6 +341,44 @@
             bUpdateConfig = true;
             updateRequest();
         });
+        //消息框
+        function showMessage(type, msg){
+            var divAlert = $("#alert");
+            divAlert.removeClass("alert-failure").removeClass("alert-success").removeClass("alert-warning");
+            if(type == "success")
+                divAlert.addClass("alert-success");
+            else if(type == "failure")
+                divAlert.addClass("alert-failure");
+            else if(type == "warning")
+                divAlert.addClass("alert-warning");
+            divAlert.text(msg);
+            divAlert.show();
+            setTimeout(function () {
+                divAlert.fadeOut();
+            }, 1500);
+        }
+        //获取表单值对象
+        function getConfigValueObject(){
+            var inputs = $('#dataForm input');
+            var selects = $('#dataForm select');
+            var obj = new Object();
+            var name = value = null;
+            for(var i = 0; i < inputs.length; ++i){
+                name = inputs[i].name;
+                value = inputs[i].value;
+                if(isNaN(value) == false) 
+                    value = +value;
+                obj[name] = value;
+            }
+            for(var i = 0; i < selects.length; ++i){
+                name = selects[i].name;
+                value = selects[i].value;
+                if(isNaN(value) == false) 
+                    value = +value;
+                obj[name] = value;
+            }
+            return obj;
+        }
         //更新请求
         function updateRequest() {
             $.post("@Url.Action("UpdateConfig", "EDFACard")", { ip: "@Model.IP", port: @Model.Port, slot: @Model.Slot },
@@ -344,6 +396,7 @@
             }, "json");
         }
         var bUpdateConfig = false;
+        var configValueObject = null;
         //更新配置信息
         function updateConfig(edfaInfo){
             for(var p in edfaInfo){
@@ -361,6 +414,7 @@
                 }
             }
             bUpdateConfig = false;
+            configValueObject = getConfigValueObject();
         }
         //闪灯对象
         var arrBinkObject = new Array();

@@ -286,6 +286,17 @@
                 updateRequest();
             });
             $("#btnConfig").click(function(){
+                var currObj = getConfigValueObject();
+                var changeSet = [];
+                for(var p in configValueObject){
+                    if(currObj[p] !== configValueObject[p])
+                        changeSet.push(p);
+                }
+                if(changeSet.length == 0){
+                    showMessage("warning", "未检测到有任何更改项");
+                    return;
+                }
+               //
                 var inputs = $(":input");
                 var dataObj = {};
                 for(var i = 0; i < inputs.length; ++i){
@@ -294,27 +305,25 @@
                         dataObj[element.name] = $(element).val();
                     }
                 }
-                $.post("@Url.Action("SetConfiguration", "OLPCard")", {info:dataObj, ip: "@Model.IP", port: @Model.Port, slot: @Model.Slot },
+                $.post("@Url.Action("SetConfiguration", "OLPCard")", {info:dataObj, ip: "@Model.IP", port: @Model.Port, slot: @Model.Slot, configItems:changeSet.join(",") },
                         function (data, status, jqXHR) {
-                            var divAlert = $("#alert");
                             var showText = "";
+                            var type = "";
                             if (status == "success" && data) {                        
                                 if (data.Code == "") {
-                                    divAlert.removeClass("alert-failure").addClass("alert-success");
+                                    type = "success";
+                                    $("#btnRefresh").click();
                                 }
                                 else {
-                                    divAlert.removeClass("alert-success").addClass("alert-failure");
+                                    type = "failure"
                                 }
                                 showText = data.Data;
                             }
                             else{
                                 showText = "请求失败";
+                                type = "failure"
                             }
-                            divAlert.text(showText);
-                            divAlert.show();
-                            setTimeout(function () {
-                                divAlert.fadeOut();
-                            }, 1500);
+                            showMessage(type, showText);
                         }, "json");
             });
             //闪灯处理
@@ -344,6 +353,44 @@
             bUpdateConfig = true;
             updateRequest();
         });
+        //消息框
+        function showMessage(type, msg){
+            var divAlert = $("#alert");
+            divAlert.removeClass("alert-failure").removeClass("alert-success").removeClass("alert-warning");
+            if(type == "success")
+                divAlert.addClass("alert-success");
+            else if(type == "failure")
+                divAlert.addClass("alert-failure");
+            else if(type == "warning")
+                divAlert.addClass("alert-warning");
+            divAlert.text(msg);
+            divAlert.show();
+            setTimeout(function () {
+                divAlert.fadeOut();
+            }, 1500);
+        }
+        //获取表单值对象
+        function getConfigValueObject(){
+            var inputs = $('.card_config input');
+            var selects = $('.card_config select');
+            var obj = new Object();
+            var name = value = null;
+            for(var i = 0; i < inputs.length; ++i){
+                name = inputs[i].name;
+                value = inputs[i].value;
+                if(isNaN(value) == false) 
+                    value = +value;
+                obj[name] = value;
+            }
+            for(var i = 0; i < selects.length; ++i){
+                name = selects[i].name;
+                value = selects[i].value;
+                if(isNaN(value) == false) 
+                    value = +value;
+                obj[name] = value;
+            }
+            return obj;
+        }
         //更新请求
         function updateRequest() {
             $.post("@Url.Action("UpdateConfig", "OLPCard")", { ip: "@Model.IP", port: @Model.Port, slot: @Model.Slot },
@@ -361,6 +408,7 @@
                 }, "json");
         }
         var bUpdateConfig = false;
+        var configValueObject = null;
         //更新配置信息
         function updateConfig(olpInfo){
             for(var prop in olpInfo){
@@ -379,6 +427,7 @@
                 }
             }
             bUpdateConfig = false;
+            configValueObject = getConfigValueObject();
         }
         //闪灯对象
         var arrBinkObject = new Array();

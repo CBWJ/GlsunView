@@ -351,6 +351,7 @@
     <Compile Include="Models\RouteViewModel.cs" />
     <Compile Include="Models\SelectOption.cs" />
     <Compile Include="Models\SFPModule.cs" />
+    <Compile Include="Models\SFPModuleConfigRecord.cs" />
     <Compile Include="Models\Slot.cs" />
     <Compile Include="Models\TcpPoolInfo.cs" />
     <Compile Include="Models\TopologyLine.cs" />

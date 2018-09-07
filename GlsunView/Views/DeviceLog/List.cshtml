@@ -55,16 +55,17 @@
                 <thead>
                     <tr>
                         <th>行号</th>
-                        <th>子网名称</th>
-                        <th>子网地址</th>
+                        @*<th>子网名称</th>
+                        <th>子网地址</th>*@
                         <th>设备名称</th>
                         <th>设备地址</th>
                         <th>设备槽位</th>
                         <th>板卡序列号</th>
                         <th>板卡类型</th>
-                        <th>操作者</th>
                         <th>操作明细</th>
                         <th>操作结果</th>
+                        <th>备注</th>
+                        <th>操作者</th>
                         <th>操作时间</th>
                     </tr>
                 </thead>
@@ -73,16 +74,17 @@
                     {
                         <tr data-data-id="@e.ID">
                             <td>@dataRowNum</td>
-                            <td>@e.SName</td>
-                            <td>@e.SAddress</td>
+                            @*<td>@e.SName</td>
+                            <td>@e.SAddress</td>*@
                             <td>@e.DName</td>
                             <td>@e.DAddress</td>
                             <td>@e.DOLDeviceSlot</td>
                             <td>@e.DOLCardSN</td>
                             <td>@e.DOLCardType</td>
-                            <td>@e.ULoginName</td>
                             <td>@e.DOLOperationDetials</td>
                             <td>@e.DOLOperationResult</td>
+                            <td>@e.Remark</td>
+                            <td>@e.ULoginName (@e.UName)</td>
                             <td>@e.DOLOperationTime</td>
                         </tr>
                         dataRowNum++;

@@ -8,6 +8,7 @@ using GlsunView.CommService;
 using GlsunView.Models;
 using System.Web.Script.Serialization;
 using GlsunView.Infrastructure.Util;
+using System.ComponentModel;
 
 namespace GlsunView.Controllers
 {
@@ -151,7 +152,7 @@ namespace GlsunView.Controllers
         /// <param name="port"></param>
         /// <param name="slot"></param>
         /// <returns></returns>
-        public ActionResult SetConfiguration(List<SFPModule> modules, string ip, int port, int slot)
+        public ActionResult SetConfiguration(List<SFPModule> modules, string ip, int port, int slot, List<SFPModuleConfigRecord> records)
         {
             JsonResult result = new JsonResult();
             var tcp = TcpClientServicePool.GetService(ip, port);
@@ -159,18 +160,81 @@ namespace GlsunView.Controllers
             {
                 try
                 {
+                    List<DeviceOperationLog> logs = new List<DeviceOperationLog>();
                     List<string> listException = new List<string>();
+                    OEOInfo oeoInfo = new OEOInfo();
                     OEOCommService service = new OEOCommService(tcp, slot);
-                    foreach(var sfp in modules)
+                    oeoInfo.RefreshData(service);
+                    var srvType = service.GetType();
+                    foreach (var sfp in modules)
                     {
-                        if(!service.SetWorkMode(sfp.SlotPosition, sfp.Work_Mode))
+                        var record = (from r in records
+                                      where r.Slot == sfp.SlotPosition
+                                      select r).FirstOrDefault();
+                        if (record != null)
+                        {
+                            foreach (var p in record.ChangeItems)
+                            {
+                                //获取属性
+                                var prop = sfp.GetType().GetProperty(p);
+                                if (prop != null)
+                                {
+                                    //获取属性值
+                                    var value = prop.GetValue(sfp);
+                                    var methodName = "Set" + p.Replace("_", "");
+                                    var methodInfo = srvType.GetMethod(methodName);
+                                    string operation = "";
+                                    if (methodInfo != null)
+                                    {
+                                        //获取设置项说明
+                                        object[] arrDescription = methodInfo.GetCustomAttributes(typeof(DescriptionAttribute), false);
+                                        if (arrDescription != null && arrDescription.Length > 0)
+                                        {
+                                            DescriptionAttribute desc = (DescriptionAttribute)arrDescription[0];
+                                            if (desc != null)
+                                            {
+                                                operation = desc.Description;
+                                            }
+                                        }
+                                        //获取方法参数信息
+                                        var paramInfo = methodInfo.GetParameters();
+                                        object[] paramObject = new object[paramInfo.Length];
+                                        object[] values = new object[] { sfp.SlotPosition, value };
+                                        int i = 0;
+                                        foreach (var e in paramInfo)
+                                        {
+                                            paramObject[i] = Convert.ChangeType(values[i], e.ParameterType);
+                                            i++;
+                                        }
+                                        var ret = (bool)methodInfo.Invoke(service, paramObject);
+                                        if (!ret)
+                                        {
+                                            listException.Add(string.Format("光模块{0}", sfp.SlotPosition) + operation);
+                                        }
+                                        var log = new DeviceOperationLog
+                                        {
+                                            DOLCardSN = oeoInfo.Serial_Number,
+                                            DOLCardType = "OEO",
+                                            DOLDeviceSlot = short.Parse(slot.ToString()),
+                                            DOLOperationDetials = operation,
+                                            DOLOperationType = "板卡配置",
+                                            DOLOperationResult = ret ? "成功" : "失败",
+                                            DOLOperationTime = DateTime.Now,
+                                            Remark = string.Format("光模块{0}", sfp.SlotPosition)
+                                        };
+                                        logs.Add(log);
+                                    }
+                                }
+                            }
+                        }
+                        /*if(!service.SetWorkMode(sfp.SlotPosition, sfp.Work_Mode))
                         {
                             listException.Add(string.Format("SFP模块{0}工作模式", sfp.SlotPosition));
                         }
                         if(!service.SetTxPowerControl(sfp.SlotPosition, sfp.Tx_Power_Control))
                         {
                             listException.Add(string.Format("SFP模块{0}发功率控制", sfp.SlotPosition));
-                        }
+                        }*/                        
                     }
                     if (listException.Count == 0)
                     {
@@ -184,6 +248,24 @@ namespace GlsunView.Controllers
                             data += e + " ";
                         }
                         result.Data = new { Code = "Exception", Data = data };
+                    }
+                    using (var ctx = new GlsunViewEntities())
+                    {
+                        MachineFrame frame = ctx.MachineFrame.Where(f => f.MFIP == ip && f.MFPort == port).FirstOrDefault();
+                        var user = ctx.User.Where(u => u.ULoginName == HttpContext.User.Identity.Name).FirstOrDefault();
+                        foreach (var log in logs)
+                        {
+                            //基本信息
+                            log.DID = frame.ID;
+                            log.DName = frame.MFName;
+                            log.DAddress = frame.MFIP;
+                            log.UID = user.ID;
+                            log.ULoginName = user.ULoginName;
+                            log.UName = user.UName;
+                        }
+                        ctx.DeviceOperationLog.AddRange(logs);
+                        //异步保存不阻塞网页
+                        ctx.SaveChanges();
                     }
                 }
                 catch (Exception ex)
