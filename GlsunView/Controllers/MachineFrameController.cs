@@ -51,9 +51,9 @@ namespace GlsunView.Controllers
             info = new DeviceInfo();
             //卡槽信息
             cardSlotInfo = new List<CardSlotInfo>();
-            try
+            if (tcp != null)
             {
-                if (tcp != null)
+                try
                 {
                     deviceView.RefreshStatus(nmu);
                     nmuInfo.RefreshStatus(nmu);
@@ -70,18 +70,22 @@ namespace GlsunView.Controllers
                         MACAddr = deviceView.MACAddr
                     };
                     cardSlotInfo = GetCardSlotInfo(tcp, deviceView);
-                    tcp.IsBusy = false;
                 }
-                else
+                catch (Exception ex)
                 {
-                    throw new TimeoutException("设备连接超时");
+                    deviceView.Type = "NoResponse";
+                    deviceView.Unit = 4;
+                }
+                finally
+                {
+                    TcpClientServicePool.FreeService(tcp);
                 }
             }
-            catch (Exception ex)
+            else
             {
-                deviceView.Type = "NoResponse";
-                deviceView.Unit = 4;
+                throw new TimeoutException("设备连接超时");
             }
+            
             if (deviceView.Slots == null) deviceView.Slots = new List<Slot>();
         }
 
@@ -468,23 +472,33 @@ namespace GlsunView.Controllers
             //更新插卡信息
             //更新卡的状态
             var ret = new JsonResult();
-            try
+            var tcp = TcpClientServicePool.GetService(ip, port);
+            if (tcp != null)
             {
-                string key = string.Format("card_info_{0}:{1}", ip, port);
-                var tcp = TcpClientServicePool.GetService(ip, port);
-                if (tcp == null) throw new Exception("null object");
-                NMUCommService nmu = new NMUCommService(tcp);
-                DeviceOverview deviceView = new DeviceOverview();
-                deviceView.RefreshStatus(nmu);
-                deviceView.IP = ip;
-                deviceView.Port = port;
-                var cardSlotInfo = GetCardSlotInfo(tcp, deviceView);
-                tcp.IsBusy = false;
-                ret.Data = new { Code = "", Data = cardSlotInfo };
+                try
+                {
+                    string key = string.Format("card_info_{0}:{1}", ip, port);
+                    NMUCommService nmu = new NMUCommService(tcp);
+                    DeviceOverview deviceView = new DeviceOverview();
+                    deviceView.RefreshStatus(nmu);
+                    deviceView.IP = ip;
+                    deviceView.Port = port;
+                    var cardSlotInfo = GetCardSlotInfo(tcp, deviceView);
+                    tcp.IsBusy = false;
+                    ret.Data = new { Code = "", Data = cardSlotInfo };
+                }
+                catch (Exception ex)
+                {
+                    ret.Data = new { Code = "Exception", Data = ex.Message + "\n" + ex.StackTrace };
+                }
+                finally
+                {
+                    TcpClientServicePool.FreeService(tcp);
+                }
             }
-            catch (Exception ex)
+            else
             {
-                ret.Data = new { Code = "Exception", Data = ex.Message + "\n" + ex.StackTrace };
+                ret.Data = new { Code = "Exception", Data = "获取TCP连接失败" };
             }
             return ret;
         }

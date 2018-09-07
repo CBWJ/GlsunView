@@ -64,46 +64,53 @@ namespace GlsunView.Controllers
             var tcp = TcpClientServicePool.GetService(ip, port);
             if (tcp != null)
             {
-                OEOCommService service = new OEOCommService(tcp, slot);
-                oeoInfo.RefreshData(service);
-                tcp.IsBusy = false;
-                model.Type = "OEO";                
-                model.Status = "正常";
-                model.ProductModel = "OTS-OEO";
-                model.SerialNumber = oeoInfo.Serial_Number;
-                model.HardwareVersion = oeoInfo.Hardware_Version;
-                model.SoftwareVersion = oeoInfo.Software_Version;
+                try
+                {
+                    OEOCommService service = new OEOCommService(tcp, slot);
+                    oeoInfo.RefreshData(service);
+                    tcp.IsBusy = false;
+                    model.Type = "OEO";
+                    model.Status = "正常";
+                    model.ProductModel = "OTS-OEO";
+                    model.SerialNumber = oeoInfo.Serial_Number;
+                    model.HardwareVersion = oeoInfo.Hardware_Version;
+                    model.SoftwareVersion = oeoInfo.Software_Version;
 
-                //设置OEO卡的工作模式
-                List<int> workModeSet = new List<int>();
-                foreach(var sfp in oeoInfo.SFPSet)
-                {
-                    if(sfp.Status == 1)
+                    //设置OEO卡的工作模式
+                    List<int> workModeSet = new List<int>();
+                    foreach (var sfp in oeoInfo.SFPSet)
                     {
-                        if (!workModeSet.Contains(sfp.Work_Mode))
-                            workModeSet.Add(sfp.Work_Mode);
+                        if (sfp.Status == 1)
+                        {
+                            if (!workModeSet.Contains(sfp.Work_Mode))
+                                workModeSet.Add(sfp.Work_Mode);
+                        }
                     }
+                    string workMode = "";
+                    foreach (var mode in workModeSet)
+                    {
+                        string text = "";
+                        switch (mode)
+                        {
+                            case 1:
+                                text = "转发";
+                                break;
+                            case 3:
+                                text = "交叉";
+                                break;
+                        }
+                        if (!string.IsNullOrWhiteSpace(workMode))
+                        {
+                            workMode += "+" + text;
+                        }
+                        else workMode = text;
+                    }
+                    model.WorkMode = workMode;
                 }
-                string workMode = "";
-                foreach(var mode in workModeSet)
+                finally
                 {
-                    string text = "";
-                    switch (mode)
-                    {
-                        case 1:
-                            text = "转发";
-                            break;
-                        case 3:
-                            text = "交叉";
-                            break;
-                    }
-                    if (!string.IsNullOrWhiteSpace(workMode))
-                    {
-                        workMode += "+" + text;
-                    }
-                    else workMode = text;
+                    TcpClientServicePool.FreeService(tcp);
                 }
-                model.WorkMode = workMode;
             }
             return View(model);
         }
@@ -135,7 +142,7 @@ namespace GlsunView.Controllers
                 }
                 finally
                 {
-                    tcp.IsBusy = false;
+                    TcpClientServicePool.FreeService(tcp);
                 }
             }
             else
@@ -274,7 +281,7 @@ namespace GlsunView.Controllers
                 }
                 finally
                 {
-                    tcp.IsBusy = false;
+                    TcpClientServicePool.FreeService(tcp);
                 }
             }
             else
@@ -384,7 +391,7 @@ namespace GlsunView.Controllers
                         if (tcp == null) throw new NullReferenceException();
                         OEOCommService service = new OEOCommService(tcp, slot);
                         oeoInfo.RefreshData(service);
-                        tcp.IsBusy = false;
+                        TcpClientServicePool.FreeService(tcp);
                         return oeoInfo;
                     },
                     null, DateTime.Now.AddSeconds(2));

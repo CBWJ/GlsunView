@@ -42,7 +42,7 @@ namespace GlsunView.Controllers
                 {
                     deviceView.RefreshStatus(nmu);
                     //TcpClientServiceTool.SetServiceFree(tcp);
-                    tcp.IsBusy = false;
+                    TcpClientServicePool.FreeService(tcp);
                 }
                 else
                 {
@@ -115,7 +115,7 @@ namespace GlsunView.Controllers
                                 }
                             }
                             //tcp.Dispose();
-                            tcp.IsBusy = false;
+                            TcpClientServicePool.FreeService(tcp);
                         }
                         return set;
                     },

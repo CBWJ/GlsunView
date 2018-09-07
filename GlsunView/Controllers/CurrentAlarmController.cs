@@ -169,19 +169,26 @@ namespace GlsunView.Controllers
                     return infos;
                 },
                 null, DateTime.Now.AddSeconds(2));
-            List<int> ids = alarmInfo.Select(a => a.ID).ToList();
-            //排除已显示的项
-            if (!string.IsNullOrWhiteSpace(exceptIds))
+            List<int> ids = new List<int>();
+            if (alarmInfo != null)
             {
-                var arrIds = exceptIds.Split(',');
-                if (arrIds.Length > 0)
+                ids = alarmInfo.Select(a => a.ID).ToList();
+                //排除已显示的项
+                if (!string.IsNullOrWhiteSpace(exceptIds))
                 {
-                    var Ids = (from id in arrIds
-                               select int.Parse(id)).ToList();
-                    alarmInfo = alarmInfo.Where(a => !Ids.Contains(a.ID)).OrderBy(a => a.AITime);
+                    var arrIds = exceptIds.Split(',');
+                    if (arrIds.Length > 0)
+                    {
+                        var Ids = (from id in arrIds
+                                   select int.Parse(id)).ToList();
+                        alarmInfo = alarmInfo.Where(a => !Ids.Contains(a.ID)).OrderBy(a => a.AITime);
+                    }
                 }
             }
-            
+            else
+            {
+                throw new NullReferenceException("从缓存取当前告警为NULL");
+            }
             json.Data = new { Alarm = alarmInfo, IDSet = ids};
             return json;
             //return JsonHelper.ObjectToJson(alarmInfo);

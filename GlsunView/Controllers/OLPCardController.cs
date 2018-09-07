@@ -77,7 +77,7 @@ namespace GlsunView.Controllers
                 }
                 finally
                 {
-                    tcp.IsBusy = false;
+                    TcpClientServicePool.FreeService(tcp);
                 }
             }
             return View(model);
@@ -128,7 +128,7 @@ namespace GlsunView.Controllers
                 }
                 finally
                 {
-                    tcp.IsBusy = false;
+                    TcpClientServicePool.FreeService(tcp);
                 }
             }
             else
@@ -249,7 +249,7 @@ namespace GlsunView.Controllers
                 }
                 finally
                 {
-                    tcp.IsBusy = false;
+                    TcpClientServicePool.FreeService(tcp);
                 }
             }
             else
@@ -379,7 +379,7 @@ namespace GlsunView.Controllers
                         if (tcp == null) throw new NullReferenceException();
                         OLPCommService service = new OLPCommService(tcp, slot);
                         olpInfo.RefreshData(service);
-                        tcp.IsBusy = false;
+                        TcpClientServicePool.FreeService(tcp);
                         return olpInfo;
                     },
                     null, DateTime.Now.AddSeconds(2));

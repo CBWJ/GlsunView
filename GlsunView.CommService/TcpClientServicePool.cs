@@ -132,6 +132,30 @@ namespace GlsunView.CommService
             }
             return null;
         }
-        
+        /// <summary>
+        /// TCP连接使用后设置为空闲状态
+        /// </summary>
+        /// <param name="tcp"></param>
+        /// <returns></returns>
+        public static bool FreeService(TcpClientService tcp)
+        {
+            bool retValue = false;
+            if(tcp != null)
+            {
+                var allServiceList = (from para in _dicServices
+                                  select para.Value).ToList();
+                List<TcpClientService> allService = new List<TcpClientService>();
+                foreach(var list in allServiceList)
+                {
+                    allService.AddRange(list);
+                }
+                if (allService.Contains(tcp))
+                {
+                    tcp.IsBusy = false;
+                    retValue = true;
+                }
+            }
+            return retValue;
+        }
     }
 }

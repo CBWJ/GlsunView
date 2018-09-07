@@ -59,9 +59,18 @@ namespace GlsunView.Controllers
             var tcp = TcpClientServicePool.GetService(ip, port);
             if (tcp != null)
             {
-                EDFACommService service = new EDFACommService(tcp, slot);
-                edfaInfo.RefreshData(service);
-                tcp.IsBusy = false;
+                try
+                {
+                    EDFACommService service = new EDFACommService(tcp, slot);
+                    edfaInfo.RefreshData(service);
+                }
+                catch
+                {
+                }
+                finally
+                {
+                    TcpClientServicePool.FreeService(tcp);
+                }
             }
             EDFAViewModel edfa = new EDFAViewModel
             {
@@ -108,7 +117,7 @@ namespace GlsunView.Controllers
                 }
                 finally
                 {
-                    tcp.IsBusy = false;
+                    TcpClientServicePool.FreeService(tcp);
                 }
             }
             else
@@ -227,7 +236,7 @@ namespace GlsunView.Controllers
                 }
                 finally
                 {
-                    tcp.IsBusy = false;
+                    TcpClientServicePool.FreeService(tcp);
                 }
             }
             else
@@ -352,7 +361,7 @@ namespace GlsunView.Controllers
                         if (tcp == null) throw new NullReferenceException();
                         EDFACommService service = new EDFACommService(tcp, slot);
                         edfaInfo.RefreshData(service);
-                        tcp.IsBusy = false;
+                        TcpClientServicePool.FreeService(tcp);
                         return edfaInfo;
                     },
                     null, DateTime.Now.AddSeconds(2));

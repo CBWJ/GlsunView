@@ -55,7 +55,7 @@ namespace GlsunView.Controllers
                 }
                 finally
                 {
-                    tcp.IsBusy = false;
+                    TcpClientServicePool.FreeService(tcp);
                 }
             }
             tcp = TcpClientServicePool.GetService(routeView.BIP, routeView.BPort);
@@ -75,7 +75,7 @@ namespace GlsunView.Controllers
                 }
                 finally
                 {
-                    tcp.IsBusy = false;
+                    TcpClientServicePool.FreeService(tcp);
                 }
             }
             return View(routeView);
@@ -131,7 +131,7 @@ namespace GlsunView.Controllers
                 }
                 finally
                 {
-                    tcp.IsBusy = false;
+                    TcpClientServicePool.FreeService(tcp);
                 }
             }
             tcp = TcpClientServicePool.GetService(routeView.BIP, routeView.BPort);
@@ -151,7 +151,7 @@ namespace GlsunView.Controllers
                 }
                 finally
                 {
-                    tcp.IsBusy = false;
+                    TcpClientServicePool.FreeService(tcp);
                 }
             }
             return View("Index", routeView);
@@ -210,8 +210,8 @@ namespace GlsunView.Controllers
                 }
                 finally
                 {
-                    tcpA.IsBusy = false;
-                    tcpB.IsBusy = false;
+                    TcpClientServicePool.FreeService(tcpA);
+                    TcpClientServicePool.FreeService(tcpB);
                 }
             }
             return result;
