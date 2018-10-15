@@ -15,6 +15,7 @@
             zoom: 0.2;
         }
         .info_area{
+            width:1050px;
             border: 1px solid black;
             border-top: 0;
             padding-top: 15px;
@@ -388,6 +389,12 @@
                                 olp.setNormal_ls();
                             } else if (slot.CardInfo.LS_State == 0) {
                                 olp.resetLight_ls();
+                            }
+                            //Pri
+                            if (slot.CardInfo.Manual_Switch_Channel == 1) {
+                                olp.setNormal_prl()
+                            } else {
+                                olp.resetLight_prl();
                             }
                             arrBinkObject.push({
                                 ctrl: olp,

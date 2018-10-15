@@ -9,6 +9,7 @@ using System.Text;
 using GlsunView.Infrastructure.Util;
 using GlsunView.CommService;
 using System.Web.Script.Serialization;
+using System.IO;
 
 namespace GlsunView.Controllers
 {
@@ -349,11 +350,16 @@ namespace GlsunView.Controllers
 
         // POST: MachineFrame/Create
         [HttpPost]
-        public ActionResult Create(MachineFrame frame)
+        public ActionResult Create(MachineFrame frame, HttpPostedFileBase iconFile)
         {
             var json = new JsonResult();
             try
             {
+                string iconFileName = "";
+                if (iconFile != null)
+                {
+                    iconFileName = SaveIcon(iconFile);
+                }
                 using (var ctx = new GlsunViewEntities())
                 {
                     var loginUser = (from u in ctx.User
@@ -364,7 +370,11 @@ namespace GlsunView.Controllers
                         frame.CreatorID = loginUser.ID;
                         frame.CreationTime = DateTime.Now;
                     }
-
+                    //图标没值
+                    if (string.IsNullOrWhiteSpace(frame.MFIcon))
+                    {
+                        frame.MFIcon = iconFileName;
+                    }
                     ctx.MachineFrame.Add(frame);
                     ctx.SaveChanges();
                 }
@@ -402,11 +412,16 @@ namespace GlsunView.Controllers
 
         // POST: MachineFrame/Edit/5
         [HttpPost]
-        public ActionResult Edit(MachineFrame frame)
+        public ActionResult Edit(MachineFrame frame, HttpPostedFileBase iconFile)
         {
             var json = new JsonResult();
             try
             {
+                string iconFileName = "";
+                if (iconFile != null)
+                {
+                    iconFileName = SaveIcon(iconFile);
+                }
                 using (var ctx = new GlsunViewEntities())
                 {
                     var loginUser = (from u in ctx.User
@@ -427,7 +442,11 @@ namespace GlsunView.Controllers
                     frameModify.Remark = frame.Remark;
                     frameModify.EditorID = loginUser.ID;
                     frameModify.EditingTime = DateTime.Now;
-
+                    //图标没值
+                    if (string.IsNullOrWhiteSpace(frameModify.MFIcon))
+                    {
+                        frameModify.MFIcon = iconFileName;
+                    }
                     ctx.SaveChanges();
                 }
                 json.Data = new { Code = "", Data = "", Message = "保存成功" };
@@ -522,6 +541,46 @@ namespace GlsunView.Controllers
                 json.Data = new { Code = "Exception", Data = "", Message = ex.Message };
             }
             return json;
+        }
+        /// <summary>
+        /// 机框图标选择
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public ActionResult IconList(string type = "frame")
+        {
+            var iconPath = Server.MapPath("~/image/frame");
+            DirectoryInfo directoryInfo = new DirectoryInfo(iconPath);
+            var imgFiles = directoryInfo.GetFiles();
+            var groupFiles = (from f in imgFiles
+                              where f.Name.ToLower().Contains(type)
+                              select f).ToList();
+            ViewBag.IconPath = "/image/frame/";
+            return View("~/Views/Subnet/IconList.cshtml", groupFiles);
+        }
+        /// <summary>
+        /// 保存图标
+        /// </summary>
+        /// <param name="iconFile"></param>
+        /// <returns></returns>
+        private string SaveIcon(HttpPostedFileBase iconFile)
+        {
+            var iconPath = Server.MapPath("~/image/frame");
+            DirectoryInfo directoryInfo = new DirectoryInfo(iconPath);
+            var imgFiles = directoryInfo.GetFiles();
+            var subnetFiles = (from f in imgFiles
+                               where f.Name.ToLower().Contains("frame")
+                               select f).ToList();
+            var fileType = iconFile.FileName.Substring(iconFile.FileName.IndexOf(".") + 1);
+            var fileName = "frame" + (subnetFiles.Count + 100).ToString() + "." + fileType;
+            var filePath = Path.Combine(iconPath, fileName);
+            byte[] byteIcon = new byte[iconFile.ContentLength];
+            iconFile.InputStream.Read(byteIcon, 0, byteIcon.Length);
+            using (FileStream fs = new FileStream(filePath, FileMode.Create))
+            {
+                fs.Write(byteIcon, 0, byteIcon.Length);
+            }
+            return fileName;
         }
     }
 }

@@ -17,7 +17,7 @@ namespace GlsunView.Controllers
             List<MachineTreeNode> nodes = new List<MachineTreeNode>();
             int nodeId = 1;
             int mfID = 0;
-            string iconPath = "../../image/";
+            string iconPath = "../../image/frame/";
             using (var ctx = new GlsunViewEntities())
             {
                 var d = ctx.Device.Find(id);

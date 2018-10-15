@@ -6,7 +6,7 @@
 @foreach (var frame in Model)
 {
     <li data-id="@frame.ID">
-        <img src="~/image/wacom.png" />
+        <img src="@("../../image/frame/" + frame.MFIcon)" />
         <div class="title">
             @frame.MFName
         </div>
