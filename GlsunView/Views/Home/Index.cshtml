@@ -43,11 +43,11 @@
                 </div>
                 <div class="nav-bar-middle">
                     <ul class="tag">
-                        <li class="tag_label">严重<span class="tag_badge critical">9999</span></li>
-                        <li class="tag_label">重要<span class="tag_badge major">9999</span></li>
-                        <li class="tag_label">次要<span class="tag_badge minor">9999</span></li>
-                        <li class="tag_label">警告<span class="tag_badge warn">9999</span></li>
-                        <li class="tag_label">正常<span class="tag_badge normal">0</span></li>
+                        <li class="tag_label light_critical">严重<span class="tag_badge critical">9999</span></li>
+                        <li class="tag_label light_major">重要<span class="tag_badge major">9999</span></li>
+                        <li class="tag_label light_minor">次要<span class="tag_badge minor">9999</span></li>
+                        <li class="tag_label light_warn">警告<span class="tag_badge warn">9999</span></li>
+                        <li class="tag_label light_normal">正常<span class="tag_badge normal">0</span></li>
                     </ul>
                 </div>
                 <ul class="nav-bar-menu">
@@ -58,9 +58,16 @@
                             <i class="fa fa-caret-down drop-down-arrow"></i>
                         </a>
                         <ul class="drop-down-content">
-                            <li><a href="#" onclick="changePWD();">修改密码</a></li>
+                            <li><a href="#" onclick="changePWD();">
+                                    <i class="fa fa-lock"></i>
+                                <span>修改密码</span></a></li>
                             @*<li><a href="">退&#12288;&#12288;出</a></li>*@
-                            <li id="exit">@Html.ActionLink("退　　出", "Logout", "Account")</li>
+                            <li id="exit">                                
+                                <a href="/Account/Logout">
+                                    <i class="fa fa-power-off"></i>
+                                    <span>退&#12288;&#12288;出</span>
+                                </a>
+                            </li>
                         </ul>
                     </li>
                 </ul>

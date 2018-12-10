@@ -1,18 +1,21 @@
 .nav-bar-left{
-    float: left;
+    float: left;    
+    margin-left: 50px;
 }
 .nav-bar{
     height: 50px;
     /*background-color: #445577;*/
     color:white;
     font-size: 1em;
-    background-image:url(../../image/banner.gif);
-    background-repeat:repeat-x;
+    /*background-image:url(../../image/banner.gif);
+    background-repeat:repeat-x;*/
+    background: linear-gradient(#223355, #445577);
 }
 .nav-bar-menu{
     position: relative;
     float: right;
     list-style: none;
+    margin-right: 50px;
 }
 .nav-bar-menu>li{
     float: left;
@@ -20,17 +23,19 @@
     line-height: 50px;
 }
 .nav-bar-menu li ul{
-    list-style: none;
-    background-color: #445577dd;
+    list-style: none;    
+    background-color:#fff;
 }
 .nav-bar-menu>li a{
     text-decoration: none;
-    color:white;
     margin:0 5px 0 5px;
+    color: #fff;
 }
 .drop-down-content>li{
-    height: 30px;
-    line-height: 30px;
+    height: 40px;
+    line-height: 40px;
+    cursor:pointer;
+    color: #445577;
 }
 .drop-down{
     height: 30px;
@@ -41,26 +46,29 @@
     overflow: visible;
 }
 .drop-down-content{
-    width: 80px;
+    width: 120px;
     border:1px solid #ccc;
     border-top: 0;
     height: 0;
     opacity: 0;
     text-align: center;
     position: absolute;
+    right:0px;
 }
 
 .drop-down-content li a{
-    display: block;
+    display: inline;
     margin: 0;
     padding: 0 5px 0 5px;
+    color:#445577;
+    width:120px;
+    height: 30px;
 }
-.drop-down-content li a:hover{
-    background-color: #fff;
-    color:#445577
+.drop-down-content li:last-child{
+    border-top:1px solid #ccc;
 }
 .nav-bar-menu .drop-down:hover .drop-down-content{
-    height: 60px;
+    height: 80px;
     opacity: 1;
     transition: 0.2s ease-in;
     z-index: 2;
@@ -69,15 +77,18 @@
     transition: 0.2s ease-in;
     transform: rotate(180deg);
 }
-.drop-down-content li:last-child a:hover{
-    color:#f00;
+.drop-down-content li:hover{
+    color: #fff;
+    background-color: #87B87F;
 }
-
+.drop-down-content li:hover a{
+    color: #fff;
+}
 .nav-bar-left a{
     text-decoration: none;
     line-height: 50px;
     color: #fff;
-    font-size: 1.2em;
+    font-size: 1.5em;
     position: relative;
     top:1px;
 }

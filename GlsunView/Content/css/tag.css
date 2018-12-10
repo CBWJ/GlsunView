@@ -2,18 +2,24 @@
     color: white;
     font-size: 14px;
     position:absolute;
-    right:100px;
+    right:150px;
 }
 .nav-bar-middle>ul>li{
     list-style: none;
     float: left;
     height: 50px;
     line-height: 50px;
-    margin-left:5px;
+    padding-left: 5px;
+    padding-right: 5px;
+    border-left: 1px solid #fff;
+    border-radius: 0;
+}
+.nav-bar-middle>ul>li:first-child{
+    border-left:0;
 }
 .tag_label{
     font-size: 75%;
-    font-weight: 700;
+    /*font-weight: 700;*/
     text-align: center;
     white-space: nowrap;
     vertical-align: baseline;
@@ -21,17 +27,18 @@
 }
 .tag_badge {
     display: inline-block;
-    min-width: 10px;
+    min-width: 5px;
     padding: 3px 7px;
     font-size: 12px;
-    font-weight: 700;
-    line-height: 1;
+    line-height: 15px;
+    height:15px;
     color: #fff;
     text-align: center;
     white-space: nowrap;
     vertical-align: middle;
     border-radius: 10px;
-    margin-bottom:15px;
+    margin-bottom:2px;
+    margin-left: 5px;
 }
 .critical{
     background-color: red;
@@ -47,4 +54,20 @@
 }
 .normal{
     background-color: green;
+}
+
+.light_critical{
+    background-color: #b15151;
+}
+.light_major{
+    background-color: #ca9739;
+}
+.light_minor{
+    background-color: #88ab42;
+}
+.light_warn{
+    background-color: #38a5ca;
+}
+.light_normal{
+    background-color: #42b342;
 }
