@@ -305,11 +305,11 @@
                         dataObj[element.name] = $(element).val();
                     }
                 }
-                $.post("@Url.Action("SetConfiguration", "OLPCard")", {info:dataObj, ip: "@Model.IP", port: @Model.Port, slot: @Model.Slot, configItems:changeSet.join(",") },
+                $.post("@Url.Action("SetConfiguration", "OLPCard")", {info:dataObj, mfId:@ViewBag.MFID, ip: "@Model.IP", port: @Model.Port, slot: @Model.Slot, configItems:changeSet.join(",") },
                         function (data, status, jqXHR) {
                             var showText = "";
                             var type = "";
-                            if (status == "success" && data) {                        
+                            if (status == "success" && data) {
                                 if (data.Code == "") {
                                     type = "success";
                                     $("#btnRefresh").click();
@@ -378,14 +378,14 @@
             for(var i = 0; i < inputs.length; ++i){
                 name = inputs[i].name;
                 value = inputs[i].value;
-                if(isNaN(value) == false) 
+                if(isNaN(value) == false)
                     value = +value;
                 obj[name] = value;
             }
             for(var i = 0; i < selects.length; ++i){
                 name = selects[i].name;
                 value = selects[i].value;
-                if(isNaN(value) == false) 
+                if(isNaN(value) == false)
                     value = +value;
                 obj[name] = value;
             }
@@ -483,7 +483,7 @@
             }else{
                 olp.resetLight_prl();
             }
-            
+
             arrBinkObject.push({
                 ctrl: olp,
                 lights: olpBlinkLight

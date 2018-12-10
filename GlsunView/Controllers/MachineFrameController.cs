@@ -25,6 +25,7 @@ namespace GlsunView.Controllers
             JavaScriptSerializer serializer = new JavaScriptSerializer();
             ViewBag.DeviceView = serializer.Serialize(deviceView);
             ViewBag.CardSlotInfo = serializer.Serialize(cardSlotInfo);
+            ViewBag.MFID = id;
             return View(info);
         }
 

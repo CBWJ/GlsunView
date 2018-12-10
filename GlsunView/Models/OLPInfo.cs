@@ -167,7 +167,7 @@ namespace GlsunView.Models
         {
             var basicInfo = InstructionHelper.ExtractData(service.GetCardBasicInfo(), "B");
             var arrInfo = basicInfo.Split('_');
-            if(arrInfo.Length > 2)
+            if(arrInfo.Length == 5)
             {
                 switch (arrInfo[2])
                 {
@@ -178,6 +178,8 @@ namespace GlsunView.Models
                         Card_Type = "OLP1+1";
                         break;
                 }
+                Software_Version = arrInfo[3];
+                Hardware_Version = arrInfo[4];
             }
             var data = service.GetCardDataInfo();
             if (data.Contains("NOCARD")) return;
@@ -186,8 +188,8 @@ namespace GlsunView.Models
             R1_Input_Power = double.Parse(InstructionHelper.ExtractDataFromSet(data, "R1_P"));
             R2_Input_Power = double.Parse(InstructionHelper.ExtractDataFromSet(data, "R2_P"));
             TX_Input_Power = double.Parse(InstructionHelper.ExtractDataFromSet(data, "TX_P"));
-            Software_Version = InstructionHelper.ExtractDataFromSet(data, "SV");
-            Hardware_Version = InstructionHelper.ExtractDataFromSet(data, "HV");
+            //Software_Version = InstructionHelper.ExtractDataFromSet(data, "SV");
+            //Hardware_Version = InstructionHelper.ExtractDataFromSet(data, "HV");
             Serial_Number = InstructionHelper.ExtractDataFromSet(data, "SN");
             Manufacture_Date = InstructionHelper.ExtractDataFromSet(data, "MD");
             R1_Wave = int.Parse(InstructionHelper.ExtractDataFromSet(data, "R1_W"));

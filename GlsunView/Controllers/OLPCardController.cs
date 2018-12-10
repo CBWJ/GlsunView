@@ -46,7 +46,7 @@ namespace GlsunView.Controllers
         /// <param name="port"></param>
         /// <param name="slot"></param>
         /// <returns></returns>
-        public ActionResult Details(string ip, int port, int slot)
+        public ActionResult Details(string ip, int port, int slot, int mfId)
         {
             OLPInfo olpInfo = new OLPInfo();
             OLPViewModel model = new OLPViewModel()
@@ -80,6 +80,7 @@ namespace GlsunView.Controllers
                     TcpClientServicePool.FreeService(tcp);
                 }
             }
+            ViewBag.MFID = mfId;
             return View(model);
         }
         /// <summary>
@@ -145,7 +146,7 @@ namespace GlsunView.Controllers
         /// <param name="port"></param>
         /// <param name="slot"></param>
         /// <returns></returns>
-        public ActionResult SetConfiguration(OLPInfo info, string ip, int port, int slot, string configItems)
+        public ActionResult SetConfiguration(OLPInfo info,int mfId, string ip, int port, int slot, string configItems)
         {
             JsonResult result = new JsonResult();
             var tcp = TcpClientServicePool.GetService(ip, port);
@@ -214,7 +215,7 @@ namespace GlsunView.Controllers
                     }
                     using (var ctx = new GlsunViewEntities())
                     {
-                        MachineFrame frame = ctx.MachineFrame.Where(f => f.MFIP == ip && f.MFPort == port).FirstOrDefault();
+                        MachineFrame frame = ctx.MachineFrame.Find(mfId);
                         var user = ctx.User.Where(u => u.ULoginName == HttpContext.User.Identity.Name).FirstOrDefault();
                         foreach (var log in logs)
                         {

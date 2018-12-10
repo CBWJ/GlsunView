@@ -149,7 +149,7 @@
                         //console.log(this.id);
                     },
                     dblclick: function () {
-                        var res = /[\d]/.exec(this.id);
+                        var res = this.id.replace("card-slot-", "");
                         console.log(res[0] + "双击");
                         var module = $(this);
                         var moduleType = "";
@@ -164,7 +164,7 @@
                             parent.addNavigatorData({
                                 level: 3,
                                 name: moduleType.toUpperCase(),
-                                url: "/" + moduleType.toUpperCase() + "Card/Details?ip=" + deviceObject.IP + "&port=" + deviceObject.Port + "&slot=" + res[0]
+                                url: "/" + moduleType.toUpperCase() + "Card/Details?ip=" + deviceObject.IP + "&port=" + deviceObject.Port + "&slot=" + res + "&mfId=" + '@ViewBag.MFID'
                             });
                         }
                     }

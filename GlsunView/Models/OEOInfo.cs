@@ -29,10 +29,16 @@ namespace GlsunView.Models
 
         public void RefreshData(CardCommService service)
         {
+            var arrBasic = InstructionHelper.ExtractData(service.GetCardBasicInfo(), "B").Split('_');
+            if (arrBasic.Length == 5)
+            {
+                Software_Version = arrBasic[3];
+                Hardware_Version = arrBasic[4];
+            }
             var data = service.GetCardDataInfo();
             if (data.Contains("NOCARD")) return;
-            Software_Version = InstructionHelper.ExtractDataFromSet(data, "SV");
-            Hardware_Version = InstructionHelper.ExtractDataFromSet(data, "HV");
+            //Software_Version = InstructionHelper.ExtractDataFromSet(data, "SV");
+            //Hardware_Version = InstructionHelper.ExtractDataFromSet(data, "HV");
             Serial_Number = InstructionHelper.ExtractDataFromSet(data, "SN");
             Manufacture_Date = InstructionHelper.ExtractDataFromSet(data, "MD");
             if(SFPSet == null)

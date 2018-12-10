@@ -182,13 +182,14 @@
                 <input type="hidden" name="ip" value="@Model.IP" />
                 <input type="hidden" name="port" value="@Model.Port" />
                 <input type="hidden" name="slot" value="@Model.Slot" />
+                <input type="hidden" name="mfId" value="@ViewBag.MFID" />
                 <table class="card_config">
                     <tr>
                         <td class="lable3">工作模式：</td>
                         <td class="value2">
                             <select id="Work_Mode" name="Work_Mode">
-                                <option value="0">电流模式</option>
-                                <option value="1">增益模式</option>
+                                <option value="1">电流模式</option>
+                                <option value="3">增益模式</option>
                                 <option value="2">功率模式</option>
                             </select>
                         </td>
@@ -201,9 +202,15 @@
                         <td class="lable2">告警阈值</td>
                     </tr>
                     <tr>
-                        <td class="lable3">电流设置mA：</td>
+                        <td class="lable3">
+                            <label id="Current_Setting_Label">电流设置mA：</label>
+                            <label id="Gain_Setting_Label">增益设置dB：</label>
+                            <label id="Output_Power_Setting_Label">输出功率设置dBm：</label>
+                        </td>
                         <td class="value2">
                             <input id="Current_Setting" name="Current_Setting" type="text" value="--" />
+                            <input id="Gain_Setting" name="Gain_Setting" type="text" value="--" />
+                            <input id="Output_Power_Setting" name="Output_Power_Setting" type="text" value="+5.0" />
                         </td>
                         <td class="lable3">温度低阈值℃：</td>
                         <td class="value2">
@@ -218,9 +225,9 @@
                         </td>
                     </tr>
                     <tr>
-                        <td class="lable3">增益设置dB：</td>
+                        <td class="lable3 blank"></td>
                         <td class="value2">
-                            <input id="Gain_Setting" name="Gain_Setting" type="text" value="--" />
+                            
                         </td>
                         <td class="lable3">温度高阈值℃：</td>
                         <td class="value2">
@@ -235,9 +242,8 @@
                         </td>
                     </tr>
                     <tr>
-                        <td class="lable3">输出功率设置dBm：</td>
-                        <td class="value2">
-                            <input id="Output_Power_Setting" name="Output_Power_Setting" type="text" value="+5.0" />
+                        <td class="lable3 blank"></td>
+                        <td class="value2">                            
                         </td>
                         <td class="lable3">输入低阈值dBm：</td>
                         <td class="value2">
@@ -313,7 +319,9 @@
                 updateRequest();
             });
             $("#btnReset").click(function(){
-            });            
+            });       
+            $("#Work_Mode").change(workModeChange);
+            workModeChange();
             //闪灯处理
             setInterval(function () {
                 for (var i = 0; i < arrBinkObject.length; ++i) {
@@ -339,8 +347,22 @@
             }, 500);
             setInterval(updateRequest, 2000);
             bUpdateConfig = true;
-            updateRequest();
+            updateRequest();            
         });
+        function workModeChange(){
+            var objWokeMode = {
+                1:"Current_Setting",
+                2:"Output_Power_Setting",
+                3:"Gain_Setting"
+            }
+            for(var i = 1; i <= 3; ++i){
+                $("#" + objWokeMode[i]).hide();
+                $("#" + objWokeMode[i] + "_Label").hide();
+            }
+            var showId = objWokeMode[$("#Work_Mode").val()];
+            $("#" + showId).show();
+            $("#" + showId + "_Label").show();
+        }
         //消息框
         function showMessage(type, msg){
             var divAlert = $("#alert");
@@ -386,7 +408,10 @@
                 if (data) {
                     if (data.Code == "") {
                         if(bUpdateConfig)
+                        {
                             updateConfig(data.Data);
+                            workModeChange();
+                        }
                         updateCardStatus(data.Data);
                     }
                     else if(data.Code == "Exception"){

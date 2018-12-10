@@ -52,7 +52,7 @@ namespace GlsunView.Controllers
         /// <param name="port"></param>
         /// <param name="slot"></param>
         /// <returns></returns>
-        public ActionResult Details(string ip, int port, int slot)
+        public ActionResult Details(string ip, int port, int slot, int mfId)
         {
             OEOInfo oeoInfo = new OEOInfo();
             OEOViewModel model = new OEOViewModel()
@@ -112,6 +112,7 @@ namespace GlsunView.Controllers
                     TcpClientServicePool.FreeService(tcp);
                 }
             }
+            ViewBag.MFID = mfId;
             return View(model);
         }
         /// <summary>
@@ -159,7 +160,7 @@ namespace GlsunView.Controllers
         /// <param name="port"></param>
         /// <param name="slot"></param>
         /// <returns></returns>
-        public ActionResult SetConfiguration(List<SFPModule> modules, string ip, int port, int slot, List<SFPModuleConfigRecord> records)
+        public ActionResult SetConfiguration(List<SFPModule> modules,int mfId, string ip, int port, int slot, List<SFPModuleConfigRecord> records)
         {
             JsonResult result = new JsonResult();
             var tcp = TcpClientServicePool.GetService(ip, port);
@@ -223,11 +224,11 @@ namespace GlsunView.Controllers
                                             DOLCardSN = oeoInfo.Serial_Number,
                                             DOLCardType = "OEO",
                                             DOLDeviceSlot = short.Parse(slot.ToString()),
-                                            DOLOperationDetials = operation,
+                                            DOLOperationDetials = string.Format("光模块{0}{1}", sfp.SlotPosition, operation),
                                             DOLOperationType = "板卡配置",
                                             DOLOperationResult = ret ? "成功" : "失败",
                                             DOLOperationTime = DateTime.Now,
-                                            Remark = string.Format("光模块{0}", sfp.SlotPosition)
+                                            Remark = ""
                                         };
                                         logs.Add(log);
                                     }
@@ -258,7 +259,7 @@ namespace GlsunView.Controllers
                     }
                     using (var ctx = new GlsunViewEntities())
                     {
-                        MachineFrame frame = ctx.MachineFrame.Where(f => f.MFIP == ip && f.MFPort == port).FirstOrDefault();
+                        MachineFrame frame = ctx.MachineFrame.Find(mfId);
                         var user = ctx.User.Where(u => u.ULoginName == HttpContext.User.Identity.Name).FirstOrDefault();
                         foreach (var log in logs)
                         {

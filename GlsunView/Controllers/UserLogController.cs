@@ -51,7 +51,7 @@ namespace GlsunView.Controllers
             logs = logs.Where(u => u.ULOperationTime >= conditions.OperationDateBeg);
             logs = logs.Where(u => u.ULOperationTime < conditions.OperationDateEnd.AddDays(1));
             var totalLogs = logs.Count();
-            logs = logs.OrderBy(r => r.ID)
+            logs = logs.OrderByDescending(l => l.ULOperationTime)
                         .Skip((page - 1) * pageSize)
                         .Take(pageSize)
                         .ToList();

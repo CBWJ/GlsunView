@@ -53,7 +53,7 @@ namespace GlsunView.Controllers
         /// <param name="port"></param>
         /// <param name="slot"></param>
         /// <returns></returns>
-        public ActionResult Details(string ip, int port, int slot)
+        public ActionResult Details(string ip, int port, int slot, int mfId)
         {
             EDFAInfo edfaInfo = new EDFAInfo();
             var tcp = TcpClientServicePool.GetService(ip, port);
@@ -87,6 +87,7 @@ namespace GlsunView.Controllers
                 HardwareVersion = edfaInfo.Hardware_Version,
                 SoftwareVersion = edfaInfo.Software_Version
             };
+            ViewBag.MFID = mfId;
             return View(edfa);
         }
         /// <summary>
@@ -126,7 +127,7 @@ namespace GlsunView.Controllers
             }
             return result;
         }
-        public ActionResult SetConfiguration(EDFAInfo edfaInfo, string ip, int port, int slot, string configItems)
+        public ActionResult SetConfiguration(EDFAInfo edfaInfo, string ip, int port, int slot, string configItems, int mfId)
         {
             JsonResult result = new JsonResult();
             var tcp = TcpClientServicePool.GetService(ip, port);
@@ -180,7 +181,7 @@ namespace GlsunView.Controllers
                                     DOLCardSN = edfaInfo.Serial_Number,
                                     DOLCardType = "EDFA",
                                     DOLDeviceSlot = short.Parse(slot.ToString()),
-                                    DOLOperationDetials = operation,
+                                    DOLOperationDetials = string.Format("{0}",operation, value),
                                     DOLOperationType = "板卡配置",
                                     DOLOperationResult = ret ? "成功" : "失败",
                                     DOLOperationTime = DateTime.Now,
@@ -192,7 +193,7 @@ namespace GlsunView.Controllers
                     }
                     using(var ctx = new GlsunViewEntities())
                     {
-                        MachineFrame frame = ctx.MachineFrame.Where(f => f.MFIP == ip && f.MFPort == port).FirstOrDefault();
+                        MachineFrame frame = ctx.MachineFrame.Find(mfId);
                         var user = ctx.User.Where(u => u.ULoginName == HttpContext.User.Identity.Name).FirstOrDefault();
                         foreach (var log in logs)
                         {

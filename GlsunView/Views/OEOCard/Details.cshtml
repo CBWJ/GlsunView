@@ -431,7 +431,7 @@
                         arrModule.push(module);
                     }
                 });
-                $.post("@Url.Action("SetConfiguration", "OEOCard")", { ip: "@Model.IP", port: @Model.Port, slot: @Model.Slot, modules:arrModule, records: changeSet},
+                $.post("@Url.Action("SetConfiguration", "OEOCard")", { mfId:@ViewBag.MFID, ip: "@Model.IP", port: @Model.Port, slot: @Model.Slot, modules:arrModule, records: changeSet},
                     function (data, status, jqXHR) {
                         var showText = "";
                         var type = "";
