@@ -16,6 +16,7 @@
     float: right;
     list-style: none;
     margin-right: 50px;
+    background-color: #4F5F7F;
 }
 .nav-bar-menu>li{
     float: left;

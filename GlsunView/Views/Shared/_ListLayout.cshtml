@@ -57,7 +57,24 @@
             top: 40px;
             bottom: 0px;
         }
+        .main_body_content .row:first-child{
+            position:absolute;
+            bottom:45px;
+            left:0;
+            right:0;
+            top:0;
+            overflow-y:scroll;
+        }
+        .main_body_content .row:last-child{
+            position:absolute;
+            bottom:0;
+            left:0;
+            right:0;
+        }
         /*表格样式*/
+        table.dataTable{
+            overflow-y:scroll;
+        }
         table.dataTable tr.selected {
                 background-color: #3875d7;
                 color: #fff;
@@ -91,7 +108,7 @@
             white-space: nowrap;
         }
         .table>thead>tr{
-            background-color: #3c8dbc;
+            background-color: #445577;
             color:#eee;
         }
     </style>

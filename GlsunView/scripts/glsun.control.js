@@ -198,7 +198,7 @@
         this.addTabPage = function (tabPage) {
             //构建标题和内容DIV插入到相应位置
             var header = document.createElement("li");
-            var icon = document.createElement("i");
+            var icon = document.createElement("b");
             var span = document.createElement("span");
             var link = document.createElement("a");
             var close = document.createElement("i");
@@ -220,7 +220,7 @@
             //可关闭的标签页
             if (tabPage.alwaysShow == false) {
                 link.appendChild(close);
-                link.appendChild(placeholder);
+                //link.appendChild(placeholder);
             }
             else {
                 header.className = "fixed";
@@ -314,6 +314,12 @@
             }
             this.showScrollHeader();
         }
+        //隐藏Tab
+        this.hideTabPage = function (tabPage) {
+            if (isShown(tabPage)) return;
+            $("#" + tabPage.headId).removeClass("selected");
+            $("#" + tabPage.contentId).fadeOut();
+        }
         //是否显示
         function isShown(tabPage) {
             var val = $("#" + tabPage.contentId).css("display");
@@ -358,6 +364,7 @@
         this.headerCloseClick = function (close) {
             var id = $(close).parent("a").parent("li")[0].id;
             var tabClose = this.getTabPageByHeadId(id);
+            this.hideAllTabContent();
             this.closeTabPage(tabClose);
             if (this.settings.onTabClose) {
                 this.settings.onTabClose.call(this, tabClose);

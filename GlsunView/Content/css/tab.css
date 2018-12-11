@@ -33,15 +33,21 @@
     width:auto;
     height:35px;
     padding-left: 10px;
+    padding-right: 5px;
     line-height: 36px;
     position: absolute;
-    top:1px;
+    top:0px;
     z-index: 0;
     border-left: 1px solid #ccc;
-     background: linear-gradient(to right,#fdfdfd,#ededed); /* 标准的语法 */
+    border-top: 1px solid #ccc;
+    /*background: linear-gradient(to right,#ededed,#fdfdfd,#ededed);*/ /* 标准的语法 */
+    background-color:#F8f8f8;
+}
+.tab-header ul li:last-child{
+    border-right: 1px solid #ccc;
 }
 .tab-header ul li.fixed{
-    padding-right: 5px;
+    padding-right: 10px;
 }
 .tab-header ul .selected{
     background-color:#fff;
@@ -49,9 +55,13 @@
     border-bottom:1px solid #fff;
     top:0;
     z-index: 2;
-    background: linear-gradient(to right, #fff, #fff); /* 标准的语法 */
+    /*background: linear-gradient(to right, #fff, #fff);*/ /* 标准的语法 */
     border-top-left-radius:3px;
     border-top-right-radius: 3px;
+    background-color:#FFF;
+}
+.tab-header ul .selected:last-child{
+    border-right-color:#445577;
 }
 .tab-header ul .selected a span{
     font-weight: bold;
@@ -67,9 +77,7 @@
 }
 .tab-header ul li:hover{
     background-color: #fff;
-    border-left:1px solid #ccc;
-    border-right:1px solid #ccc;
-    z-index:0;
+    color:#444;
 }
 .tab-header ul .selected:hover{
     z-index: 2;
@@ -77,16 +85,23 @@
     border-right:1px solid #445577;
 }
 .tab-header a i.close{
-    font-size: 0.8em;
-    display: none;
+    font-size: 14px;
+    display: inline-block;
     position: relative;
-    top:-8px;
+    top:-2px;
+    color: #999;
+    width: 14px;
+    margin-left: 5px;
 }
 .tab-header .selected a i.close{
-    display: inline-block;
+    color: #444;
+}
+.tab-header li a i:hover{
+    background-color:#FF5722;
+    color: #FFF;
 }
 .tab-header .selected a i.close:hover{
-    color:red;
+    color: #FFF;
     cursor: pointer;
 }
 .clearfix:after{
