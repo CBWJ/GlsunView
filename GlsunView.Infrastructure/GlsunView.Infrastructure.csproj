@@ -30,6 +30,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BouncyCastle.Crypto, Version=1.8.4.0, Culture=neutral, PublicKeyToken=0e99375e54769942">
+      <HintPath>..\packages\BouncyCastle.1.8.4\lib\BouncyCastle.Crypto.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
       <Private>True</Private>
@@ -49,6 +53,7 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Management" />
     <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Web" />
@@ -98,8 +103,11 @@
     <Compile Include="Util\ExpansionMethod.cs" />
     <Compile Include="Util\JsonHelper.cs" />
     <Compile Include="Util\JsonResultEx.cs" />
+    <Compile Include="Util\LisenceHelper.cs" />
     <Compile Include="Util\MemoryCacheHelper.cs" />
     <Compile Include="Util\ReflectionHelper.cs" />
+    <Compile Include="Util\RSAHelper.cs" />
+    <Compile Include="Util\WMIHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GlsunView.Domain\GlsunView.Domain.csproj">

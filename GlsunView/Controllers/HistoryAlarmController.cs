@@ -124,7 +124,7 @@ namespace GlsunView.Controllers
             }
             else
             {
-                throw new NullReferenceException("从缓存取当前告警为NULL");
+                //throw new NullReferenceException("从缓存取当前告警为NULL");
             }
             json.Data = alarmInfo;
             return json;

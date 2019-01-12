@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using GlsunView.Domain;
 using System.Text;
 using GlsunView.Infrastructure.Util;
+using GlsunView.Common;
 
 namespace GlsunView.Controllers
 {
@@ -14,6 +15,13 @@ namespace GlsunView.Controllers
         // GET: Home
         public ActionResult Index()
         {
+            if (!LisenceHelper.IsLisenceValid())
+            {
+                //    var otherController = DependencyResolver.Current.GetService<LisenceController>();
+                //    var result = otherController.Index();
+                //    return result;
+                return RedirectToAction("Exception", "Lisence");
+            }
             User loginUser = null;
             using (var context = new GlsunViewEntities())
             {

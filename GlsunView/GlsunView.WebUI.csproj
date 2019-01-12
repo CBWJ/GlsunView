@@ -51,6 +51,10 @@
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="FluentScheduler, Version=5.3.0.0, Culture=neutral, PublicKeyToken=b76503528a14ebd1, processorArchitecture=MSIL">
+      <HintPath>..\packages\FluentScheduler.5.3.0\lib\net40\FluentScheduler.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
       <Private>True</Private>
@@ -269,6 +273,8 @@
     <Content Include="fonts\fontawesome-webfont.ttf" />
     <Content Include="fonts\fontawesome-webfont.eot" />
     <Content Include="Content\css\bootstrap.font.css" />
+    <Content Include="lisence" />
+    <None Include="Properties\PublishProfiles\Web.config.pubxml" />
     <None Include="scripts\jquery-1.9.1.intellisense.js" />
     <Content Include="scripts\bootstrap.js" />
     <Content Include="scripts\bootstrap.min.js" />
@@ -309,6 +315,9 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Common\AppHandleErrorAttribute.cs" />
     <Compile Include="Common\DeviceStatusGetter.cs" />
+    <Compile Include="Common\GlobalAuthenticationFilter.cs" />
+    <Compile Include="Common\LisenceHelper.cs" />
+    <Compile Include="Common\LisenceRegistry.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AuthorityController.cs" />
     <Compile Include="Controllers\CurrentAlarmController.cs" />
@@ -321,6 +330,7 @@
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HistoryAlarmController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\LisenceController.cs" />
     <Compile Include="Controllers\MachineFrameController.cs" />
     <Compile Include="Controllers\MachineRoomController.cs" />
     <Compile Include="Controllers\MachineShelfController.cs" />
@@ -451,6 +461,8 @@
     <Content Include="Views\Route\Index.cshtml" />
     <Content Include="Views\OLPCard\RouteView.cshtml" />
     <Content Include="Views\DeviceLine\Edit.cshtml" />
+    <Content Include="Views\Lisence\Index.cshtml" />
+    <Content Include="Views\Lisence\Exception.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

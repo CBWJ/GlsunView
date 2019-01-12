@@ -5,6 +5,8 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 using System.Web.Http;
+using FluentScheduler;
+using GlsunView.Common;
 
 namespace GlsunView
 {
@@ -17,6 +19,8 @@ namespace GlsunView
             GlobalConfiguration.Configure(WebApiConfig.Register);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
+            //定时任务
+            JobManager.Initialize(new LisenceRegistry());
         }
     }
 }
