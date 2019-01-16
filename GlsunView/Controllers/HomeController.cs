@@ -15,13 +15,10 @@ namespace GlsunView.Controllers
         // GET: Home
         public ActionResult Index()
         {
-            if (!LisenceHelper.IsLisenceValid())
-            {
-                //    var otherController = DependencyResolver.Current.GetService<LisenceController>();
-                //    var result = otherController.Index();
-                //    return result;
-                return RedirectToAction("Exception", "Lisence");
-            }
+            //if (!LisenceHelper.IsLisenceValid())
+            //{
+            //    return RedirectToAction("Exception", "Lisence");
+            //}
             User loginUser = null;
             using (var context = new GlsunViewEntities())
             {

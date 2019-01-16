@@ -25,7 +25,14 @@ namespace GlsunView.Common
             //解析Lisence
             //本机机器码
             string serialNo = WMIHelper.GetDiskSerialNumber() + WMIHelper.GetCPUSerialNumber();
-            LocalMachineNumber = serialNo.Substring(0, 24);
+            if (serialNo.Length >= 24)
+            {
+                LocalMachineNumber = serialNo.Substring(0, 24);
+            }
+            else
+            {
+                LocalMachineNumber = serialNo.PadRight(24 - serialNo.Length, '0');
+            }
             string fileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "lisence");
             if (File.Exists(fileName) == false)
             {

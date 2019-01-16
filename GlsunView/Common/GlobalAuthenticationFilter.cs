@@ -4,6 +4,8 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc.Filters;
 using GlsunView.Infrastructure.Util;
+using System.Web.Mvc;
+using System.Web.Routing;
 
 namespace GlsunView.Common
 {
@@ -17,16 +19,30 @@ namespace GlsunView.Common
         /// </summary>
         public void OnAuthentication(AuthenticationContext filterContext)
         {
-            var a = filterContext;
+            //AuthenticationContext.Result：设置表示认证质疑的ActionResult
+            if (!LisenceHelper.IsLisenceValid())
+            {
+                if (filterContext.ActionDescriptor.ControllerDescriptor.ControllerName.ToLower() == "lisence" &&
+                filterContext.ActionDescriptor.ActionName.ToLower() == "exception")
+                {
+
+                }
+                else
+                {
+                    filterContext.Result = new LisenceExceptionResult();
+                }
+            }
         }
 
         public void OnAuthenticationChallenge(AuthenticationChallengeContext filterContext)
         {
-            string msg="";
-            //if(!LisenceHelper.IsLisenceValid(out msg))
-            //{
-            //    var a = "";
-            //}
+            if(filterContext.Result is LisenceExceptionResult)
+            {
+                filterContext.Result = new RedirectToRouteResult(new RouteValueDictionary {
+                    {"controller", "Lisence" },
+                    {"action", "Exception" }
+                });
+            }
         }
     }
 }

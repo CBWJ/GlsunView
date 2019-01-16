@@ -20,7 +20,7 @@ namespace GlsunView.Controllers
         {
             return View();
         }
-        
+        [AllowAnonymous]
         //GET
         public ActionResult Login()
         {
@@ -43,7 +43,7 @@ namespace GlsunView.Controllers
             }
             return View(user);
         }
-
+        [AllowAnonymous]
         [HttpPost]
         public ActionResult Login(User user, string rememberUser)
         {

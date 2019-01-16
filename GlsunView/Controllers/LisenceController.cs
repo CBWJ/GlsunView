@@ -10,6 +10,7 @@ namespace GlsunView.Controllers
 {
     public class LisenceController : Controller
     {
+        [AllowAnonymous]
         public ActionResult Exception()
         {
             ViewBag.MachineNumber = LisenceHelper.LocalMachineNumber;

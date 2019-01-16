@@ -273,7 +273,7 @@
     <Content Include="fonts\fontawesome-webfont.ttf" />
     <Content Include="fonts\fontawesome-webfont.eot" />
     <Content Include="Content\css\bootstrap.font.css" />
-    <Content Include="lisence" />
+    <None Include="lisence" />
     <None Include="Properties\PublishProfiles\Web.config.pubxml" />
     <None Include="scripts\jquery-1.9.1.intellisense.js" />
     <Content Include="scripts\bootstrap.js" />
@@ -316,6 +316,7 @@
     <Compile Include="Common\AppHandleErrorAttribute.cs" />
     <Compile Include="Common\DeviceStatusGetter.cs" />
     <Compile Include="Common\GlobalAuthenticationFilter.cs" />
+    <Compile Include="Common\LisenceExceptionResult.cs" />
     <Compile Include="Common\LisenceHelper.cs" />
     <Compile Include="Common\LisenceRegistry.cs" />
     <Compile Include="Controllers\AccountController.cs" />
