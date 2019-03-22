@@ -1,0 +1,357 @@
+﻿@{
+    var pagingInfo = (GlsunView.Models.PagingInfo)ViewBag.PagingInfo;
+    var userModuleAuth = (IEnumerable<GlsunView.Domain.v_UserModuleAuthority>)ViewBag.UserModuleAuth;
+}
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <link rel="stylesheet" href="~/Content/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/scripts/select2/select2.css" />
+    <link rel="stylesheet" href="~/scripts/select2/select2-bootstrap.min.css" />
+    <link rel="stylesheet" href="~/Content/css/dialog.css" />
+
+    <script src="~/scripts/jquery-1.9.1.min.js"></script>
+    <script src="~/scripts/bootstrap.min.js"></script>
+    <script src="~/scripts/select2/select2.full.js"></script>
+    <script src="~/scripts/select2/select2.zh-CN.js"></script>
+    <script src="~/scripts/lib/dialog.js"></script>
+
+    <style>
+        body {
+            background-color: #EFF3F8;
+        }
+
+        .page-top {
+            width: 100%;
+            padding: 5px;
+            border-bottom: 1px solid #ccc;
+        }
+
+            .page-top .data-operation {
+                float: right;
+            }
+
+        .row {
+            margin: 0;
+        }
+
+        .page-grid {
+            background-color: #fff;
+        }
+
+        .page-bottom .page-description select {
+            width: auto;
+            display: inline;
+        }
+
+        .page-bottom .pagination {
+            margin: 0;
+            float: right;
+        }
+
+        .page-bottom {
+            padding: 5px;
+        }
+
+        .page-grid {
+            position: absolute;
+            top: 45px;
+            left: 0px;
+            right: 0px;
+            bottom: 46px;
+            border-bottom: 1px solid #ccc;
+            overflow-y: auto;
+        }
+
+        table#dataGrid {
+            border-top: 0;
+        }
+
+            table#dataGrid thead tr {
+                background: linear-gradient(to bottom,#F8F8F8 0,#ECECEC 100%);
+            }
+
+            table#dataGrid tbody tr.selected {
+                background-color: #E4EFC9;
+                color: #333;
+            }
+
+        .page-bottom {
+            position: absolute;
+            bottom: 0px;
+            left: 0px;
+            right: 0px;
+        }
+
+        /*按钮图标颜色*/
+        .data-operation .glyphicon-plus {
+            color: #3c763d;
+        }
+
+        .data-operation .glyphicon-pencil {
+            color: #8a6d3b;
+        }
+
+        .data-operation .glyphicon-remove {
+            color: #a94442;
+        }
+
+        .data-operation .glyphicon-info-sign {
+            color: #31708f;
+        }
+    </style>
+    @if (IsSectionDefined("AddToHead"))
+    {
+        @RenderSection("AddToHead", required: false)
+    }
+    <title>@ViewBag.Title</title>
+</head>
+<body>
+    <div class="page-top">
+        <div class="row">
+            <form action="@Url.Action(ViewBag.Action, ViewBag.Controller)" class="search col-md-6 form-inline">
+                @RenderSection("SearchOptions", required: true)
+                <button id="search" type="submit" class="btn btn-primary btn-sm">
+                    <span class="glyphicon glyphicon-search"></span> 搜索
+                </button>
+                <input type="hidden" name="pageSize" value="@pagingInfo.ItemsPerPage" />
+            </form>
+            <div id="edit_menu" class="data-operation .col-md-6">
+                @Html.AuthorityButtonList(userModuleAuth)
+            </div>
+        </div>
+    </div>
+    @RenderBody()
+    <div class="page-bottom">
+        <div class="row">
+            <div class="col-md-6 page-description">
+                <label>
+                    第<span>@pagingInfo.CurrentPage</span>页/
+                    共<span>@pagingInfo.TotalPages</span>页&nbsp;
+                    每页显示
+                    <select id="pageSize" class="form-control input-sm">
+                        <option value="10" @(pagingInfo.ItemsPerPage == 10 ? "selected" : "")>10</option>
+                        <option value="25" @(pagingInfo.ItemsPerPage == 25 ? "selected" : "")>25</option>
+                        <option value="50" @(pagingInfo.ItemsPerPage == 50 ? "selected" : "")>50</option>
+                        <option value="100" @(pagingInfo.ItemsPerPage == 100 ? "selected" : "")>100</option>
+                    </select>
+                    条/
+                    共计 @pagingInfo.TotalItems 条
+                </label>
+            </div>
+            <div class="col-md-6">
+                @Html.PageLinks(pagingInfo, x => Url.Action("List", new { page = x, pagesize = pagingInfo.ItemsPerPage }))
+            </div>
+        </div>
+    </div>
+    @RenderSection("Scripts", required: false)
+    <script>
+        /*警告对话框*/
+        var openDialog = null;
+        function dialogAlert(title, message) {
+            var d = dialog({
+                title: title,
+                content: message,
+                okValue: '确定',
+                ok: function () { }
+            });
+            d.showModal();
+        }
+        /*确认对话框*/
+        function dialogConfirm(title, message, callBack) {
+            var d = dialog({
+                title: title,
+                content: message,
+                okValue: '确定',
+                ok: callBack,
+                cancelValue: '取消',
+                cancel: function () { }
+            });
+            d.showModal();
+        }
+        /*页面对话框*/
+        function dialogOpenPage(title, url, noSubmit) {
+            var btns = [
+                {
+                    value: '提交',
+                    callback: function () {
+                        //调用Frame的方法
+                        formFrame.window.submitForm();
+                        return false;
+                     },
+                    autofocus: true
+                },
+                {
+                    value: '取消'
+                }
+            ];
+            if (noSubmit) {
+                btns = [{ value: '确定', autofocus: true}];
+            }
+            var w = 400, h = 300;
+            if (window.pageFrame.dialog) {
+                w = window.pageFrame.dialog.width;
+                h = window.pageFrame.dialog.height;
+            }
+            openDialog = dialog({
+                title: title,
+                content: '<iframe name="formFrame" style="width:100%;height:100%;border:0;" src="' + url + '"></iframe>',
+                button: btns
+            }).width(w).height(h).showModal();
+            console.log('open page');
+        }
+        /*提示对话框，自动关闭*/
+        function dialogTip(type, text) {
+            var color = "#3c763d";
+            var fontIcon = "glyphicon-ok-sign";
+            switch (type) {
+                case 'success':
+                    break;
+                case 'fail':
+                    color = "#a94442";
+                    fontIcon = "glyphicon-remove-sign";
+                    break;
+                case 'info':
+                    color = "#31708f";
+                    fontIcon = "glyphicon-info-sign";
+                    break;
+            }
+            var d = dialog({
+                content: '<p class="" role="alert"><i class="glyphicon ' + fontIcon + '" style="color: ' + color + ';"></i>' + text + '</p>'
+            });
+            d.show();
+            setTimeout(function () {
+                d.close().remove();
+            }, 2000);
+        }
+        /*
+         * 子页面回调
+         * code:0正常，1异常
+         * data:数据或异常信息
+        */
+        function childPageCallback(code, msg, data) {
+            if (code === 0) {
+                if (openDialog)
+                    openDialog.close().remove();
+                refreshPage();
+            }
+            else if (code === 1) {
+                dialogTip('fail', msg);
+            }
+        }
+        //刷新页面
+        function refreshPage() {
+            window.location.reload();
+        }
+        var buttonActions = {
+            btnAdd: function (e) {
+                //dialogAlert('新增', '测试');
+                dialogOpenPage('新增', 'Create')
+            },
+            btnEdit: function (e) {
+                var ids = getSelectedDataId();
+                if (ids.length !== 1) {
+                    dialogAlert('提示', '请选择一行数据操作！');
+                    return;
+                }
+                dialogOpenPage('编辑', 'Edit/' + ids[0]);
+            },
+            btnDelete: function (e) {
+                var ids = getSelectedDataId();
+                if (ids.length < 1) {
+                    dialogAlert('提示', '至少选择一行数据进行操作！');
+                    return;
+                }
+                dialogConfirm('警告', '确定要删除选中项吗？', function () {
+                    $.post('Delete', { ids: ids },
+                        function (data) {
+                            var obj = JSON.parse(data);
+                            if (obj.status == 0) {
+                                refreshPage();
+                            } else {
+                                dialogTip('fail', obj.message);
+                            }
+                        }
+                    )
+                });
+            },
+            btnView: function (e) {
+                var ids = getSelectedDataId();
+                if (ids.length !== 1) {
+                    dialogAlert('提示', '请选择一行数据操作！');
+                    return;
+                }
+                dialogOpenPage('查看', 'Details/' + ids[0], true);
+            }
+        };
+        /*表格添加复选*/
+        function addCheckboxToTable() {
+            //标题添加复选框
+            var $tableHeader = $("#dataGrid thead tr");
+            var $checkAllTh = $('<th><input type="checkbox" id="checkAll" name="checkAll" /></th>');
+            $tableHeader.prepend($checkAllTh);
+            var $checkAll = $("#checkAll");
+            $checkAll.click(function (e) {
+                var chks = $tableRow.find("input");
+                chks.prop("checked", this.checked);
+                //单选设置高亮
+                if (this.checked) {
+                    chks.parentsUntil('tbody').addClass('selected');
+                } else {
+                    chks.parentsUntil('tbody').removeClass('selected');
+                }
+                e.stopPropagation();
+            });
+            //数据行添加复选框
+            var $tableRow = $("#dataGrid tbody tr");
+            var $checkItemTd = $('<td width="40px"><input type="checkbox" name="checkItem" /></td>');
+            $tableRow.prepend($checkItemTd);
+            $tableRow.find("input").click(function (e) {
+                //单选设置高亮
+                var $this = $(this);
+                var $row = $this.parentsUntil('tbody');
+                if (this.checked) {
+                    $row.addClass('selected');
+                } else {
+                    $row.removeClass('selected');
+                }
+                $checkAll.prop("checked", $tableRow.find("input:checked").length == $tableRow.length ? true : false);
+                e.stopPropagation();
+            });
+        }
+        //获取已选数据ID
+        function getSelectedDataId() {
+            var $selRows = $("#dataGrid tbody tr.selected");
+            var ids = [];
+            $selRows.each(function (index, elem) {
+                var id = $(this).data("data-id");
+                ids.push(id);
+            });
+            return ids;
+        }
+
+        //文档加载完毕
+        $(function () {
+            if (window.pageFrame.moreActions) {
+                $.extend(buttonActions, window.pageFrame.moreActions);
+            }
+            $("#edit_menu button").each(function (index, element) {
+                console.log(element.id);
+                var func = buttonActions[element.id];
+                if (func && typeof func === 'function') {
+                    $(this).click(func);
+                }
+            });
+            addCheckboxToTable();
+
+            $("#pageSize").on("change", function () {
+                    var pagesize = $(this).val();
+                    var url = "@Url.Action("List", new { page = 1})" + "&pagesize=" + pagesize;
+                    window.location.href = url;
+                });
+        });
+    </script>
+</body>
+</html>

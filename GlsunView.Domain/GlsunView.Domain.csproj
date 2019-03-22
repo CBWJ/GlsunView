@@ -90,10 +90,19 @@
     <Compile Include="MachineShelf.cs">
       <DependentUpon>GlsunViewModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Mark.cs">
+      <DependentUpon>GlsunViewModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Module.cs">
       <DependentUpon>GlsunViewModel.tt</DependentUpon>
     </Compile>
     <Compile Include="ModuleAuthority.cs">
+      <DependentUpon>GlsunViewModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="OpticalCable.cs">
+      <DependentUpon>GlsunViewModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="OpticalFiber.cs">
       <DependentUpon>GlsunViewModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -183,6 +192,7 @@
     <EntityDeploy Include="GlsunViewModel.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>GlsunViewModel.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EntityDeploy>
   </ItemGroup>
   <ItemGroup>

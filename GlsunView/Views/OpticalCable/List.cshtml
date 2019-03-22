@@ -1,0 +1,64 @@
+﻿@model IEnumerable<GlsunView.Domain.OpticalCable>
+@{
+                /**/
+
+                /**/
+
+                ViewBag.Title = "List";
+                Layout = "~/Views/Shared/_BootstrapList.cshtml";
+}
+
+@section SearchOptions{
+    <div class="form-group">
+        <label for="exampleInputName2">名称</label>
+        <input type="text" class="form-control" id="keyword" name="keyword" placeholder="输入关键字查询" value="@ViewData["keyword"]">
+    </div>
+}
+<div class="page-grid">
+    <table id="dataGrid" class="header table table-striped table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>名称</th>
+                <th>标记A</th>
+                <th>标记B</th>
+                <th>标记A盘留</th>
+                <th>标记B盘留</th>
+                <th>长度</th>
+                <th>总长</th>
+                <th>光纤数</th>
+                <th>备注</th>
+                <th>创建时间</th>
+                <th>修改时间</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var e in Model)
+            {
+                <tr data-data-id="@e.ID">
+                    <td>@e.OC_Name</td>
+                    <td>@e.Mark.MName</td>
+                    <td>@e.Mark1.MName</td>
+                    <td>@e.OC_MarkRetainA</td>
+                    <td>@e.OC_MarkRetainB</td>
+                    <td>@e.OC_Length</td>
+                    <td>@e.OC_TotalLength</td>
+                    <td>@e.OC_FiberCount</td>
+                    <td>@e.Remark</td>
+                    <td>@e.CreationTime</td>
+                    <td>@e.EditingTime</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+@section Scripts{
+    <script>
+        window.pageFrame = {
+            moreActions: {},
+            dialog: {
+                width: 600,
+                height: 350
+            }
+        };
+    </script>
+}

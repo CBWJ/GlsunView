@@ -150,6 +150,21 @@
           <Property Name="EditorID" Type="int" />
           <Property Name="EditingTime" Type="datetime" />
         </EntityType>
+        <EntityType Name="Mark">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MName" Type="nvarchar" MaxLength="50" />
+          <Property Name="MLongitude" Type="decimal" Precision="24" Scale="18" />
+          <Property Name="MLatitude" Type="decimal" Precision="24" Scale="18" />
+          <Property Name="MType" Type="nvarchar" MaxLength="20" />
+          <Property Name="Remark" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatorID" Type="int" />
+          <Property Name="CreationTime" Type="datetime" />
+          <Property Name="EditorID" Type="int" />
+          <Property Name="EditingTime" Type="datetime" />
+        </EntityType>
         <EntityType Name="Module">
           <Key>
             <PropertyRef Name="ID" />
@@ -176,6 +191,41 @@
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="MID" Type="int" />
           <Property Name="AID" Type="int" />
+          <Property Name="CreatorID" Type="int" />
+          <Property Name="CreationTime" Type="datetime" />
+          <Property Name="EditorID" Type="int" />
+          <Property Name="EditingTime" Type="datetime" />
+        </EntityType>
+        <EntityType Name="OpticalCable">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="OC_Name" Type="nvarchar" MaxLength="50" />
+          <Property Name="OC_MarkIDA" Type="int" />
+          <Property Name="OC_MarkIDB" Type="int" />
+          <Property Name="OC_MarkRetainA" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="OC_MarkRetainB" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="OC_Length" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="OC_TotalLength" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="OC_FiberCount" Type="int" />
+          <Property Name="OC_Nodes" Type="text" />
+          <Property Name="Remark" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatorID" Type="int" />
+          <Property Name="CreationTime" Type="datetime" />
+          <Property Name="EditorID" Type="int" />
+          <Property Name="EditingTime" Type="datetime" />
+        </EntityType>
+        <EntityType Name="OpticalFiber">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="OF_Name" Type="nvarchar" MaxLength="30" />
+          <Property Name="OC_ID" Type="int" />
+          <Property Name="OC_Name" Type="nvarchar" MaxLength="50" />
+          <Property Name="OC_TotalLength" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="Remark" Type="nvarchar" MaxLength="50" />
           <Property Name="CreatorID" Type="int" />
           <Property Name="CreationTime" Type="datetime" />
           <Property Name="EditorID" Type="int" />
@@ -373,7 +423,7 @@
           <Property Name="AName" Type="nvarchar" MaxLength="20" />
           <Property Name="ACode" Type="varchar" MaxLength="20" />
           <Property Name="AType" Type="varchar" MaxLength="20" />
-          <Property Name="AIcon" Type="varchar" MaxLength="20" />
+          <Property Name="AIcon" Type="varchar" MaxLength="50" />
           <Property Name="AIconType" Type="varchar" MaxLength="10" />
           <Property Name="AClassName" Type="varchar" MaxLength="255" />
           <Property Name="AShowNumber" Type="smallint" />
@@ -810,8 +860,11 @@
           <EntitySet Name="MachineFrame" EntityType="Self.MachineFrame" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MachineRoom" EntityType="Self.MachineRoom" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MachineShelf" EntityType="Self.MachineShelf" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Mark" EntityType="Self.Mark" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Module" EntityType="Self.Module" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ModuleAuthority" EntityType="Self.ModuleAuthority" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="OpticalCable" EntityType="Self.OpticalCable" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="OpticalFiber" EntityType="Self.OpticalFiber" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Role" EntityType="Self.Role" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="RoleAuthority" EntityType="Self.RoleAuthority" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Route" EntityType="Self.Route" Schema="dbo" store:Type="Tables" />
@@ -1372,6 +1425,9 @@
           </AssociationSet>
           <EntitySet Name="v_Route" EntityType="GlsunViewModel.v_Route" />
           <EntitySet Name="v_RouteGroup" EntityType="GlsunViewModel.v_RouteGroup" />
+          <EntitySet Name="Mark" EntityType="GlsunViewModel.Mark" />
+          <EntitySet Name="OpticalCable" EntityType="GlsunViewModel.OpticalCable" />
+          <EntitySet Name="OpticalFiber" EntityType="GlsunViewModel.OpticalFiber" />
           </EntityContainer>
         <EntityType Name="v_ModuleUser">
           <Key>
@@ -1518,7 +1574,7 @@
           <Property Name="AName" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="ACode" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="AType" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="AIcon" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="AIcon" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="AIconType" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="AClassName" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="AShowNumber" Type="Int16" />
@@ -1999,6 +2055,56 @@
           <Property Name="EditingTime" Type="DateTime" Precision="3" />
           <Property Name="Creator" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Editor" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Mark">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MLongitude" Type="Decimal" Precision="24" Scale="18" />
+          <Property Name="MLatitude" Type="Decimal" Precision="24" Scale="18" />
+          <Property Name="MType" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Remark" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatorID" Type="Int32" />
+          <Property Name="CreationTime" Type="DateTime" Precision="3" />
+          <Property Name="EditorID" Type="Int32" />
+          <Property Name="EditingTime" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="OpticalCable">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="OC_Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="OC_MarkIDA" Type="Int32" />
+          <Property Name="OC_MarkIDB" Type="Int32" />
+          <Property Name="OC_MarkRetainA" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="OC_MarkRetainB" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="OC_Length" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="OC_TotalLength" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="OC_FiberCount" Type="Int32" />
+          <Property Name="OC_Nodes" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Remark" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatorID" Type="Int32" />
+          <Property Name="CreationTime" Type="DateTime" Precision="3" />
+          <Property Name="EditorID" Type="Int32" />
+          <Property Name="EditingTime" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="OpticalFiber">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="OF_Name" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="OC_ID" Type="Int32" />
+          <Property Name="OC_Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="OC_TotalLength" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="Remark" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatorID" Type="Int32" />
+          <Property Name="CreationTime" Type="DateTime" Precision="3" />
+          <Property Name="EditorID" Type="Int32" />
+          <Property Name="EditingTime" Type="DateTime" Precision="3" />
         </EntityType>
         </Schema>
     </edmx:ConceptualModels>
@@ -2660,6 +2766,59 @@
                 <ScalarProperty Name="Remark" ColumnName="Remark" />
                 <ScalarProperty Name="RGIcon" ColumnName="RGIcon" />
                 <ScalarProperty Name="RGName" ColumnName="RGName" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Mark">
+            <EntityTypeMapping TypeName="GlsunViewModel.Mark">
+              <MappingFragment StoreEntitySet="Mark">
+                <ScalarProperty Name="EditingTime" ColumnName="EditingTime" />
+                <ScalarProperty Name="EditorID" ColumnName="EditorID" />
+                <ScalarProperty Name="CreationTime" ColumnName="CreationTime" />
+                <ScalarProperty Name="CreatorID" ColumnName="CreatorID" />
+                <ScalarProperty Name="Remark" ColumnName="Remark" />
+                <ScalarProperty Name="MType" ColumnName="MType" />
+                <ScalarProperty Name="MLatitude" ColumnName="MLatitude" />
+                <ScalarProperty Name="MLongitude" ColumnName="MLongitude" />
+                <ScalarProperty Name="MName" ColumnName="MName" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="OpticalCable">
+            <EntityTypeMapping TypeName="GlsunViewModel.OpticalCable">
+              <MappingFragment StoreEntitySet="OpticalCable">
+                <ScalarProperty Name="EditingTime" ColumnName="EditingTime" />
+                <ScalarProperty Name="EditorID" ColumnName="EditorID" />
+                <ScalarProperty Name="CreationTime" ColumnName="CreationTime" />
+                <ScalarProperty Name="CreatorID" ColumnName="CreatorID" />
+                <ScalarProperty Name="Remark" ColumnName="Remark" />
+                <ScalarProperty Name="OC_Nodes" ColumnName="OC_Nodes" />
+                <ScalarProperty Name="OC_FiberCount" ColumnName="OC_FiberCount" />
+                <ScalarProperty Name="OC_TotalLength" ColumnName="OC_TotalLength" />
+                <ScalarProperty Name="OC_Length" ColumnName="OC_Length" />
+                <ScalarProperty Name="OC_MarkRetainB" ColumnName="OC_MarkRetainB" />
+                <ScalarProperty Name="OC_MarkRetainA" ColumnName="OC_MarkRetainA" />
+                <ScalarProperty Name="OC_MarkIDB" ColumnName="OC_MarkIDB" />
+                <ScalarProperty Name="OC_MarkIDA" ColumnName="OC_MarkIDA" />
+                <ScalarProperty Name="OC_Name" ColumnName="OC_Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="OpticalFiber">
+            <EntityTypeMapping TypeName="GlsunViewModel.OpticalFiber">
+              <MappingFragment StoreEntitySet="OpticalFiber">
+                <ScalarProperty Name="EditingTime" ColumnName="EditingTime" />
+                <ScalarProperty Name="EditorID" ColumnName="EditorID" />
+                <ScalarProperty Name="CreationTime" ColumnName="CreationTime" />
+                <ScalarProperty Name="CreatorID" ColumnName="CreatorID" />
+                <ScalarProperty Name="Remark" ColumnName="Remark" />
+                <ScalarProperty Name="OC_TotalLength" ColumnName="OC_TotalLength" />
+                <ScalarProperty Name="OC_Name" ColumnName="OC_Name" />
+                <ScalarProperty Name="OC_ID" ColumnName="OC_ID" />
+                <ScalarProperty Name="OF_Name" ColumnName="OF_Name" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>

@@ -1,0 +1,709 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_BootstrapLayout.cshtml";
+}
+
+@section AddToHead{
+    <link href="~/scripts/leaflet/leaflet.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/css/tooltip.css" rel="stylesheet" type="text/css" />
+
+    <script src="~/scripts/leaflet/leaflet.js"></script>
+    <script src="~/scripts/leaflet/leafletExtend.js"></script>
+    <script src="~/scripts/lib/jQuery.Tooltip.js"></script>
+}
+<style>
+    #map {
+        position: absolute;
+        top: 0;
+        right: 0;
+        left: 0;
+        bottom: 0;
+    }
+
+    .map-toolbar {
+        height: 40px;
+        display: inline-block;
+        background-color: white;
+        padding: 0 5px;
+        box-shadow: 0px 2px 5px rgba(0,0,0,.4);
+    }
+
+        .map-toolbar img {
+            width: 32px;
+            position: relative;
+            top: -4px;
+            margin-right: 2px;
+            vertical-align: initial;
+        }
+
+            .map-toolbar img:hover {
+                cursor: pointer;
+                background-color: lightskyblue;
+            }
+
+        .map-toolbar .input {
+            width: 250px;
+            height: 40px;
+            position: relative;
+            display: inline-block;
+            padding-top: 3px;
+        }
+
+    .map-toolbar-tip {
+        position: relative;
+        display: none;
+        /* height: 40px;
+        line-height: 40px; */
+        font-size: 16px;
+        top: -14px;
+        color: #2196f3;
+    }
+
+    .frame-popups {
+        border: 0;
+        width: 100%;
+        height: 300px;
+        overflow-x: hidden;
+    }
+
+    .popup-content {
+        width: 320px;
+    }
+
+    .marker-tooltip::before {
+        display: none;
+    }
+
+    .marker-icon-node {
+        background-color: #fff;
+        border: 1px solid #38f;
+        border-radius: 50%;
+        margin: -8px 0 0 -8px !important;
+        width: 14px !important;
+        height: 14px !important;
+        outline: 0;
+        transition: opacity .3s ease;
+        cursor: crosshair;
+    }
+</style>
+<div id="map"></div>
+<div id="toolbar" class="map-toolbar">
+    <span id="tool-tip" class="map-toolbar-tip">点击图标放置</span>
+    <img id="marker" src="~/image/map/marker.png" />
+    <img id="line" src="~/image/map/polyline.png" />
+    <div class="input">
+        <div class="input-group">
+            <select id="search" type="text" class="form-control"></select>
+        </div>
+    </div>
+</div>
+   
+<script>
+    window.onload = function () {
+        mapInit();
+    };
+    function mapInit() {
+        //地图初始化
+        var map = L.map('map', {
+            attributionControl: false,
+            zoomControl: false,
+            center: [25.29, 110.28],
+            zoom: 14,
+            minZoom: 10,
+            maxZoom: 18
+        });
+
+        var wmsLayer = L.tileLayer.wms("http://localhost:8088/geowebcache/service/wms", {
+            layers: 'ARCGIS-Demo',
+            format: 'image/png'
+        });
+        wmsLayer.addTo(map);
+        map.doubleClickZoom.disable();
+        //工具条控件
+        var toolbar = L.control.toolbar({ elemId: 'toolbar' }).addTo(map);
+        $("#toolbar").click(function (e) {
+            e.stopPropagation();
+        });
+        $("#marker").tooltip({ text: '新增标记' });
+        $("#line").tooltip({ text: '新增光缆' });
+        //工具栏操作状态对象 
+        var toolbarState = {
+            working: false,
+            finish: false,
+            type: '',
+            step: 0,
+            data: {
+                begMarker: null,   //记录起点标记
+                closeMarker: null,  //离鼠标最近的标记
+                followMarker: null, //跟随标记
+                dashLine: null,  //拆线虚线
+                lastLatlng: null,   //上个经纬度
+                nodes: [],  //所有标记
+                lines: [],  //所有连线
+            }
+        }
+        //搜索框初始化
+        var data2 = [
+            {
+                text: '标记',
+                children: [
+                    { id: 1, text: '机房1' },
+                    { id: 2, text: '机房2' },
+                    { id: 3, text: '机房' }
+                ]
+            },
+            {
+                text: '光缆',
+                children: [
+                    { id: 4, text: '光缆1' },
+                    { id: 5, text: '光缆2' }
+                ]
+            }
+        ];
+        var $search = $("#search").select2({
+            data: data2,
+            placeholder: "选择一个标记或光缆",
+            allowClear: true,
+            multiple: false,
+            //maximumSelectionLength: 1,
+            language: "zh-CN",
+            theme: "bootstrap"
+        });
+        $search.on('select2:select', function (e) {
+            //console.log(e.params.data.text);
+            //$("#txtSearch").val(e.params.data.text);
+            //$("#txtSearch").select2("data");
+
+            var id = e.params.data.id;
+            var text = e.params.data.text;
+            var group = $(".select2-hidden-accessible option").filter(function (index) {
+                return this.innerText === text;
+            }).parent().attr('label');
+
+            if (group == "标记") {
+                var m = getMarkerById(id);
+                if (m) {
+                    map.flyTo(m.getLatLng(), 16);
+                    m.fire('click');
+                }
+            }
+            else if (group == "光缆") {
+                var l = getPolylineById(id);
+                if (l) {
+                    map.flyTo(l.getCenter());
+                    map.fitBounds(l.getBounds());
+                }
+            }
+        });
+        $search.val(0).trigger("change");      
+
+        //按钮
+        var $map = $("#map");
+        var $toolTip = $("#tool-tip");
+        function showToolbartip(tip, cursor) {
+            if (!cursor) cursor = "default";
+            $toolTip.css("display", "inline-block");
+            $toolTip.text(tip);
+            $toolTip.show();
+            $("#map").css("cursor", cursor);
+        }
+        function hideToolbartip() {
+            $toolTip.hide();
+            $map.css("cursor", "grab");
+        }
+        function toolbarFinish() {
+            hideToolbartip();
+            var i;
+            toolbarState.working = false;
+            if (toolbarState.data.followMarker) {
+                toolbarState.data.followMarker.remove();
+            }
+            if (toolbarState.data.dashLine) {
+                toolbarState.data.dashLine.remove();
+            }
+            if (toolbarState.data.nodes) {
+                for (i = 0; i < toolbarState.data.nodes.length; ++i) {
+                    var node = toolbarState.data.nodes[i];
+                    if (!node.attachData) {
+                        node.remove();
+                    }
+                }
+            }
+            if (toolbarState.data.lines) {
+                for (i = 0; i < toolbarState.data.lines.length; ++i) {
+                    toolbarState.data.lines[i].remove();
+                }
+            }
+        }
+        var toolbarEvents = {
+            marker: function (e) {
+                showToolbartip("点击左键标记位置，右键退出", "crosshair");
+                toolbarState.type = 'marker';
+                toolbarState.working = true;
+                var myIcon = L.icon({
+                    iconUrl: 'images/marker.png',
+                    iconSize: [32, 32],
+                    iconAnchor: [16, 32]
+                });
+                toolbarState.data.followMarker = L.marker([0, 0], { icon: myIcon }).addTo(map);
+                var img = toolbarState.data.followMarker.getElement();
+                img.style.cursor = 'crosshair';
+
+                toolbarState.data.followMarker.bindTooltip('点击左键新增标记，右键退出', {
+                    permanent: true,
+                    offset: L.point(0, 10),
+                    direction: 'bottom',
+                    opacity: 0.8,
+                })
+                    .openTooltip();
+                e.stopPropagation();
+            },
+            line: function (e) {
+                showToolbartip("点击一个标记作为起点，右键退出", "crosshair");
+                toolbarState.type = 'line';
+                toolbarState.working = true;
+                toolbarState.step = 0;
+
+                var center = map.getCenter();
+                //toolbarState.data.followMarker = L.marker.lineNode(center).addTo(map);
+                toolbarState.data.begMarker = null;
+                toolbarState.data.closeMarker = null;
+                toolbarState.data.followMarker = L.marker.lineNode([0, 0]).addTo(map);;
+                toolbarState.data.dashLine = null;
+                toolbarState.data.nodes = [];
+                toolbarState.data.lines = [];
+
+                toolbarState.data.followMarker.bindTooltip('选择一个标记作为起点，右键退出', {
+                    permanent: true,
+                    offset: L.point(0, 10),
+                    direction: 'bottom',
+                    opacity: 0.8,
+                })
+                    .openTooltip();
+                e.stopPropagation();
+            }
+        };
+        $("#toolbar img").each(function (index, element) {
+            var id = $(element).attr("id");
+            var func = toolbarEvents[id];
+            if (typeof func === "function") {
+                $(element).on('click', func);
+            }
+        });
+
+        //打开的对话框 
+        var openDialog = null;
+        //编辑层，不是编辑为null
+        var editLayer = null;
+        //画线node
+        var lineNodes = [];
+        //layer层事件
+        //标记点击
+        function markerClick(mouseEvent) {
+            var m = mouseEvent.target;
+            if (toolbarState.working && toolbarState.type == 'line') {
+                if (toolbarState.step == 0 && toolbarState.data.closeMarker != null) {
+                    console.log('marker.click');
+                    beginPolyline();
+                } else if (toolbarState.step == 2) {
+                    return;
+                    //确保不是同一个
+                    if (m.attachData.id !== toolbarState.data.nodes[0].attachData.id) {
+                        console.log('标记不同');
+                        toolbarState.data.nodes.push(m);
+
+                        var cableNodes = [];
+                        for (var i = 0; i < toolbarState.data.nodes.length; ++i) {
+                            cableNodes.push(toolbarState.data.nodes[i].getLatLng());
+                        }
+                        // var l = L.polyline(cableNodes, {weight:3}).addTo(map);
+                        toolbarFinish();
+
+                        openDialog = dialog({
+                            title: '新增光缆',
+                            content: '<iframe name="formFrame" style="width:100%;height:100%;border:0;" src="PopusLine.html"></iframe>',
+                            button: [{
+                                value: '保存',
+                                callback: function () {
+                                    addPolylineToMap(cableNodes, {});
+                                },
+                                autofocus: true
+                            },
+                            {
+                                value: '取消'
+                            }
+                            ]
+                        }).width(625).height(300).showModal();
+                    }
+                    else {
+                        console.log('标记相同');
+                    }
+                }
+            } else {
+                var lat = mouseEvent.latlng.lat;//纬度
+                var lng = mouseEvent.latlng.lng;//经度   
+                map.closePopup();
+                editLayer = m;
+                var html = getPopupHtml(320, 300, '@Url.Action("Edit", "Mark")/' + m.attachData.id);
+                //map.flyTo(latlng, 12);
+                var popup = L.popup({
+                    maxWidth: 1000
+                })
+                    .setLatLng(m._latlng)
+                    .setContent(html)
+                    //.setContent('<div style="width:300px"><input type="email" class="form-control" id="inputEmail3" placeholder="Email"></div>')
+                    .openOn(map);
+            }
+        }
+        function markerDoubleClick(mouseEvent) {
+            console.log('marker.dblclick');
+            var m = mouseEvent.target;
+            if (toolbarState.working && toolbarState.type == 'line' &&
+                toolbarState.step == 1 && toolbarState.data.closeMarker != null) {
+                finishPolyline();
+            }
+        }
+        //通用方法
+        var intCount = 0;
+        function addMarkerToMap(latlng, iconUrl, attach) {
+            attach = $.extend({ id: intCount++, type: 'marker', name: 'Test' }, attach);
+            var icon = L.icon({
+                iconUrl: iconUrl,
+                iconAnchor: [16, 16]
+            });
+            var marker = L.marker(latlng, {
+                icon: icon
+            }).bindTooltip(attach.name, {
+                permanent: true,
+                offset: [0, -5],// 偏移
+                direction: "top",// 放置位置
+                //sticky:true,//是否标记在点上面
+                className: 'marker-tooltip',// CSS控制
+            }).openTooltip();
+            marker.attachData = attach;
+            //注册事件
+            marker.on('click', markerClick)
+                .on('dblclick', markerDoubleClick)
+                .on('mousemove', function (mouseEvent) {
+                    console.log('marker.mousemove');
+                }).on('mouseover', function (mouseEvent) {
+                    console.log('marker.mouseover');
+                }).on('mouseout', function (mouseEvent) {
+                    console.log('marker.mouseout ');
+                }).addTo(map);
+        }
+
+        function addPolylineToMap(latlngs, attach) {
+            attach = $.extend({ id: intCount++, type: 'line', name: 'line' }, attach);
+            var polyline = L.polyline(latlngs, { weight: 3 }).addTo(map);
+            var pos = polyline.getLatlngByDistance(100);
+            addMalfunctionMarker(pos);
+            polyline.attachData = attach;
+            polyline.on('click', function (mouseEvent) {
+                var m = mouseEvent.target;
+                editLayer = m;
+                if (toolbarState.working == false) {
+                    var lat = mouseEvent.latlng.lat;//纬度
+                    var lng = mouseEvent.latlng.lng;//经度        
+                    console.log("[" + lat + "," + lng + "]");
+                    var html = getPopupHtml(625, 300, "@Url.Action("Edit", "OpticalCable")/" + m.attachData.id);
+                    var popup = L.popup({
+                        maxWidth: 1000
+                    })
+                        .setLatLng(mouseEvent.target.getCenter())
+                        .setContent(html)
+                        //.setContent('<div style="width:300px"><input type="email" class="form-control" id="inputEmail3" placeholder="Email"></div>')
+                        .openOn(map);
+                }
+            });
+        }
+
+        //开始画光缆
+        function beginPolyline() {
+            var node = L.marker.lineNode(toolbarState.data.closeMarker.getLatLng()).addTo(map);
+            //起点
+            toolbarState.data.begMarker = toolbarState.data.closeMarker;
+            toolbarState.data.nodes.push(node);
+            toolbarState.data.lastLatlng = node.getLatLng();
+            toolbarState.step = 1;
+            showToolbartip("点击画线，双击选择终点，右键退出", "crosshair")
+            toolbarState.data.followMarker.setTooltipContent('点击地图画线，双击标记完成，右键退出');
+        }
+        //结束画光缆
+        function finishPolyline() {
+            if (toolbarState.data.begMarker.attachData.id === toolbarState.data.closeMarker.attachData.id) {
+                console.log('开始结束标记相同');
+                return;
+            }
+            var node = L.marker.lineNode(toolbarState.data.closeMarker.getLatLng()).addTo(map);
+            toolbarState.data.nodes.push(node);
+            var cableNodes = [];
+            for (var i = 0; i < toolbarState.data.nodes.length; ++i) {
+                cableNodes.push(toolbarState.data.nodes[i].getLatLng());
+            }
+            toolbarFinish();
+            //JS对象序列化成JSON
+            lineNodes = JSON.stringify(cableNodes);
+            var distance = 0;
+            for (i = 0; i < cableNodes.length - 1; ++i) {
+                distance += cableNodes[i].distanceTo(cableNodes[i + 1]);
+            }            
+            var idA = toolbarState.data.begMarker.attachData.id;
+            var idB = toolbarState.data.closeMarker.attachData.id;
+            openDialog = dialog({
+                title: '新增光缆',
+                content: '<iframe name="formFrame" style="width:100%;height:100%;border:0;" src="@Url.Action("Create", "OpticalCable")?idA=' + idA + '&idB=' + idB + '&nodes=&distance=' + distance.toFixed(2) + '"></iframe>',
+                button: [{
+                    value: '保存',
+                    callback: function () {
+                        //addPolylineToMap(cableNodes, {});
+                        //调用Frame的方法
+                        formFrame.window.submitForm();
+                        return false;
+                    },
+                    autofocus: true
+                },
+                {
+                    value: '取消'
+                }
+                ]
+            }).width(625).height(300).showModal();
+        }
+        //获取弹出窗文本
+        function getPopupHtml(w, h, src) {
+            var div = $('<div class="popup-content"></div>');
+            var frame = $('<iframe name="framePopup" class="frame-popups" src="' + src + '"></iframe>');
+            var footer = $(`<div>
+                <center>
+                    <button id="btnSave" type="button" class="btn btn-primary" >保存</button>
+                    <button id="btnClose" type="button" class="btn btn-default" >取消</button>
+                </center>
+            </div>`);
+            div.width(w);
+            frame.height(h);
+            div.append(frame);
+            div.append(footer);
+
+            return div[0].outerHTML;
+        }
+        //添加故障标记
+        function addMalfunctionMarker(latlng) {
+            var icon = L.icon({
+                iconUrl: '../../image/map/broken.png',
+                iconAnchor: [18, 16]
+            });
+            var marker = L.marker(latlng, {
+                icon: icon
+            }).addTo(map)
+                .bindTooltip('故障点')
+                .openTooltip();
+        }
+        function getMarkerById(id) {
+            var marker = null;
+            map.eachLayer(function (layer) {
+                if (layer instanceof L.Marker) {
+                    if (layer.attachData && layer.attachData.id == id) {
+                        marker = layer;
+                    }
+                }
+            });
+            return marker;
+        }
+        function getPolylineById(id) {
+            var line = null;
+            map.eachLayer(function (layer) {
+                if (layer instanceof L.Polyline) {
+                    if (layer.attachData && layer.attachData.id == id) {
+                        line = layer;
+                    }
+                }
+            });
+            return line;
+        }
+
+        
+        //地图事件
+        //地图单击
+        function mapClick(mouseEvent) {
+            if (toolbarState.working) {
+                if (toolbarState.type == 'marker') {
+                    toolbarFinish();
+                    var lat = mouseEvent.latlng.lat;//纬度
+                    var lng = mouseEvent.latlng.lng;//经度 
+                    openDialog = dialog({
+                        title: '新增标记',
+                        content: '<iframe name="formFrame" style="width:100%;height:100%;border:0;" src="@Url.Action("Create", "Mark")?lat='+lat+"&lng="+lng+ '"></iframe>',
+                        button: [{
+                            value: '保存',
+                            callback: function () {
+                                //调用Frame的方法
+                                formFrame.window.submitForm();
+                                return false;
+                            },
+                            autofocus: true
+                        },
+                        {
+                            value: '取消'
+                        }
+                        ]
+                    }).width(320).height(300).showModal();
+                } else if (toolbarState.type == 'line') {
+                    console.log('map.click');
+                    if (toolbarState.step == 0 && toolbarState.data.closeMarker != null) {
+                        beginPolyline();
+                    }
+                    else if (toolbarState.step == 1 && toolbarState.data.closeMarker == null) {
+                        //重复点不添加
+                        if (mouseEvent.latlng == toolbarState.data.nodes[toolbarState.data.nodes.length - 1].getLatLng())
+                            reutrn;
+                        var node = L.marker.lineNode(mouseEvent.latlng).addTo(map);
+                        toolbarState.data.nodes.push(node);
+                        var line = L.polyline([toolbarState.data.lastLatlng, mouseEvent.latlng], { weight: 3 }).addTo(map);
+                        toolbarState.data.lines.push(line);
+                        toolbarState.data.lastLatlng = mouseEvent.latlng;
+                    }
+                }
+            } else {
+
+            }
+        }
+        //地图双击
+        function mapDoubleClick(mouseEvent) {
+            console.log('map.dblclick');
+            if (toolbarState.working && toolbarState.type == 'line') {
+                if (toolbarState.step == 1 && toolbarState.data.closeMarker != null) {
+                    finishPolyline();
+                }
+            }
+        }
+        map.on("contextmenu", function (mouseEvent) {
+            if (toolbarState.working) {
+                toolbarFinish();
+            }
+        }).on('click', mapClick).on("popupopen", function (popupEvent) {
+            setTimeout(function () {
+                $("#btnClose").click(function () {
+                    map.closePopup();
+                    editLayer = null;
+                });
+                $("#btnSave").click(function () {
+                    //保存操作
+                    framePopup.window.submitForm();
+                });
+            }, 200);
+        }).on('mousemove', function (mouseEvent) {
+            if (toolbarState.working) {
+                if (toolbarState.data.followMarker)
+                    toolbarState.data.followMarker.setLatLng(mouseEvent.latlng);
+                if (toolbarState.type == 'line') {
+                    toolbarState.data.closeMarker = null;
+                    getCloseLayer(mouseEvent.latlng);
+                    if (toolbarState.data.followMarker) {
+                        //toolbarState.data.followMarker.setLatLng(mouseEvent.latlng);                               
+                        var closeLayer = getCloseLayer(mouseEvent.latlng);
+                        if (closeLayer != null) {
+                            toolbarState.data.followMarker.setLatLng(closeLayer.getLatLng());
+                            toolbarState.data.closeMarker = closeLayer;
+                        }
+                    }
+                    if (toolbarState.step == 1 || toolbarState.step == 2) {
+                        if (toolbarState.data.dashLine == null) {
+                            toolbarState.data.dashLine = L.polyline([toolbarState.data.lastLatlng, mouseEvent.latlng], { weight: 3, dashArray: '5,5' }).addTo(map);
+                        }
+                        else {
+                            toolbarState.data.dashLine.setLatLngs([toolbarState.data.lastLatlng, toolbarState.data.followMarker.getLatLng()]);
+                        }
+                    }
+                }
+            }
+        }).on("dblclick", mapDoubleClick);
+
+        //获取附近layer
+        function getCloseLayer(latlng) {
+            var range, left, right, top, bottom, distance, minDist, closelayer;
+            range = 25;
+            closelayer = null;
+            minDist = Infinity;
+            map.eachLayer(function (layer) {
+                if (layer instanceof L.Marker) {
+                    var m = layer;
+                    //console.log(m);
+                    if (m.attachData && m.attachData.type == "marker") {
+                        var pMarker = map.latLngToLayerPoint(m.getLatLng());
+                        var pMouse = map.latLngToLayerPoint(latlng);
+                        //console.log('('+pMarker.x+','+pMarker.y+')'+',('+pMouse.x+','+pMouse.y+')');
+                        left = pMarker.x - range;
+                        right = pMarker.x + range;
+                        top = pMarker.y - range;
+                        bottom = pMarker.y + range;
+
+                        if (pMouse.x >= left && pMouse.x <= right &&
+                            pMouse.y >= top && pMouse.y <= bottom) {
+                            distance = Math.sqrt(Math.pow(pMouse.x - pMarker.x, 2) + Math.pow(pMouse.y - pMarker.y, 2));
+                            if (distance < minDist) {
+                                //console.log(distance);
+                                minDist = distance;
+                                closelayer = m;
+                            }
+                        }
+                    }
+                }
+            });
+            return closelayer;
+        }
+
+        var iconMap = new Map();
+        iconMap.set("机房", "engine_room.png");
+        iconMap.set("基站", "nodeb.png");
+        iconMap.set("引出管", "elicited_tube.png");
+        iconMap.set("光交", "light_box.png");
+        iconMap.set("墙吊", "pendant.png");
+        iconMap.set("管道井", "piping_shaft.png");
+        iconMap.set("电杆", "pole.png");
+        iconMap.set("分路箱", "shunt_box.png");
+        /*
+         * 子页面回调
+         * code:0正常，1异常
+         * data:数据或异常信息
+        */
+        function childPageCallback(code, msg, data) {
+            if (code === 0) {
+                if (openDialog)
+                    openDialog.close().remove();
+                if (editLayer != null) {
+                    if (editLayer.attachData.type === 'marker') {
+                        editLayer.removeFrom(map);
+                        addMarkerToMap([data.MLatitude, data.MLongitude], '../../image/map/' + iconMap.get(data.MType), { id: data.ID, name: data.MName, type: 'marker' });                        
+                    }
+                    else if (toolbarState.type == 'line') {
+
+                    }
+                    map.closePopup();
+                    editLayer = null;
+                }
+                else {
+                    if (toolbarState.type == 'marker') {
+                        addMarkerToMap([data.MLatitude, data.MLongitude], '../../image/map/' + iconMap.get(data.MType), { id: data.ID, name: data.MName, type: 'marker' });
+                    }
+                    else if (toolbarState.type == 'line') {
+                        var latlngs = JSON.parse(data.OC_Nodes);
+                        addPolylineToMap(latlngs, { id: data.ID, name: data.OC_Name, type: 'line' });
+                    }
+                }
+            }
+            else if (code === 1) {
+                dialogTip('fail', msg);
+            }
+        }
+
+        //向子页面传值
+        function childPageGetNodes() {
+            return lineNodes;
+        }
+        //暴露给window，方便子页面调用 
+        window.childPageCallback = childPageCallback;
+        window.childPageGetNodes = childPageGetNodes;
+        
+    }
+</script>

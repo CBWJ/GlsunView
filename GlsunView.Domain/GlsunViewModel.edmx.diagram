@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="550df2ab24bb413896274459ff6f2002" Name="Diagram1" ZoomLevel="32">
+      <Diagram DiagramId="550df2ab24bb413896274459ff6f2002" Name="Diagram1" ZoomLevel="97">
         <EntityTypeShape EntityType="GlsunViewModel.Authority" Width="1.5" PointX="0.75" PointY="1" IsExpanded="true" />
         <EntityTypeShape EntityType="GlsunViewModel.Module" Width="1.5" PointX="0.75" PointY="9.125" IsExpanded="true" />
         <EntityTypeShape EntityType="GlsunViewModel.ModuleAuthority" Width="1.5" PointX="0.75" PointY="5.375" IsExpanded="true" />
@@ -53,6 +53,9 @@
         <AssociationConnector Association="GlsunViewModel.FK_ROUTE_REFERENCE_ROUTEGRO" />
         <EntityTypeShape EntityType="GlsunViewModel.v_Route" Width="1.5" PointX="15.625" PointY="23.75" />
         <EntityTypeShape EntityType="GlsunViewModel.v_RouteGroup" Width="1.5" PointX="12.875" PointY="23.125" />
+        <EntityTypeShape EntityType="GlsunViewModel.Mark" Width="1.5" PointX="17.125" PointY="3.875" />
+        <EntityTypeShape EntityType="GlsunViewModel.OpticalCable" Width="1.5" PointX="18.875" PointY="3.875" />
+        <EntityTypeShape EntityType="GlsunViewModel.OpticalFiber" Width="1.5" PointX="20.75" PointY="3.875" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

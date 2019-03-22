@@ -24,6 +24,7 @@
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <Use64BitIISExpress />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -188,6 +189,7 @@
     <Content Include="Content\css\tab.css" />
     <Content Include="Content\css\tabEx.css" />
     <Content Include="Content\css\tag.css" />
+    <Content Include="Content\css\tooltip.css" />
     <Content Include="Content\css\topomenu.css" />
     <Content Include="Content\css\veticalToolbar.css" />
     <Content Include="Content\css\zTreeStyle.css" />
@@ -216,6 +218,31 @@
     <Content Include="image\log_blue.png" />
     <Content Include="image\log_gray.png" />
     <Content Include="image\log_lightblue.png" />
+    <Content Include="image\map\broken.png" />
+    <Content Include="image\map\elicited_tube.png" />
+    <Content Include="image\map\elicited_tube_highlight.png" />
+    <Content Include="image\map\engine_room.png" />
+    <Content Include="image\map\engine_room_highlight.png" />
+    <Content Include="image\map\engine_room_with_dev.png" />
+    <Content Include="image\map\engine_room_with_dev_highlight.png" />
+    <Content Include="image\map\fit.png" />
+    <Content Include="image\map\flag.png" />
+    <Content Include="image\map\light_box.png" />
+    <Content Include="image\map\light_box_highlight.png" />
+    <Content Include="image\map\logo.png" />
+    <Content Include="image\map\marker.png" />
+    <Content Include="image\map\nodeb.png" />
+    <Content Include="image\map\nodeb_highlight.png" />
+    <Content Include="image\map\pendant.png" />
+    <Content Include="image\map\pendant_highlight.png" />
+    <Content Include="image\map\piping_shaft.png" />
+    <Content Include="image\map\piping_shaft_highlight.png" />
+    <Content Include="image\map\polyline.png" />
+    <Content Include="image\map\pole.png" />
+    <Content Include="image\map\pole_highlight.png" />
+    <Content Include="image\map\polyline-32.png" />
+    <Content Include="image\map\shunt_box.png" />
+    <Content Include="image\map\shunt_box_highlight.png" />
     <Content Include="image\options.png" />
     <Content Include="image\role.png" />
     <Content Include="image\route.png" />
@@ -288,10 +315,19 @@
     <Content Include="scripts\jquery.validate.min.js" />
     <Content Include="scripts\jquery.validate.unobtrusive.js" />
     <Content Include="scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="scripts\leaflet\images\layers-2x.png" />
+    <Content Include="scripts\leaflet\images\layers.png" />
+    <Content Include="scripts\leaflet\images\marker-icon-2x.png" />
+    <Content Include="scripts\leaflet\images\marker-icon.png" />
+    <Content Include="scripts\leaflet\images\marker-shadow.png" />
+    <Content Include="scripts\leaflet\leaflet.css" />
+    <Content Include="scripts\leaflet\leaflet.js" />
+    <Content Include="scripts\leaflet\leafletExtend.js" />
     <Content Include="scripts\lib\contextmenu.js" />
     <Content Include="scripts\lib\device_compenent.js" />
     <Content Include="scripts\lib\dialog.js" />
     <Content Include="scripts\lib\echarts.min.js" />
+    <Content Include="scripts\lib\jQuery.Tooltip.js" />
     <Content Include="scripts\lib\jquery.ztree.core.js" />
     <Content Include="scripts\lib\jquery.ztree.excheck.min.js" />
     <Content Include="scripts\lib\jtopo-min.js" />
@@ -303,6 +339,10 @@
     <Content Include="scripts\moment.js" />
     <Content Include="scripts\moment.min.js" />
     <Content Include="scripts\My97DatePicker\WdatePicker.js" />
+    <Content Include="scripts\select2\select2-bootstrap.min.css" />
+    <Content Include="scripts\select2\select2.css" />
+    <Content Include="scripts\select2\select2.full.js" />
+    <Content Include="scripts\select2\select2.zh-CN.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -335,10 +375,14 @@
     <Compile Include="Controllers\MachineFrameController.cs" />
     <Compile Include="Controllers\MachineRoomController.cs" />
     <Compile Include="Controllers\MachineShelfController.cs" />
+    <Compile Include="Controllers\MapController.cs" />
+    <Compile Include="Controllers\MarkController.cs" />
     <Compile Include="Controllers\ModuleController.cs" />
     <Compile Include="Controllers\NMUCardController.cs" />
     <Compile Include="Controllers\OEOCardController.cs" />
     <Compile Include="Controllers\OLPCardController.cs" />
+    <Compile Include="Controllers\OpticalCableController.cs" />
+    <Compile Include="Controllers\OpticalFiberController.cs" />
     <Compile Include="Controllers\RoleController.cs" />
     <Compile Include="Controllers\RouteController.cs" />
     <Compile Include="Controllers\RouteGroupController.cs" />
@@ -464,6 +508,15 @@
     <Content Include="Views\DeviceLine\Edit.cshtml" />
     <Content Include="Views\Lisence\Index.cshtml" />
     <Content Include="Views\Lisence\Exception.cshtml" />
+    <Content Include="Views\Shared\_BootstrapLayout.cshtml" />
+    <Content Include="Views\Map\Index.cshtml" />
+    <Content Include="Views\Mark\List.cshtml" />
+    <Content Include="Views\Mark\Create.cshtml" />
+    <Content Include="Views\Shared\_BootstrapList.cshtml" />
+    <Content Include="Views\OpticalCable\List.cshtml" />
+    <Content Include="Views\Shared\_BootstrapEdit.cshtml" />
+    <Content Include="Views\OpticalCable\Create.cshtml" />
+    <Content Include="Views\OpticalFiber\List.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

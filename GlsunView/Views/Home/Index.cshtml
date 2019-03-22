@@ -110,7 +110,7 @@
         var hTimer;
         var tab;
         $(function () {
-            $("#menu").click(function () {
+            $("#menuTrigger").click(function () {
                 var interval = 200;
                 if ($(".content_menu").css("marginLeft") != "0px") {
                     $(".content_menu").animate({ marginLeft: 0 }, { duration: interval });
@@ -121,31 +121,6 @@
                     $(".content_menu").animate({ marginLeft: -200 }, { duration: interval });
                     $(".content_container").animate({ marginLeft: 0 }, { duration: interval });
                     tab.setMenuOffset({ x: 0, y: -50 });
-                }
-            });
-            $("#status").click(function () {
-                var interval = 200;
-                if ($(".main_body_bottom").css("height") != "0px") {
-                    $(".main_body_bottom").animate({ height: 0 }, interval, null,
-                            function () {
-                                $(this).hide();
-                            });
-                    $(".main_body_content").animate({ bottom: 0 }, { duration: interval });
-                }
-                else {
-                    $(".main_body_bottom").show().animate({ height: 150 }, { duration: interval });
-                    $(".main_body_content").animate({ bottom: 150 }, { duration: interval });
-                }
-            });
-            $("#menuTrigger").click(function () {
-                var interval = 200;
-                if ($(".content_menu").css("marginLeft") != "0px") {
-                    $(".content_menu").animate({ marginLeft: 0 }, { duration: interval });
-                    $(".content_container").animate({ marginLeft: 200 }, { duration: interval });
-                }
-                else {
-                    $(".content_menu").animate({ marginLeft: -200 }, { duration: interval });
-                    $(".content_container").animate({ marginLeft: 0 }, { duration: interval });
                 }
             });
             $("#statusTrigger").click(function () {
@@ -203,7 +178,7 @@
                 cancel: function () {
                     //alert("取消");
                 }
-            }).width(300).height(300).show();
+            }).width(300).height(300).showModal();
         }
         //初始化菜单
         function initMenu() {

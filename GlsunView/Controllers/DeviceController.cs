@@ -148,24 +148,17 @@ namespace GlsunView.Controllers
             d.CoordinateX = 100;
             d.CoordinateY = 100;
             d.SID = id;
-            StringBuilder sbFrames = new StringBuilder();
-            sbFrames.Append("[");
-            sbFrames.AppendFormat("{{id: '', text: '请选择'}}");
+
+            List<string> items = new List<string>();
+            items.Add("{id: '', text: '请选择'}");
             using (var ctx = new GlsunViewEntities())
             {
-                int count = 0;
-                if(ctx.MachineFrame.Count() > 0)
-                    sbFrames.Append(",");
                 foreach (var frame in ctx.MachineFrame)
                 {
-                    sbFrames.AppendFormat("{{id: {0}, text: '{1}'}}", frame.ID, frame.MFName);
-                    count++;
-                    if (count != ctx.MachineRoom.Count())
-                        sbFrames.Append(",");
+                    items.Add(string.Format("{{id: {0}, text: '{1}'}}", frame.ID, frame.MFName));
                 }
             }
-            sbFrames.Append("]");
-            ViewBag.frameData = sbFrames.ToString();
+            ViewBag.frameData = "[" + string.Join(",", items.ToArray()) + "]";
             ViewBag.Action = "Create";
             return View(d);
         }
@@ -244,25 +237,17 @@ namespace GlsunView.Controllers
         public ActionResult Edit(int id)
         {
             Device d = null;
-            StringBuilder sbFrames = new StringBuilder();
-            sbFrames.Append("[");
-            sbFrames.AppendFormat("{{id: '', text: '请选择'}}");
+            List<string> items = new List<string>();
+            items.Add("{id: '', text: '请选择'}");
             using (var ctx = new GlsunViewEntities())
             {
-                int count = 0;
-                if (ctx.MachineFrame.Count() > 0)
-                    sbFrames.Append(",");
                 foreach (var frame in ctx.MachineFrame)
                 {
-                    sbFrames.AppendFormat("{{id: {0}, text: '{1}'}}", frame.ID, frame.MFName);
-                    count++;
-                    if (count != ctx.MachineRoom.Count())
-                        sbFrames.Append(",");
+                    items.Add(string.Format("{{id: {0}, text: '{1}'}}", frame.ID, frame.MFName));
                 }
                 d = ctx.Device.Find(id);
             }
-            sbFrames.Append("]");
-            ViewBag.frameData = sbFrames.ToString();
+            ViewBag.frameData = "["+string.Join(",", items.ToArray())+"]";
             ViewBag.Action = "Edit";
             return View("Create", d);
         }

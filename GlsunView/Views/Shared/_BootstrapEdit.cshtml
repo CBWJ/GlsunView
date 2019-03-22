@@ -1,0 +1,99 @@
+﻿@{
+    string action = (string)ViewBag.Action;
+    string controller = (string)ViewBag.Controller;
+}
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <link rel="stylesheet" href="~/Content/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/scripts/select2/select2.css" />
+    <link rel="stylesheet" href="~/scripts/select2/select2-bootstrap.min.css" />
+    <link rel="stylesheet" href="~/Content/css/dialog.css" />
+
+    <script src="~/scripts/jquery-1.9.1.min.js"></script>
+    <script src="~/scripts/bootstrap.min.js"></script>
+    <script src="~/scripts/select2/select2.full.js"></script>
+    <script src="~/scripts/select2/select2.zh-CN.js"></script>
+    <script src="~/scripts/lib/dialog.js"></script>
+    <script src="~/scripts/jquery.form.min.js"></script>
+    <script src="~/scripts/jquery.validate.min.js"></script>
+    <script src="~/scripts/messages_zh.js"></script>
+
+    <style>
+        .form-group .control-label {
+            text-align: right;
+            top: 6px;
+        }
+
+            .form-group .control-label .require {
+                color: red;
+            }
+
+        .form-horizontal .form-group {
+            margin-right: 0px;
+            margin-left: 0px;
+        }
+
+        input.error {
+            border-color: red;
+        }
+
+        label.error {
+            color: red;
+        }
+    </style>
+    @if (IsSectionDefined("AddToHead"))
+    {
+        @RenderSection("AddToHead", required: false)
+    }
+    <title>@ViewBag.Title</title>
+</head>
+<body>
+    @RenderBody()
+    @RenderSection("Scripts", required: false)
+    <script>
+        $(document).ready(function () {
+            //注册表单提交方式为ajaxForm
+            $("#dataForm").ajaxForm({
+                success: function (data, statusText, xhr) {
+                    var obj = JSON.parse(data);
+                    if (obj) {
+                        parent.window.childPageCallback(obj.status, obj.message, obj.data);
+                    } else {
+                        parent.window.childPageCallback(1, "提交时发生异常，状态：" + statusText, obj.data);
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    var text;
+                    switch (textStatus) {
+                        case "timeout":
+                            text = "超时";
+                            break;
+                        case "error":
+                            text = "错误";
+                            break;
+                        case "abort":
+                            text = "中止";
+                            break;
+                        case "parsererror":
+                            text = "解析错误";
+                            break;
+                    }
+                    parent.window.childPageCallback(1, "提交时发生异常，状态：" + text);
+                }
+            });
+            //开启验证
+            if(window.pageFrame.validateObject)
+                $("#dataForm").validate(window.pageFrame.validateObject);
+        });
+        function submitForm() {
+            if (!$("#dataForm").valid()) {
+                return;
+            };
+            $('#dataForm').submit();
+        }
+    </script>
+</body>
+</html>

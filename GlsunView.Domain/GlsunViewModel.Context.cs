@@ -64,6 +64,9 @@ namespace GlsunView.Domain
         public virtual DbSet<RouteGroup> RouteGroup { get; set; }
         public virtual DbSet<v_Route> v_Route { get; set; }
         public virtual DbSet<v_RouteGroup> v_RouteGroup { get; set; }
+        public virtual DbSet<Mark> Mark { get; set; }
+        public virtual DbSet<OpticalCable> OpticalCable { get; set; }
+        public virtual DbSet<OpticalFiber> OpticalFiber { get; set; }
     
         [DbFunction("GlsunViewEntities", "F_GetTreeModuleID")]
         public virtual IQueryable<Nullable<int>> F_GetTreeModuleID()

@@ -1,0 +1,158 @@
+﻿@model GlsunView.Domain.OpticalCable
+@{
+                /**/
+
+                ViewBag.Title = "Create";
+                Layout = "~/Views/Shared/_BootstrapEdit.cshtml";
+                string action = (string)ViewBag.Action;
+                string controller = (string)ViewBag.Controller;
+                var marks = (List<GlsunView.Domain.Mark>)ViewBag.Marks;
+}
+
+@using (Html.BeginForm(action, controller, FormMethod.Post, new { id = "dataForm", @class = "form-horizontal" }))
+{
+    @Html.HiddenFor(m => m.ID)
+    @Html.HiddenFor(m => m.OC_Nodes)
+    <div class="form-group">
+        <label for="inputEmail3" class="col-xs-2 control-label">
+            <span class="require">*</span>名称
+        </label>
+        <div class="col-xs-4">
+            @Html.TextBoxFor(m => m.OC_Name, new { @class = "form-control" })
+        </div>
+        <label for="inputEmail3" class="col-xs-2 control-label">
+            <span class="require">*</span>长度
+        </label>
+        <div class="col-xs-4">
+            @Html.TextBoxFor(m => m.OC_Length, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="inputPassword3" class="col-xs-2 control-label">
+            <span class="require">*</span>标记A端
+        </label>
+        <div class="col-xs-4">
+            <select id="OC_MarkIDA" name="OC_MarkIDA" class="form-control">
+                @foreach (var e in marks)
+                {
+                    <option value="@e.ID" @(e.ID == Model.OC_MarkIDA ? "selected = \"selected\"" : "")>@e.MName</option>
+                }
+            </select>
+        </div>
+        <label for="inputEmail3" class="col-xs-2 control-label">
+            <span class="require">*</span>A端盘留
+        </label>
+        <div class="col-xs-4">
+            @Html.TextBoxFor(m => m.OC_MarkRetainA, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="inputPassword3" class="col-xs-2 control-label">
+            <span class="require">*</span>标记B端
+        </label>
+        <div class="col-xs-4">
+            <select id="OC_MarkIDB" name="OC_MarkIDB" class="form-control">
+                @foreach (var e in marks)
+                {
+                    <option value="@e.ID"  @(e.ID == Model.OC_MarkIDB ? "selected = \"selected\"" : "")>@e.MName</option>
+                }
+            </select>
+        </div>
+        <label for="inputEmail3" class="col-xs-2 control-label">
+            <span class="require">*</span>B端盘留
+        </label>
+        <div class="col-xs-4">
+            @Html.TextBoxFor(m => m.OC_MarkRetainB, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="inputEmail3" class="col-xs-2 control-label">
+            <span class="require">*</span>总长
+        </label>
+        <div class="col-xs-4">
+            @Html.TextBoxFor(m => m.OC_TotalLength, new { @class = "form-control" })
+        </div>
+        <label for="inputEmail3" class="col-xs-2 control-label">
+            <span class="require">*</span>光纤数
+        </label>
+        <div class="col-xs-4">
+            @Html.TextBoxFor(m => m.OC_FiberCount, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="inputPassword3" class="col-xs-2 control-label">备注</label>
+        <div class="col-xs-10">
+            @Html.TextAreaFor(m => m.Remark, new { @class = "form-control" })
+        </div>
+    </div>
+}
+@section Scripts{
+    <script>
+        window.pageFrame = {
+            validateObject: {
+                rules: {
+                    OC_Name: {
+                        required: true,
+                        maxlength: 50
+                    },
+                    OC_MarkIDA: {
+                        required: true
+                    },
+                    OC_MarkIDB: {
+                        required: true
+                    },
+                    OC_MarkRetainA: {
+                        required: true,
+                        number: true
+                    },
+                    OC_MarkRetainB: {
+                        required: true,
+                        number: true
+                    },
+                    OC_Length: {
+                        required: true,
+                        number: true
+                    },
+                    OC_TotalLength: {
+                        required: true,
+                        number: true
+                    },
+                    OC_FiberCount: {
+                        required: true,
+                        digits: true
+                    },
+                    Remark: {
+                        required: false,
+                        maxlength: 50
+                    }
+                }
+            }
+        };
+        $(function () {
+            if (window.parent.childPageGetNodes) {
+                $("#OC_Nodes").val(window.parent.childPageGetNodes());
+            }
+
+            $("#OC_Length").on('change', function () {
+                if(!$(this).hasClass('error'))
+                    calcTotalLength();
+            });
+            $("#OC_MarkRetainA").on('change', function () {
+                if (!$(this).hasClass('error'))
+                    calcTotalLength();
+            });
+            $("#OC_MarkRetainB").on('change', function () {
+                if (!$(this).hasClass('error'))
+                    calcTotalLength();
+            });
+
+            function calcTotalLength() {
+                var l = +$("#OC_Length").val();
+                var a = +$("#OC_MarkRetainA").val();
+                var b = +$("#OC_MarkRetainB").val();
+
+                $("#OC_TotalLength").val((l + a + b).toFixed(2));
+            }
+        })
+    </script>
+}

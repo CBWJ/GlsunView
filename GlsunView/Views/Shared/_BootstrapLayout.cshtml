@@ -1,0 +1,26 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <link rel="stylesheet" href="~/Content/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/scripts/select2/select2.css" />
+    <link rel="stylesheet" href="~/scripts/select2/select2-bootstrap.min.css" />
+    <link rel="stylesheet" href="~/Content/css/dialog.css" />
+
+    <script src="~/scripts/jquery-1.9.1.min.js"></script>
+    <script src="~/scripts/bootstrap.min.js"></script>
+    <script src="~/scripts/select2/select2.full.js"></script>
+    <script src="~/scripts/select2/select2.zh-CN.js"></script>
+    <script src="~/scripts/lib/dialog.js"></script>
+
+    @if (IsSectionDefined("AddToHead"))
+    {
+        @RenderSection("AddToHead", required: false)
+    }
+    <title>@ViewBag.Title</title>
+</head>
+<body>
+    @RenderBody()
+</body>
+</html>

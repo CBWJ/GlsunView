@@ -1,0 +1,174 @@
+﻿@model GlsunView.Domain.Mark
+@{
+    /**/
+
+    /**/
+
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_BootstrapLayout.cshtml";
+    string action = (string)ViewBag.Action;
+    string controller = (string)ViewBag.Controller;
+}
+
+@section AddToHead
+{
+    <style>
+        .form-group .control-label {
+            text-align: right;
+            top: 6px;
+        }
+
+        .form-group .control-label .require {
+            color: red;
+        }
+
+        .type-img {
+            padding-left: 0;
+        }
+
+        .form-horizontal .form-group {
+            margin-right: 0px;
+            margin-left: 0px;
+        }
+        input.error {
+            border-color: red;
+        }
+
+        label.error {
+            color: red;
+        }
+    </style>
+    <script src="~/scripts/jquery.form.min.js"></script>
+    <script src="~/scripts/jquery.validate.min.js"></script>
+    <script src="~/scripts/messages_zh.js"></script>
+}
+
+@using (Html.BeginForm(action, controller, FormMethod.Post, new { id = "dataForm", @class = "form-horizontal" }))
+{
+    @Html.HiddenFor(m => m.ID)
+    <div class="form-group">
+        <label for="inputEmail3" class="col-xs-3 control-label">
+            <span class="require">*</span>名称
+        </label>
+        <div class="col-xs-9">
+            @Html.TextBoxFor(m => m.MName, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="inputPassword3" class="col-xs-3 control-label">
+            <span class="require">*</span>经度
+        </label>
+        <div class="col-xs-9">
+            @Html.TextBoxFor(m => m.MLongitude, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="inputPassword3" class="col-xs-3 control-label">
+            <span class="require">*</span>纬度
+        </label>
+        <div class="col-xs-9">
+            @Html.TextBoxFor(m => m.MLatitude, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="inputPassword3" class="col-xs-3 control-label">
+            <span class="require">*</span>类型
+        </label>
+        <div class="col-xs-7">
+            <select id="MType" name="MType" class="form-control">
+                <option value="机房" data-image="engine_room.png">机房</option>
+                <option value="基站" data-image="nodeb.png">基站</option>
+                <option value="引出管" data-image="elicited_tube.png">引出管</option>
+                <option value="光交" data-image="light_box.png">光交</option>
+                <option value="墙吊" data-image="pendant.png">墙吊</option>
+                <option value="管道井" data-image="piping_shaft.png">管道井</option>
+                <option value="电杆" data-image="pole.png">电杆</option>
+                <option value="分路箱" data-image="shunt_box.png">分路箱</option>
+            </select>
+        </div>
+        <div class="col-xs-2 type-img">
+            <img id="typeimg" src="../../image/map/engine_room.png">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="inputPassword3" class="col-xs-3 control-label">备注</label>
+        <div class="col-xs-9">
+            @Html.TextAreaFor(m => m.Remark, new { @class = "form-control" })
+        </div>
+    </div>
+}
+<script>
+    $(document).ready(function () {
+        //注册表单提交方式为ajaxForm
+        $("#dataForm").ajaxForm({
+            success: function (data, statusText, xhr) {
+                var obj = JSON.parse(data);
+                if (obj) {
+                    parent.window.childPageCallback(obj.status, obj.message, obj.data);
+                } else {
+                    parent.window.childPageCallback(1, "提交时发生异常，状态：" + statusText, obj.data);
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                var text;
+                switch (textStatus) {
+                    case "timeout":
+                        text = "超时";
+                        break;
+                    case "error":
+                        text = "错误";
+                        break;
+                    case "abort":
+                        text = "中止";
+                        break;
+                    case "parsererror":
+                        text = "解析错误";
+                        break;
+                }
+                parent.window.childPageCallback(1, "提交时发生异常，状态：" + text);
+            }
+        });
+        //开启验证
+        $("#dataForm").validate({
+            rules: {
+                MName: {
+                    required: true,
+                    maxlength: 50
+                },
+                MLongitude: {
+                    required: true,
+                    maxlength: 24
+                },
+                MLatitude: {
+                    required: true,
+                    maxlength: 24
+                },
+                MType: {
+                    required: true,
+                    maxlength: 20
+                },
+                Remark: {
+                    required: false,
+                    maxlength: 50
+                }
+            }
+        });
+        $("#MType").change(function () {
+            var img = $(this).children('option:selected').data('image');
+            $("#typeimg").attr("src", "../../image/map/" + img);
+        });
+
+        var action = '@action';
+        if (action == "Details") {
+
+        }
+    });
+    function submitForm() {
+        if (!$("#dataForm").valid()) {
+            return;
+        };
+        $('#dataForm').submit();
+        console.log('subform');
+    }
+</script>
+

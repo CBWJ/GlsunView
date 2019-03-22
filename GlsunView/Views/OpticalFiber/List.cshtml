@@ -1,0 +1,48 @@
+﻿@model IEnumerable<GlsunView.Domain.OpticalFiber>
+@{
+    ViewBag.Title = "List";
+    Layout = "~/Views/Shared/_BootstrapList.cshtml";
+}
+
+@section SearchOptions{
+    <div class="form-group">
+        <label for="exampleInputName2">所在光纤</label>
+        <input type="text" class="form-control" id="keyword" name="keyword" placeholder="输入关键字查询" value="@ViewData["keyword"]">
+    </div>
+}
+<div class="page-grid">
+    <table id="dataGrid" class="header table table-striped table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>名称</th>
+                <th>所在光缆名称</th>
+                <th>总长</th>
+                <th>备注</th>
+                <th>创建时间</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var e in Model)
+            {
+                <tr data-data-id="@e.ID">
+                    <td>@e.OF_Name</td>
+                    <td>@e.OC_Name</td>
+                    <td>@e.OC_TotalLength</td>
+                    <td>@e.Remark</td>
+                    <td>@e.CreationTime</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+@section Scripts{
+    <script>
+        window.pageFrame = {
+            moreActions: {},
+            dialog: {
+                width: 600,
+                height: 350
+            }
+        };
+    </script>
+}
